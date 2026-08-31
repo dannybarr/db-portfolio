@@ -1014,7 +1014,7 @@ function Portfolio() {
       {/* Backdrop — looping video, pinned to the viewport on mobile so it covers
           the screen behind the scrolling grid instead of stretching with the content. */}
       <video
-        src={backdropVideo.url}
+        src={BACKDROP_VIDEO_URL}
         poster={backdropPoster.url}
         autoPlay
         muted
