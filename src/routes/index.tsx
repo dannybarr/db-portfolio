@@ -78,8 +78,8 @@ const folderHues: Hue[] = [
 ];
 
 
-function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, preview }: { tone: string; mark: string; index: number; hue?: number; active: boolean; artwork?: string | null; preview?: string | null }) {
-  const hue = folderHues[hueIndex ?? index % CYCLED_HUES];
+function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, preview }: { tone: string; mark: string; index: number; hue?: number | undefined; active: boolean; artwork?: string | null | undefined; preview?: string | null | undefined }) {
+  const hue = folderHues[hueIndex ?? index % CYCLED_HUES]!;
   return (
     <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible drop-shadow-[0_4px_6px_rgba(0,0,0,.15)]">
       <defs>
@@ -549,7 +549,7 @@ function VideoShot({
  *  full-width window it would be a narrow strip with huge grey margins, so the
  *  window puts it in a slim column beside the text instead. 4:5 and taller. */
 const PORTRAIT_RATIO = 1.25;
-function AppShot({ project, className }: { project: ApiProject; className?: string }) {
+function AppShot({ project, className }: { project: ApiProject; className?: string | undefined }) {
   return (
     <img
       src={`${BASE}images/${project.previewImage}`}
@@ -695,7 +695,7 @@ function LaunchStage({
       const next = at === -1
         ? (e.shiftKey ? focusable.length - 1 : 0)
         : (at + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
-      focusable[next].focus();
+      focusable[next]?.focus();
     };
     document.addEventListener('keydown', onKeyDown, true);
     return () => document.removeEventListener('keydown', onKeyDown, true);
@@ -1058,7 +1058,7 @@ function Portfolio() {
           {!isLoading && !isError && (
             <div className="mt-7 grid grid-cols-3 gap-x-3 gap-y-6">
               {launchable.map((project, i) => {
-                const slot = scatter[i] ?? scatter[i % scatter.length];
+                const slot = scatter[i] ?? scatter[i % scatter.length]!;
                 return (
                   <button
                     key={project.id}
@@ -1122,7 +1122,7 @@ function Portfolio() {
           ))}
 
           {!isLoading && !isError && launchable.slice(0, scatter.length).map((project, i) => {
-            const slot = scatter[i];
+            const slot = scatter[i]!;
             const key = String(project.id);
             const held = drag.draggingKey === key;
             const off = drag.offsetPx(key);

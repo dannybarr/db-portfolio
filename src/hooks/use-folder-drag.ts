@@ -85,9 +85,9 @@ export function useFolderDrag(
   dockRef: RefObject<HTMLElement | null>,
   options?: {
     /** Positions loaded from the server — the source of truth once they arrive. */
-    serverOffsets?: Offsets;
+    serverOffsets?: Offsets | undefined;
     /** Persist a dropped position. Failures are swallowed; the move still stands locally. */
-    onPersist?: (key: string, offset: FolderOffset) => void | Promise<unknown>;
+    onPersist?: ((key: string, offset: FolderOffset) => void | Promise<unknown>) | undefined;
   },
 ) {
   const { serverOffsets, onPersist } = options ?? {};
