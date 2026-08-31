@@ -1008,13 +1008,20 @@ function Portfolio() {
       }}
       data-testid="page-portfolio"
     >
-      {/* Backdrop — pinned to the viewport on mobile so it covers the screen
-          behind the scrolling grid instead of stretching with the content. */}
-      <img
-        src={`${BASE}images/f1-car.png`}
-        alt="Formula 1 car, rear view"
+      {/* Backdrop — looping video, pinned to the viewport on mobile so it covers
+          the screen behind the scrolling grid instead of stretching with the content. */}
+      <video
+        src={backdropVideo.url}
+        poster={backdropPoster.url}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
         className={`z-0 w-full object-cover object-center ${isMobile ? 'fixed inset-0 h-[100dvh]' : 'absolute inset-0 h-full'}`}
       />
+
       <div className={`pointer-events-none z-[1] bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(190,193,198,.26)_100%)] ${isMobile ? 'fixed inset-0' : 'absolute inset-0'}`} />
 
       {isMobile ? (
