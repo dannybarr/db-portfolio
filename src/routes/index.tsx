@@ -6,6 +6,9 @@ import type { Project as ApiProject } from '@/lib/projects';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
+import backdropVideo from '@/assets/desktop-backdrop.mp4.asset.json';
+import backdropPoster from '@/assets/desktop-backdrop-poster.jpg.asset.json';
+
 
 const BASE = '/';
 
