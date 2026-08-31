@@ -6,7 +6,7 @@ import type { Project as ApiProject } from '@/lib/projects';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
-import backdropVideo from '@/assets/desktop-backdrop.mp4.asset.json';
+const BACKDROP_VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4';
 import backdropPoster from '@/assets/desktop-backdrop-poster.jpg.asset.json';
 
 
@@ -1014,7 +1014,7 @@ function Portfolio() {
       {/* Backdrop — looping video, pinned to the viewport on mobile so it covers
           the screen behind the scrolling grid instead of stretching with the content. */}
       <video
-        src={backdropVideo.url}
+        src={BACKDROP_VIDEO_URL}
         poster={backdropPoster.url}
         autoPlay
         muted
