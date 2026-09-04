@@ -1252,13 +1252,14 @@ function Portfolio() {
 
         <div className="group/tile relative shrink-0" style={{ width: 'var(--dock-icon)', height: 'var(--dock-icon)' }} data-testid="dock-profile">
           {!isMobile && (
-            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-[7px] border border-black/10 bg-[rgba(250,250,252,.92)] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 shadow-[0_4px_12px_rgba(0,0,0,.18)] backdrop-blur-md transition-opacity duration-150 group-hover/tile:opacity-100">Daniel Barr</span>
+            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[9px] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 backdrop-blur-xl backdrop-saturate-150 transition-all duration-200 ease-out group-hover/tile:translate-y-0 group-hover/tile:opacity-100" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48))', boxShadow: '0 0 0 .5px rgba(255,255,255,.7), 0 0 0 1px rgba(20,32,58,.10), 0 8px 20px -6px rgba(16,28,54,.35)' }}>Daniel Barr</span>
           )}
-          <div className={`h-full w-full overflow-hidden rounded-[22.37%] border border-white/70 bg-gradient-to-b from-[#eef2f8] to-[#cfd8e6] shadow-[0_2px_5px_rgba(0,0,0,.2)] ${isMobile ? '' : 'transition-transform duration-200 hover:-translate-y-3 hover:scale-[1.35]'}`}>
+          <div className={`h-full w-full overflow-hidden rounded-[22.37%] border border-white/70 bg-gradient-to-b from-[#eef2f8] to-[#cfd8e6] shadow-[0_2px_5px_rgba(0,0,0,.2)] ${isMobile ? '' : 'transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] hover:-translate-y-3 hover:scale-[1.35]'}`}>
             <img src={`${BASE}images/avatar.png`} alt="Daniel Barr" className="h-full w-full object-cover object-top" />
           </div>
         </div>
-        <span className="w-px bg-black/20" style={{ height: 'calc(var(--dock-icon) * .75)' }} />
+        <span className="w-px rounded-full" style={{ height: 'calc(var(--dock-icon) * .75)', background: 'linear-gradient(180deg, rgba(20,32,58,0), rgba(20,32,58,.18) 50%, rgba(20,32,58,0))', boxShadow: '1px 0 0 rgba(255,255,255,.55)' }} />
+
         {(Object.keys(DOCK_LINKS) as (keyof typeof DOCK_LINKS)[]).map((kind) => {
           const link = DOCK_LINKS[kind];
           return (
