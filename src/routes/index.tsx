@@ -103,8 +103,8 @@ function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, previe
         </linearGradient>
         {/* Soft light fall-off down the front face — no glossy Aqua banding. */}
         <linearGradient id={id('sheen')} x1="0" y1="0" x2="0.25" y2="1">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
-          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.08" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
+          <stop offset="60%" stopColor="#ffffff" stopOpacity="0.06" />
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
         {/* Thin bright rim on the front's top lip, fading at the corners. */}
