@@ -186,8 +186,8 @@ function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, previe
         <path d={FRONT} fill={`url(#${id('backGradient')})`} opacity="0.9" />
         <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
         <g clipPath={`url(#${id('frontClip')})`}>
-          {/* raking specular sheen */}
-          <path d="M 2.5 20.6 L 97.5 20.6 L 97.5 44 C 66 58 30 50 2.5 62 Z" fill={`url(#${id('sheen')})`} />
+          {/* light fall-off from the top lip */}
+          <rect x="0" y="20" width="100" height="60" fill={`url(#${id('sheen')})`} />
           {/* bottom edge shade so the face reads as a solid panel */}
           <rect x="0" y="70" width="100" height="10" fill="#0a1c38" opacity="0.1" />
         </g>
