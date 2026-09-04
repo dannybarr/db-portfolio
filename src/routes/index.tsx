@@ -1211,15 +1211,45 @@ function Portfolio() {
         </>
       )}
 
-      {/* Dock — a floating macOS dock on desktop, a fixed touch bar on mobile */}
+      {/* Dock — a floating macOS dock on desktop, a fixed touch bar on mobile.
+          Apple's glass is not one blur: it is a refracting slab (blur +
+          saturation + brightness), a bright top specular sweep, a hairline
+          inner rim that fades toward the bottom, and a soft contact shadow. */}
       <div
         ref={dockRef}
-        className={`group/dock z-40 flex items-center rounded-[24px] border border-white/85 bg-[rgba(245,247,250,.52)] shadow-[0_15px_34px_rgba(24,38,68,.25),inset_0_1px_2px_rgba(255,255,255,.96)] backdrop-blur-[28px] ${
+        className={`group/dock isolate z-40 flex items-center rounded-[26px] ${
           isMobile
             ? 'fixed bottom-[calc(14px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 gap-4 px-5 py-2.5'
             : 'absolute bottom-7 left-1/2 -translate-x-1/2 gap-3 px-5 py-3 md:bottom-8'
         }`}
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(255,255,255,.58) 0%, rgba(255,255,255,.30) 42%, rgba(226,232,242,.26) 100%)',
+          backdropFilter: 'blur(32px) saturate(190%) brightness(1.06)',
+          boxShadow:
+            '0 1px 0 0 rgba(255,255,255,.75) inset, 0 -1px 0 0 rgba(255,255,255,.18) inset, 0 0 0 .5px rgba(255,255,255,.55), 0 0 0 1px rgba(20,32,58,.10), 0 22px 44px -12px rgba(16,28,54,.42), 0 6px 14px -6px rgba(16,28,54,.30)',
+        }}
       >
+        {/* Specular sweep across the top third — the giveaway of real Apple glass. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[26px]"
+          style={{
+            background:
+              'radial-gradient(120% 90% at 50% -30%, rgba(255,255,255,.85) 0%, rgba(255,255,255,.30) 38%, rgba(255,255,255,0) 68%)',
+            maskImage: 'linear-gradient(180deg, #000 0%, transparent 78%)',
+          }}
+        />
+        {/* Faint edge chromatic lift so the rim reads as glass, not plastic. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10 rounded-[26px] opacity-60"
+          style={{
+            background:
+              'linear-gradient(100deg, rgba(120,180,255,.22) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 74%, rgba(255,170,210,.18) 100%)',
+          }}
+        />
+
         <div className="group/tile relative shrink-0" style={{ width: 'var(--dock-icon)', height: 'var(--dock-icon)' }} data-testid="dock-profile">
           {!isMobile && (
             <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-[7px] border border-black/10 bg-[rgba(250,250,252,.92)] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 shadow-[0_4px_12px_rgba(0,0,0,.18)] backdrop-blur-md transition-opacity duration-150 group-hover/tile:opacity-100">Daniel Barr</span>
