@@ -83,30 +83,66 @@ const folderHues: Hue[] = [
 
 function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, preview }: { tone: string; mark: string; index: number; hue?: number | undefined; active: boolean; artwork?: string | null | undefined; preview?: string | null | undefined }) {
   const hue = folderHues[hueIndex ?? index % CYCLED_HUES]!;
+  const id = (n: string) => `${n}-${index}`;
+  // macOS folder geometry: a tabbed back panel, then a front face that sits
+  // slightly proud of it with its own specular rim and contact shadow.
+  const BACK = 'M 4 21 L 4 11.5 C 4 7.4 6.6 5 10.8 5 L 33.5 5 C 36.4 5 38.2 6.1 39.4 8.6 L 42.6 14.4 C 43.7 16.4 45.4 17.4 48 17.4 L 89.2 17.4 C 93.4 17.4 96 19.8 96 23.9 L 96 71.5 C 96 75.6 93.4 78 89.2 78 L 10.8 78 C 6.6 78 4 75.6 4 71.5 Z';
+  const FRONT = 'M 2.5 27.4 C 2.5 23.1 5.2 20.6 9.6 20.6 L 90.4 20.6 C 94.8 20.6 97.5 23.1 97.5 27.4 L 97.5 71.2 C 97.5 75.5 94.8 78 90.4 78 L 9.6 78 C 5.2 78 2.5 75.5 2.5 71.2 Z';
   return (
-    <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible drop-shadow-[0_4px_6px_rgba(0,0,0,.15)]">
+    <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible">
       <defs>
-        <linearGradient id={`frontGradient-${index}`} x1="0" y1="0" x2="0" y2="1">
+        {/* Front face: pale at the top edge, saturating downwards like Finder. */}
+        <linearGradient id={id('frontGradient')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={hue.front[0]} />
+          <stop offset="55%" stopColor={hue.front[0]} stopOpacity="0.55" />
           <stop offset="100%" stopColor={hue.front[1]} />
         </linearGradient>
-        <linearGradient id={`backGradient-${index}`} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={id('backGradient')} x1="0.1" y1="0" x2="0.9" y2="1">
           <stop offset="0%" stopColor={hue.back[0]} />
           <stop offset="100%" stopColor={hue.back[1]} />
         </linearGradient>
-        <clipPath id={`cardClip-${index}`}>
+        {/* Soft light fall-off down the front face — no glossy Aqua banding. */}
+        <linearGradient id={id('sheen')} x1="0" y1="0" x2="0.25" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
+          <stop offset="60%" stopColor="#ffffff" stopOpacity="0.06" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        {/* Thin bright rim on the front's top lip, fading at the corners. */}
+        <linearGradient id={id('rim')} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.15" />
+          <stop offset="18%" stopColor="#ffffff" stopOpacity="0.85" />
+          <stop offset="82%" stopColor="#ffffff" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.12" />
+        </linearGradient>
+        <clipPath id={id('cardClip')}>
           <rect width="64" height="42" rx="4" />
         </clipPath>
+        <clipPath id={id('frontClip')}>
+          <path d={FRONT} />
+        </clipPath>
+        {/* Ambient shadow the whole folder casts onto the desktop. */}
+        <filter id={id('ambient')} x="-30%" y="-30%" width="160%" height="170%">
+          <feDropShadow dx="0" dy="1.4" stdDeviation="1.1" floodColor="#0b1a33" floodOpacity="0.24" />
+          <feDropShadow dx="0" dy="5" stdDeviation="4.5" floodColor="#0b1a33" floodOpacity="0.22" />
+        </filter>
+        {/* Soft shadow the front face drops over the card and back panel. */}
+        <filter id={id('lip')} x="-25%" y="-40%" width="150%" height="190%">
+          <feDropShadow dx="0" dy="-1" stdDeviation="1.6" floodColor="#0a1c38" floodOpacity="0.32" />
+        </filter>
       </defs>
 
-      {/* Back tab layer */}
-      <path d="M 6 22 L 6 10 C 6 6 8.5 4 12 4 L 33 4 C 36 4 38 5 39 8 L 44 15 C 45 16 47 17 49 17 L 90 17 C 94 17 96 19 96 23 L 96 74 C 96 78 94 80 90 80 L 10 80 C 6 80 4 78 4 74 Z" fill={`url(#backGradient-${index})`}/>
+      <g filter={`url(#${id('ambient')})`}>
+        {/* Back tab layer */}
+        <path d={BACK} fill={`url(#${id('backGradient')})`} />
+        {/* Tab lip highlight */}
+        <path d="M 4.6 20 L 4.6 11.5 C 4.6 7.9 7 5.7 10.8 5.7 L 33.4 5.7 C 36 5.7 37.5 6.6 38.6 8.9" fill="none" stroke="#ffffff" strokeOpacity="0.45" strokeWidth="1.1" strokeLinecap="round" />
+      </g>
 
       {/* Preview Card */}
       <g transform="translate(18, 8)">
-        <g className={`transition-transform duration-300 ${preview ? 'group-hover:-translate-y-[20px]' : 'group-hover:-translate-y-[10px]'}`}>
+        <g className={`transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] ${preview ? 'group-hover:-translate-y-[20px]' : 'group-hover:-translate-y-[10px]'}`}>
           <rect width="64" height="42" rx="4" fill="white" />
-          <g clipPath={`url(#cardClip-${index})`}>
+          <g clipPath={`url(#${id('cardClip')})`}>
              {preview && (
                <image href={`${BASE}images/${preview}`} width="64" height="42" preserveAspectRatio="xMidYMid meet" />
              )}
@@ -141,14 +177,24 @@ function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, previe
                </g>
              )}
           </g>
-          <rect width="64" height="42" rx="4" fill="none" stroke="#d1d5db" strokeWidth="1" />
+          <rect width="64" height="42" rx="4" fill="none" stroke="#c9ced6" strokeWidth="0.8" />
         </g>
       </g>
 
-      {/* Front tab layer */}
-      <path d="M 3 27 C 3 23 5.5 21 9 21 L 91 21 C 94.5 21 97 23 97 27 L 97 74 C 97 78 94.5 80 91 80 L 9 80 C 5.5 80 3 78 3 74 Z" fill={`url(#frontGradient-${index})`}/>
-      {/* Front tab highlight */}
-      <path d="M 4 27 C 4 24 6 22 9 22 L 91 22 C 94 22 96 24 96 27" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" />
+      {/* Front face — opaque panel with its own shadow lip over the card */}
+      <g filter={`url(#${id('lip')})`}>
+        <path d={FRONT} fill={hue.front[1]} />
+        <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
+        <g clipPath={`url(#${id('frontClip')})`}>
+          {/* light fall-off from the top lip */}
+          <rect x="0" y="20" width="100" height="60" fill={`url(#${id('sheen')})`} />
+          {/* bottom edge shade so the face reads as a solid panel */}
+          <rect x="0" y="70" width="100" height="10" fill="#0a1c38" opacity="0.1" />
+        </g>
+        {/* top lip rim + hairline edge */}
+        <path d="M 4.2 27.2 C 4.2 24.1 6.3 22.1 9.6 22.1 L 90.4 22.1 C 93.7 22.1 95.8 24.1 95.8 27.2" fill="none" stroke={`url(#${id('rim')})`} strokeWidth="1.3" strokeLinecap="round" />
+        <path d={FRONT} fill="none" stroke="#0a1c38" strokeOpacity="0.14" strokeWidth="0.7" />
+      </g>
 
       {/* App artwork resting against the folder front */}
       {artwork && (
@@ -157,7 +203,10 @@ function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, previe
 
       {/* Active Selection Overlay */}
       {active && (
-        <path d="M 6 22 L 6 10 C 6 6 8.5 4 12 4 L 33 4 C 36 4 38 5 39 8 L 44 15 C 45 16 47 17 49 17 L 90 17 C 94 17 96 19 96 23 L 96 74 C 96 78 94 80 90 80 L 10 80 C 6 80 4 78 4 74 Z M 3 27 C 3 23 5.5 21 9 21 L 91 21 C 94.5 21 97 23 97 27 L 97 74 C 97 78 94.5 80 91 80 L 9 80 C 5.5 80 3 78 3 74 Z" fill="black" opacity="0.15" />
+        <g>
+          <path d={BACK} fill="#0a1c38" opacity="0.16" />
+          <path d={FRONT} fill="#0a1c38" opacity="0.16" />
+        </g>
       )}
     </svg>
   );
