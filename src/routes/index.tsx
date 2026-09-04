@@ -1095,7 +1095,7 @@ function Portfolio() {
         /* ---------------- Desktop / tablet: the fluid scatter scene ---------------- */
         <>
           <header className="absolute left-8 top-7 z-20 flex items-center gap-4 md:left-12 md:top-9">
-            <img src={`${BASE}images/brandmark.png`} alt="Brandmark" className="w-auto drop-shadow-[0_1px_2px_rgba(255,255,255,.6)]" style={{ height: 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }} />
+            <DblabsWordmark />
           </header>
           <div className="absolute right-[3vw] top-[3vh] z-20 flex items-start gap-[1.5vw] text-right">
             <div>
