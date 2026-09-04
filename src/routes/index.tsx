@@ -859,6 +859,36 @@ function LaunchStage({
   );
 }
 
+/* DBLABS wordmark — "DBL[flask]BS" with the lab flask standing in for the A. */
+function DblabsWordmark() {
+  return (
+    <span
+      className="inline-flex select-none items-baseline font-[900] leading-none tracking-[-.035em] drop-shadow-[0_1px_2px_rgba(255,255,255,.6)]"
+      style={{ fontSize: 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }}
+      aria-label="DBLABS"
+      data-testid="brandmark"
+    >
+      <span className="text-[#0b1b42]">DB</span>
+      <span className="text-[#2B3FD6]">L</span>
+      <span className="mx-[.015em] inline-flex translate-y-[.045em] items-end">
+        <svg width="0.62em" height="0.88em" viewBox="0 0 100 120" className="block text-[#0b1b42]" aria-hidden="true">
+          <path
+            d="M40 9 H60 M44 13 V39 L73.5 90.5 Q78.5 100.5 67.5 105 H32.5 Q21.5 100.5 26.5 90.5 L56 39 V13"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path d="M37 74.5 L63 74.5 L71.5 90.5 Q75 98 67 101 H33 Q25 98 28.5 90.5 Z" fill="#BFD62F" />
+        </svg>
+      </span>
+      <span className="text-[#2B3FD6]">BS</span>
+    </span>
+  );
+}
+
+
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
