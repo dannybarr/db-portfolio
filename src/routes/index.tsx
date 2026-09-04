@@ -1269,7 +1269,7 @@ function Portfolio() {
                the dock itself doesn't light up all three labels at once. */
             <div key={kind} className="group/dock-link relative shrink-0" style={{ width: 'var(--dock-icon)', height: 'var(--dock-icon)' }}>
               {!isMobile && (
-                <span className="pointer-events-none absolute -top-11 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-[7px] border border-black/10 bg-[rgba(250,250,252,.92)] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 shadow-[0_4px_12px_rgba(0,0,0,.18)] backdrop-blur-md transition-opacity duration-150 group-hover/dock-link:opacity-100">
+                <span className="pointer-events-none absolute -top-11 left-1/2 z-10 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[9px] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 backdrop-blur-xl backdrop-saturate-150 transition-all duration-200 ease-out group-hover/dock-link:translate-y-0 group-hover/dock-link:opacity-100" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48))', boxShadow: '0 0 0 .5px rgba(255,255,255,.7), 0 0 0 1px rgba(20,32,58,.10), 0 8px 20px -6px rgba(16,28,54,.35)' }}>
                   {link.label}
                 </span>
               )}
@@ -1278,8 +1278,9 @@ function Portfolio() {
                 {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 aria-label={link.label}
                 data-testid={`button-dock-${kind}`}
-                className={`relative block h-full w-full rounded-[22.37%] shadow-[0_2px_5px_rgba(0,0,0,.2)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${isMobile ? 'active:scale-95 transition-transform duration-150' : "transition-transform duration-200 after:absolute after:-bottom-[5px] after:left-1/2 after:h-[3px] after:w-[3px] after:-translate-x-1/2 after:rounded-full after:bg-black/55 after:content-[''] hover:-translate-y-3 hover:scale-[1.35]"}`}
+                className={`relative block h-full w-full rounded-[22.37%] shadow-[0_2px_5px_rgba(0,0,0,.2)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${isMobile ? 'active:scale-95 transition-transform duration-150' : "transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] after:absolute after:-bottom-[5px] after:left-1/2 after:h-[3px] after:w-[3px] after:-translate-x-1/2 after:rounded-full after:bg-black/45 after:content-[''] hover:-translate-y-3 hover:scale-[1.35]"}`}
               >
+
                 <DockIcon kind={kind} />
               </a>
             </div>
