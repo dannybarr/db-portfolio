@@ -181,9 +181,9 @@ function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, previe
         </g>
       </g>
 
-      {/* Front face — translucent over the card, with its own shadow lip */}
+      {/* Front face — opaque panel with its own shadow lip over the card */}
       <g filter={`url(#${id('lip')})`}>
-        <path d={FRONT} fill={`url(#${id('backGradient')})`} opacity="0.9" />
+        <path d={FRONT} fill={hue.front[1]} />
         <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
         <g clipPath={`url(#${id('frontClip')})`}>
           {/* light fall-off from the top lip */}
