@@ -22,191 +22,70 @@ const sceneVars = {
   '--tile': 'clamp(40px, min(6.9vw, 12vh), 124px)',
   '--dock-icon': 'clamp(34px, min(3.4vw, 5.6vh), 56px)',
 } as CSSProperties;
-const DEEP_BLUE_HUE = 9;
 
 /** Loading placeholders shown while the project list is in flight — matched to
  *  the number of live projects so the scene never implies missing tiles. */
 const SKELETON_TILES = 6;
-const CYCLED_HUES = 8;
 type Scatter = {
   x: string;
   y: string;
-  tone: string;
   onDark?: boolean;
-  /** Override the cycled folder hue (index into folderHues) — used when a tile's
-   *  artwork needs a specific backdrop to stay legible. */
-  hue?: number;
 };
 
 // Exact scatter positions/sizes preserved from the approved mockup (15 slots).
 // onDark flags the 6 tiles that sit over the dark tyres (mapped by slot position).
 const scatter: Scatter[] = [
-  { x: '8%', y: '20%', tone: '#1434cb' },
-  { x: '18%', y: '37%', tone: '#f7b600', hue: DEEP_BLUE_HUE },
-  { x: '30%', y: '13%', tone: '#1b4ce2', hue: 4 },
-  { x: '40%', y: '25%', tone: '#08236b' },
-  { x: '52%', y: '11%', tone: '#e9a900', hue: DEEP_BLUE_HUE },
-  { x: '62%', y: '41%', tone: '#1434cb', onDark: true },
-  { x: '73%', y: '49%', tone: '#0b327e', onDark: true, hue: DEEP_BLUE_HUE },
-  { x: '86%', y: '36%', tone: '#f7b600' },
-  { x: '6%', y: '56%', tone: '#0d2d74' },
-  { x: '20%', y: '65%', tone: '#e6a800', onDark: true },
-  { x: '30%', y: '73%', tone: '#1434cb', onDark: true },
-  { x: '69%', y: '68%', tone: '#0b2868', onDark: true },
-  { x: '80%', y: '55%', tone: '#f7b600', onDark: true },
-  { x: '90%', y: '66%', tone: '#1647cf', onDark: true },
-  { x: '56%', y: '78%', tone: '#09265f', onDark: true },
-  { x: '56%', y: '32%', tone: '#1b4ce2' },
-  { x: '44%', y: '55%', tone: '#0d2d74', onDark: true },
-  { x: '26%', y: '48%', tone: '#f7b600', onDark: true },
-  { x: '12%', y: '84%', tone: '#1434cb' },
-  { x: '86%', y: '85%', tone: '#e9a900', onDark: true },
+  { x: '8%', y: '20%' },
+  { x: '18%', y: '37%' },
+  { x: '30%', y: '13%' },
+  { x: '40%', y: '25%' },
+  { x: '52%', y: '11%' },
+  { x: '62%', y: '41%', onDark: true },
+  { x: '73%', y: '49%', onDark: true },
+  { x: '86%', y: '36%' },
+  { x: '6%', y: '56%' },
+  { x: '20%', y: '65%', onDark: true },
+  { x: '30%', y: '73%', onDark: true },
+  { x: '69%', y: '68%', onDark: true },
+  { x: '80%', y: '55%', onDark: true },
+  { x: '90%', y: '66%', onDark: true },
+  { x: '56%', y: '78%', onDark: true },
+  { x: '56%', y: '32%' },
+  { x: '44%', y: '55%', onDark: true },
+  { x: '26%', y: '48%', onDark: true },
+  { x: '12%', y: '84%' },
+  { x: '86%', y: '85%', onDark: true },
 ];
 
-type Hue = { front: [string, string]; back: [string, string] };
-
-// macOS Finder-style folder hues — cycled across the desktop so the tiles read
-// as a varied Mac folder set rather than one flat blue.
-const folderHues: Hue[] = [
-  { front: ['#8AC6F4', '#419BE4'], back: ['#5CA6E5', '#4393D9'] }, // blue
-  { front: ['#A5DE7C', '#5FB63C'], back: ['#7FC95B', '#59AD37'] }, // green
-  { front: ['#FFDD73', '#F5B62B'], back: ['#FFCF57', '#EBAE28'] }, // yellow
-  { front: ['#C9A8F0', '#8C5FD6'], back: ['#B893E8', '#8257C7'] }, // purple
-  { front: ['#FFB877', '#F58A2E'], back: ['#FFA95F', '#EB812B'] }, // orange
-  { front: ['#7FDDE0', '#35B7BE'], back: ['#4FC4C9', '#33ADB3'] }, // teal
-  { front: ['#FF9A92', '#EE5A50'], back: ['#FF8880', '#E1544B'] }, // red
-  { front: ['#FFA3C7', '#F2609A'], back: ['#FF92BC', '#E45A91'] }, // pink
-  { front: ['#C9CED6', '#9BA3AE'], back: ['#B9BFC8', '#949CA7'] }, // graphite
-  { front: ['#2F5FE3', '#0E2C9E'], back: ['#254FCB', '#0B2385'] }, // deep brand blue (opt-in only)
-];
-
-
-function FolderThumb({ tone, mark, index, hue: hueIndex, active, artwork, preview }: { tone: string; mark: string; index: number; hue?: number | undefined; active: boolean; artwork?: string | null | undefined; preview?: string | null | undefined }) {
-  const hue = folderHues[hueIndex ?? index % CYCLED_HUES]!;
+function FolderThumb({ index, active, artwork }: { index: number; active: boolean; artwork?: string | null | undefined }) {
   const id = (n: string) => `${n}-${index}`;
-  // macOS folder geometry: a tabbed back panel, then a front face that sits
-  // slightly proud of it with its own specular rim and contact shadow.
-  const BACK = 'M 4 21 L 4 11.5 C 4 7.4 6.6 5 10.8 5 L 33.5 5 C 36.4 5 38.2 6.1 39.4 8.6 L 42.6 14.4 C 43.7 16.4 45.4 17.4 48 17.4 L 89.2 17.4 C 93.4 17.4 96 19.8 96 23.9 L 96 71.5 C 96 75.6 93.4 78 89.2 78 L 10.8 78 C 6.6 78 4 75.6 4 71.5 Z';
-  const FRONT = 'M 2.5 27.4 C 2.5 23.1 5.2 20.6 9.6 20.6 L 90.4 20.6 C 94.8 20.6 97.5 23.1 97.5 27.4 L 97.5 71.2 C 97.5 75.5 94.8 78 90.4 78 L 9.6 78 C 5.2 78 2.5 75.5 2.5 71.2 Z';
+  const BACK = 'M0 8C0 3.58 3.58 0 8 0H32L38 6H72C76.42 6 80 9.58 80 14V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V8Z';
+  const FRONT = 'M0 18C0 15.79 1.79 14 4 14H76C78.21 14 80 15.79 80 18V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V18Z';
   return (
-    <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible">
+    <svg viewBox="0 0 80 64" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
-        {/* Front face: pale at the top edge, saturating downwards like Finder. */}
         <linearGradient id={id('frontGradient')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={hue.front[0]} />
-          <stop offset="55%" stopColor={hue.front[0]} stopOpacity="0.55" />
-          <stop offset="100%" stopColor={hue.front[1]} />
+          <stop offset="0%" stopColor="var(--folder-front-top)" />
+          <stop offset="100%" stopColor="var(--folder-front-bottom)" />
         </linearGradient>
-        <linearGradient id={id('backGradient')} x1="0.1" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor={hue.back[0]} />
-          <stop offset="100%" stopColor={hue.back[1]} />
+        <linearGradient id={id('backGradient')} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--folder-back-top)" />
+          <stop offset="100%" stopColor="var(--folder-back-bottom)" />
         </linearGradient>
-        {/* Soft light fall-off down the front face — no glossy Aqua banding. */}
-        <linearGradient id={id('sheen')} x1="0" y1="0" x2="0.25" y2="1">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
-          <stop offset="60%" stopColor="#ffffff" stopOpacity="0.06" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-        {/* Thin bright rim on the front's top lip, fading at the corners. */}
-        <linearGradient id={id('rim')} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.15" />
-          <stop offset="18%" stopColor="#ffffff" stopOpacity="0.85" />
-          <stop offset="82%" stopColor="#ffffff" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.12" />
-        </linearGradient>
-        <clipPath id={id('cardClip')}>
-          <rect width="64" height="42" rx="4" />
-        </clipPath>
-        <clipPath id={id('frontClip')}>
-          <path d={FRONT} />
-        </clipPath>
-        {/* Ambient shadow the whole folder casts onto the desktop. */}
-        <filter id={id('ambient')} x="-30%" y="-30%" width="160%" height="170%">
-          <feDropShadow dx="0" dy="1.4" stdDeviation="1.1" floodColor="#0b1a33" floodOpacity="0.24" />
-          <feDropShadow dx="0" dy="5" stdDeviation="4.5" floodColor="#0b1a33" floodOpacity="0.22" />
-        </filter>
-        {/* Soft shadow the front face drops over the card and back panel. */}
-        <filter id={id('lip')} x="-25%" y="-40%" width="150%" height="190%">
-          <feDropShadow dx="0" dy="-1" stdDeviation="1.6" floodColor="#0a1c38" floodOpacity="0.32" />
+        <filter id={id('shadow')} x="-20%" y="-20%" width="140%" height="150%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="var(--folder-shadow)" floodOpacity="0.26" />
         </filter>
       </defs>
-
-      <g filter={`url(#${id('ambient')})`}>
-        {/* Back tab layer */}
+      <g filter={`url(#${id('shadow')})`}>
         <path d={BACK} fill={`url(#${id('backGradient')})`} />
-        {/* Tab lip highlight */}
-        <path d="M 4.6 20 L 4.6 11.5 C 4.6 7.9 7 5.7 10.8 5.7 L 33.4 5.7 C 36 5.7 37.5 6.6 38.6 8.9" fill="none" stroke="#ffffff" strokeOpacity="0.45" strokeWidth="1.1" strokeLinecap="round" />
-      </g>
-
-      {/* Preview Card */}
-      <g transform="translate(18, 8)">
-        <g className={`transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] ${preview ? 'group-hover:-translate-y-[20px]' : 'group-hover:-translate-y-[10px]'}`}>
-          <rect width="64" height="42" rx="4" fill="white" />
-          <g clipPath={`url(#${id('cardClip')})`}>
-             {preview && (
-               <image href={`${BASE}images/${preview}`} width="64" height="42" preserveAspectRatio="xMidYMid meet" />
-             )}
-             {!preview && index % 3 === 0 && (
-               <g transform="translate(6, 6)">
-                 <rect width="52" height="18" rx="2" fill="#f0f2f5" />
-                 <rect x="4" y="4" width="20" height="4" rx="1" fill={tone} />
-                 <rect x="4" y="10" width="12" height="4" rx="1" fill="#f7b600" />
-                 <rect x="0" y="22" width="15" height="14" rx="2" fill={tone} />
-                 <rect x="18" y="22" width="15" height="14" rx="2" fill="#f0f2f5" />
-                 <rect x="36" y="22" width="15" height="14" rx="2" fill="#f0f2f5" />
-                 <rect x="21" y="30" width="9" height="3" rx="1" fill="#cdd2d9" />
-                 <rect x="39" y="26" width="9" height="3" rx="1" fill="#cdd2d9" />
-               </g>
-             )}
-             {!preview && index % 3 === 1 && (
-               <g transform="translate(6, 6)">
-                 <circle cx="10" cy="15" r="10" fill="none" stroke={tone} strokeWidth="3" strokeDasharray="40 20" />
-                 <circle cx="10" cy="15" r="10" fill="none" stroke="#f7b600" strokeWidth="3" strokeDasharray="15 45" strokeDashoffset="-40" />
-                 <rect x="26" y="4" width="26" height="4" rx="2" fill={tone} />
-                 <rect x="26" y="12" width="16" height="4" rx="2" fill="#eef0f3" />
-                 <rect x="26" y="20" width="20" height="4" rx="2" fill="#eef0f3" />
-                 <rect x="26" y="28" width="12" height="4" rx="2" fill="#f7b600" />
-               </g>
-             )}
-             {!preview && index % 3 === 2 && (
-               <g transform="translate(6, 6)">
-                 <path d="M 0 20 L 10 10 L 20 15 L 35 2 L 52 12 L 52 30 L 0 30 Z" fill="#eef2f9" />
-                 <path d="M 0 20 L 10 10 L 20 15 L 35 2 L 52 12" fill="none" stroke={tone} strokeWidth="2" />
-                 <circle cx="35" cy="2" r="2" fill="#f7b600" />
-                 <rect x="0" y="0" width="12" height="4" rx="1" fill="#f7b600" />
-               </g>
-             )}
-          </g>
-          <rect width="64" height="42" rx="4" fill="none" stroke="#c9ced6" strokeWidth="0.8" />
-        </g>
-      </g>
-
-      {/* Front face — opaque panel with its own shadow lip over the card */}
-      <g filter={`url(#${id('lip')})`}>
-        <path d={FRONT} fill={hue.front[1]} />
         <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
-        <g clipPath={`url(#${id('frontClip')})`}>
-          {/* light fall-off from the top lip */}
-          <rect x="0" y="20" width="100" height="60" fill={`url(#${id('sheen')})`} />
-          {/* bottom edge shade so the face reads as a solid panel */}
-          <rect x="0" y="70" width="100" height="10" fill="#0a1c38" opacity="0.1" />
-        </g>
-        {/* top lip rim + hairline edge */}
-        <path d="M 4.2 27.2 C 4.2 24.1 6.3 22.1 9.6 22.1 L 90.4 22.1 C 93.7 22.1 95.8 24.1 95.8 27.2" fill="none" stroke={`url(#${id('rim')})`} strokeWidth="1.3" strokeLinecap="round" />
-        <path d={FRONT} fill="none" stroke="#0a1c38" strokeOpacity="0.14" strokeWidth="0.7" />
+        <path d="M4 14.5H76" stroke="var(--folder-highlight)" strokeOpacity="0.55" strokeWidth="0.8" />
       </g>
-
-      {/* App artwork resting against the folder front */}
       {artwork && (
-        <image href={`${BASE}images/${artwork}`} x="14" y="24" width="72" height="52" preserveAspectRatio="xMidYMid meet" className="transition-transform duration-300 group-hover:-translate-y-[3px]" style={{ filter: 'drop-shadow(0 3px 4px rgba(0,0,0,.35))' }} />
+        <image href={`${BASE}images/${artwork}`} x="20" y="25" width="40" height="30" preserveAspectRatio="xMidYMid meet" className="opacity-90" />
       )}
-
-      {/* Active Selection Overlay */}
       {active && (
-        <g>
-          <path d={BACK} fill="#0a1c38" opacity="0.16" />
-          <path d={FRONT} fill="#0a1c38" opacity="0.16" />
-        </g>
+        <path d={FRONT} fill="var(--folder-selection)" opacity="0.2" />
       )}
     </svg>
   );
@@ -1159,11 +1038,9 @@ function Portfolio() {
                     data-testid={`button-project-${project.id}`}
                   >
                     <div data-folder-art className="relative aspect-[85/68] w-full">
-                      <FolderThumb tone={slot.tone} mark={project.code} index={i} hue={slot.hue} active={false} artwork={project.iconImage} preview={project.previewImage} />
+                      <FolderThumb index={i} active={false} artwork={project.iconImage} />
                     </div>
-                    {/* A translucent navy chip keeps labels legible over both the
-                        bright tarmac and the dark tyres of the backdrop. */}
-                    <span className="line-clamp-2 w-full rounded-[5px] bg-[#0b1b42]/60 px-1.5 py-[2px] text-[11px] font-medium leading-tight tracking-tight text-white" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
+                    <span className="line-clamp-2 w-full rounded-[3px] px-1 py-[2px] text-[11px] font-medium leading-tight tracking-normal text-white [text-shadow:0_1px_2px_var(--folder-label-shadow)] group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
                 );
               })}
@@ -1232,7 +1109,7 @@ function Portfolio() {
                 draggable={false}
                 aria-label={project.title}
                 title={project.title}
-                className={`group absolute z-10 flex flex-col items-center gap-[2px] text-center outline-none hover:z-30 hover:scale-[1.14] ${held ? 'cursor-grabbing transition-[scale] duration-150' : 'cursor-grab transition-transform duration-300'}`}
+                className={`group absolute z-10 flex flex-col items-center gap-[5px] text-center outline-none hover:z-30 ${held ? 'cursor-grabbing transition-[scale] duration-100' : 'cursor-grab transition-transform duration-100 active:scale-[.97]'}`}
                 style={{
                   left: slotLeft(slot.x),
                   top: slot.y,
@@ -1241,17 +1118,17 @@ function Portfolio() {
                   translate: `calc(-50% + ${off.x}px) calc(-50% + ${off.y}px)`,
                   touchAction: 'none',
                   ...(held
-                    ? { zIndex: 50, scale: '1.18', filter: 'drop-shadow(0 14px 22px rgba(11,27,66,.38))' }
+                    ? { zIndex: 50, scale: '1.03' }
                     : null),
                 }}
                 data-testid={`button-project-${project.id}`}
               >
                 <div data-folder-art className="relative transition-transform duration-300" style={{ width: ART_W, height: ART_H }}>
-                  <FolderThumb tone={slot.tone} mark={project.code} index={i} hue={slot.hue} active={false} artwork={project.iconImage} preview={project.previewImage} />
+                  <FolderThumb index={i} active={false} artwork={project.iconImage} />
                 </div>
                 <span
-                  className={`max-w-[160%] truncate rounded-[4px] px-[5px] py-[1px] font-medium tracking-tight transition-colors ${slot.onDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,.9)]' : 'text-[#1d1d1f] drop-shadow-[0_1px_2px_rgba(255,255,255,0.9),0_0_1px_white]'} ${activeProject ? '' : 'group-hover:bg-[#0b63ce]/80 group-hover:text-white group-hover:drop-shadow-none group-focus-visible:bg-[#0b63ce] group-focus-visible:text-white group-focus-visible:drop-shadow-none'}`}
-                  style={{ fontSize: LABEL_SIZE }}
+                  className={`max-w-[145%] truncate rounded-[3px] px-[4px] py-[1px] font-medium tracking-normal text-white [text-shadow:0_1px_2px_var(--folder-label-shadow),0_0_2px_var(--folder-label-shadow)] ${activeProject ? '' : 'group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:[text-shadow:none]'}`}
+                  style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontSize: LABEL_SIZE }}
                   data-testid={`text-project-title-${project.id}`}
                 >{project.title}</span>
               </button>
