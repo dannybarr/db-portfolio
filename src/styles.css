@@ -118,6 +118,40 @@
   --folder-label-shadow: oklch(0.12 0.015 250 / 85%);
 }
 
+/* Apple system colours for folder faces, using the official dark-appearance
+   values: blue #0A84FF, red #FF453A, green #30D158, grey #98989D. */
+.folder-apple-blue {
+  --folder-front-top: oklch(0.624254 0.205577 255.4861);
+  --folder-front-bottom: oklch(0.624254 0.205577 255.4861);
+  --folder-back-top: color-mix(in oklch, oklch(0.624254 0.205577 255.4861) 86%, black);
+  --folder-back-bottom: color-mix(in oklch, oklch(0.624254 0.205577 255.4861) 76%, black);
+  --folder-highlight: oklch(0.9 0.04 255.4861);
+}
+
+.folder-apple-red {
+  --folder-front-top: oklch(0.663303 0.22361 28.2919);
+  --folder-front-bottom: oklch(0.663303 0.22361 28.2919);
+  --folder-back-top: color-mix(in oklch, oklch(0.663303 0.22361 28.2919) 86%, black);
+  --folder-back-bottom: color-mix(in oklch, oklch(0.663303 0.22361 28.2919) 76%, black);
+  --folder-highlight: oklch(0.91 0.035 28.2919);
+}
+
+.folder-apple-green {
+  --folder-front-top: oklch(0.755551 0.208246 146.9836);
+  --folder-front-bottom: oklch(0.755551 0.208246 146.9836);
+  --folder-back-top: color-mix(in oklch, oklch(0.755551 0.208246 146.9836) 86%, black);
+  --folder-back-bottom: color-mix(in oklch, oklch(0.755551 0.208246 146.9836) 76%, black);
+  --folder-highlight: oklch(0.94 0.035 146.9836);
+}
+
+.folder-apple-grey {
+  --folder-front-top: oklch(0.68124 0.007254 286.2056);
+  --folder-front-bottom: oklch(0.68124 0.007254 286.2056);
+  --folder-back-top: color-mix(in oklch, oklch(0.68124 0.007254 286.2056) 86%, black);
+  --folder-back-bottom: color-mix(in oklch, oklch(0.68124 0.007254 286.2056) 76%, black);
+  --folder-highlight: oklch(0.91 0.004 286.2056);
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
