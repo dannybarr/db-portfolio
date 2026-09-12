@@ -103,17 +103,16 @@ const prefersReducedMotion = () =>
  *  towards white by the smallest amount that does — lightening keeps the hue
  *  recognisably the tile's, where darkening towards navy turned orange to brown. */
 
-/** Where each dock icon actually goes. Outlook is a mailto: so it opens in
- *  whatever mail client the visitor already uses; Teams uses Microsoft's
- *  documented chat deep link, which resolves the address to the person. */
+/** Where each dock icon goes. Gmail opens a pre-addressed compose window;
+ *  WhatsApp opens a direct chat with Daniel's UK number. */
 const DOCK_LINKS = {
   linkedin: { href: 'https://www.linkedin.com/in/dannybarr22', label: 'Daniel Barr on LinkedIn', external: true },
-  outlook: { href: 'mailto:name@example.com', label: 'Email Daniel Barr', external: false },
-  teams: { href: 'https://teams.microsoft.com/l/chat/0/0?users=name%40example.com', label: 'Message Daniel Barr on Microsoft Teams', external: true },
+  gmail: { href: 'https://mail.google.com/mail/?view=cm&fs=1&to=dannybarr092%40gmail.com', label: 'Email Daniel Barr on Gmail', external: true },
+  whatsapp: { href: 'https://wa.me/447368536367', label: 'Message Daniel Barr on WhatsApp', external: true },
 } as const;
 
 function DockIcon({ kind }: { kind: keyof typeof DOCK_LINKS }) {
-  const source = kind === 'teams' ? 'teams-new.png' : kind === 'outlook' ? 'outlook-new.png' : 'linkedin.png';
+  const source = kind === 'gmail' ? 'gmail.svg' : kind === 'whatsapp' ? 'whatsapp.svg' : 'linkedin.png';
   return <img src={`${BASE}images/${source}`} alt={`${kind} app`} className="h-full w-full object-contain" />;
 }
 
