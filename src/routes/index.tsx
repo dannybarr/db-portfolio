@@ -59,11 +59,10 @@ const scatter: Scatter[] = [
 
 function FolderThumb({ index, active, artwork }: { index: number; active: boolean; artwork?: string | null | undefined }) {
   const id = (n: string) => `${n}-${index}`;
-  const palette = ['folder-apple-blue', 'folder-apple-red', 'folder-apple-green', 'folder-apple-grey'][index % 4];
   const BACK = 'M0 8C0 3.58 3.58 0 8 0H32L38 6H72C76.42 6 80 9.58 80 14V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V8Z';
   const FRONT = 'M0 18C0 15.79 1.79 14 4 14H76C78.21 14 80 15.79 80 18V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V18Z';
   return (
-    <svg viewBox="0 0 80 64" className={`h-full w-full overflow-visible ${palette}`} aria-hidden="true">
+    <svg viewBox="0 0 80 64" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
         <linearGradient id={id('frontGradient')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--folder-front-top)" />
