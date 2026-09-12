@@ -108,6 +108,14 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --folder-front-top: oklch(0.86 0.08 237);
+  --folder-front-bottom: oklch(0.74 0.12 243);
+  --folder-back-top: oklch(0.79 0.1 241);
+  --folder-back-bottom: oklch(0.69 0.12 246);
+  --folder-highlight: oklch(0.96 0.025 230);
+  --folder-shadow: oklch(0.2 0.025 250);
+  --folder-selection: oklch(0.57 0.2 255);
+  --folder-label-shadow: oklch(0.12 0.015 250 / 85%);
 }
 
 .dark {
@@ -143,6 +151,14 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --folder-front-top: oklch(0.86 0.08 237);
+  --folder-front-bottom: oklch(0.74 0.12 243);
+  --folder-back-top: oklch(0.79 0.1 241);
+  --folder-back-bottom: oklch(0.69 0.12 246);
+  --folder-highlight: oklch(0.96 0.025 230);
+  --folder-shadow: oklch(0.2 0.025 250);
+  --folder-selection: oklch(0.57 0.2 255);
+  --folder-label-shadow: oklch(0.12 0.015 250 / 85%);
 }
 
 @layer base {
