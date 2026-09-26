@@ -6,4 +6,4 @@
 - [x] Upgrade project window motion and chrome
 - [x] Harmonize identity and dock with the new world
 - [x] Verify desktop, mobile, interactions, links, motion, and errors
-- [ ] Restore exact archive folder art, labels, and popup styling
+- [x] Restore exact archive folder art, labels, and popup styling
