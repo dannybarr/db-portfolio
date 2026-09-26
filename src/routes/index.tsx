@@ -7,6 +7,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
 import { ProjectTrainBackdrop } from '@/components/project-train/ProjectTrainBackdrop';
+import { HomeMascot } from '@/components/home-mascot/HomeMascot';
 
 
 const BASE = '/';
@@ -959,7 +960,7 @@ function Portfolio() {
 
       {isMobile ? (
         /* ---------------- Mobile: header + vertically scrolling folder grid ---------------- */
-        <div className="relative z-10 flex flex-col px-4 pb-[calc(112px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
+        <div className="relative z-10 flex flex-col px-4 pb-[calc(250px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
           <header className="flex items-center justify-between">
             <DblabsWordmark />
           </header>
@@ -1108,12 +1109,15 @@ function Portfolio() {
         </>
       )}
 
+      <HomeMascot suspended={active != null} logo={<span>DBLABS</span>} />
+
       {/* Dock — a floating macOS dock on desktop, a fixed touch bar on mobile.
           Apple's glass is not one blur: it is a refracting slab (blur +
           saturation + brightness), a bright top specular sweep, a hairline
           inner rim that fades toward the bottom, and a soft contact shadow. */}
       <div
         ref={dockRef}
+        data-mascot-dock
         className={`group/dock isolate z-40 flex items-center rounded-[26px] ${
           isMobile
             ? 'fixed bottom-[calc(14px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 gap-4 px-5 py-2.5'
