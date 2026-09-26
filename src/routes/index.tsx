@@ -19,7 +19,7 @@ const BASE = '/';
  * shrink the scene instead of pushing it off-screen.
  */
 const sceneVars = {
-  '--tile': 'clamp(40px, min(6.9vw, 12vh), 124px)',
+  '--tile': 'clamp(36px, min(5.6vw, 9.5vh), 92px)',
   '--dock-icon': 'clamp(34px, min(3.4vw, 5.6vh), 56px)',
 } as CSSProperties;
 
@@ -981,7 +981,7 @@ function Portfolio() {
           )}
 
           {isLoading && (
-            <div className="mt-7 grid grid-cols-3 gap-x-3 gap-y-7">
+            <div className="mt-7 grid grid-cols-4 gap-x-2 gap-y-6">
               {Array.from({ length: SKELETON_TILES }, (_, i) => (
                 <div key={`skeleton-${i}`} className="flex flex-col items-center gap-1.5" data-testid={`skeleton-tile-${i}`}>
                   <div className="relative aspect-[85/68] w-full">
@@ -997,7 +997,7 @@ function Portfolio() {
           )}
 
           {!isLoading && !isError && (
-            <div className="mt-7 grid grid-cols-3 gap-x-3 gap-y-6">
+            <div className="mt-7 grid grid-cols-4 gap-x-2 gap-y-5">
               {launchable.map((project, i) => {
                 const slot = scatter[i] ?? scatter[i % scatter.length]!;
                 return (

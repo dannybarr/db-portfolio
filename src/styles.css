@@ -263,10 +263,11 @@
 
 @media (max-width: 767px) {
   main[data-testid="page-portfolio"] {
-    --tile: 76px !important;
+    --tile: 58px !important;
   }
 
   .file-label {
-    font-size: 13px;
+    max-width: 140%;
+    font-size: 10px;
   }
 }
