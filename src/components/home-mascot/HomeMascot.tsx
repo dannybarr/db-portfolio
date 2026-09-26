@@ -42,9 +42,9 @@ export function HomeMascot({ suspended = false, logo }: { suspended?: boolean; l
       const segment = timelineRef.current[index];
       if (!segment) return;
       segmentRef.current = index;
-      host.dataset.activity = "";
+      host.dataset['activity'] = "";
       void host.offsetWidth;
-      host.dataset.activity = segment.name;
+      host.dataset['activity'] = segment.name;
       host.style.setProperty("--mascot-duration", `${segment.duration}ms`);
       setLabel(segment.label);
       const live: Animation[] = [];

@@ -6,7 +6,7 @@ Create a polished decorative performance in the clear strip above the dock, usin
 ## Experience
 - Reserve a bounded stage above the dock on desktop and within the mobile page flow.
 - Keep all performers decorative and non-interactive; provide a discreet pause/resume control outside the artwork.
-- Build a seamless cinematic loop with short transitions between five distinct scenes:
+- Build a seamless cinematic loop with short transitions between six distinct scenes:
   1. Shared football keepy-uppies and passing.
   2. Penalty setup, kick, goalkeeper dive, net reaction, and celebration.
   3. Professional glass-backed padel court with rally, volley, wall rebound, and point reaction.
@@ -31,4 +31,4 @@ Create a polished decorative performance in the clear strip above the dock, usin
 - Respect reduced-motion, page visibility, off-screen pausing, and live viewport changes.
 - Keep character art hidden from assistive reading while exposing a small accessible motion status and pause control.
 - Add geometry tests for representative phone, tablet, laptop, and wide-screen widths.
-- Verify all five scenes, dock access, folder opening/dragging, modal suspension, mobile layout, and console/build health in the browser.
+- Verify all six scenes, dock access, folder opening/dragging, modal suspension, mobile layout, and console/build health in the browser.
