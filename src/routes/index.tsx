@@ -1029,7 +1029,7 @@ function Portfolio() {
                     <div data-folder-art className="relative aspect-[100/80] w-[min(78px,100%)]">
                       <FolderThumb index={i} active={false} artwork={project.iconImage} />
                     </div>
-                    <span className="file-label line-clamp-2 w-full rounded-[4px] px-1 py-[2px] text-[10px] font-medium leading-[1.15] tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
+                    <span className="file-label line-clamp-2 max-w-full rounded-[4px] px-1.5 py-[2px] text-[10px] font-medium leading-[1.15] tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
                 );
               })}
