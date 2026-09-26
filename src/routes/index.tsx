@@ -960,7 +960,7 @@ function Portfolio() {
 
       {isMobile ? (
         /* ---------------- Mobile: header + vertically scrolling folder grid ---------------- */
-        <div className="relative z-10 flex flex-col px-4 pb-[calc(112px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
+        <div className="relative z-10 flex flex-col px-4 pb-[calc(250px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
           <header className="flex items-center justify-between">
             <DblabsWordmark />
           </header>

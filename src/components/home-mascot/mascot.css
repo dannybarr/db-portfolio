@@ -47,7 +47,7 @@
 @keyframes mascot-breathe { 0%,100%{scale:1 1} 50%{scale:1.015 .985} }
 
 @media (max-width: 767px) {
-  .mascot-host { position: fixed; height: 178px; z-index: 32; }
+  .mascot-host { height: 178px; z-index: 32; }
   .mascot-performer { width: 45px; margin-left: -22px; margin-top: -54px; }
   .mascot-scene--pitch, .mascot-scene--padel { left: 2%; right: 2%; }
   .mascot-scene--office, .mascot-scene--pub { width: 96vw; }
