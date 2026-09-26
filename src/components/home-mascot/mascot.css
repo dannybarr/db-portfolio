@@ -1,0 +1,61 @@
+.mascot-host {
+  --mascot-text: oklch(0.22 0.04 255);
+  --mascot-surface: oklch(0.99 0.01 90 / 78%);
+  --mascot-border: oklch(1 0 0 / 72%);
+  --mascot-shadow: 0 12px 28px oklch(0.18 0.03 255 / 22%);
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 35;
+  height: min(238px, 38vh);
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.mascot-stage { position: absolute; inset: 0; overflow: hidden; }
+.mascot-stage::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: 57px; border-top: 1px dashed oklch(0.24 0.03 255 / 22%); }
+.mascot-performer, .mascot-ball, .mascot-ladder { position: absolute; left: 0; top: 0; transform-origin: 50% 100%; will-change: transform; }
+.mascot-performer { width: clamp(44px, 4.6vw, 67px); z-index: 5; margin-left: calc(clamp(44px, 4.6vw, 67px) / -2); margin-top: calc(clamp(44px, 4.6vw, 67px) * -1.2); filter: drop-shadow(0 8px 7px oklch(0.17 0.03 255 / 24%)); }
+.mascot-performer svg, .mascot-ball svg, .mascot-ladder svg, .mascot-scene svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.mascot-ball { width: 25px; height: 25px; z-index: 7; margin: -25px 0 0 -12px; }
+.mascot-ladder { width: 62px; height: 140px; z-index: 4; margin: -140px 0 0 -31px; opacity: 0; }
+.mascot-scene { position: absolute; opacity: 0; pointer-events: none; will-change: transform, opacity; }
+.mascot-scene--pitch { left: 8%; right: 8%; bottom: 48px; height: 145px; }
+.mascot-scene--goal { right: 8%; bottom: 48px; width: 220px; height: 130px; z-index: 2; }
+.mascot-scene--padel { left: 7%; right: 7%; bottom: 48px; height: 164px; z-index: 1; }
+.mascot-scene--office, .mascot-scene--pub { left: 50%; bottom: 47px; width: min(680px, 86vw); height: 158px; transform: translateX(-50%); z-index: 1; }
+.mascot-dock-badge { position: absolute; left: 50%; bottom: 14px; translate: -50% 0; color: var(--mascot-text); font-size: 8px; font-weight: 700; letter-spacing: .16em; opacity: .42; }
+.mascot-toggle { position: absolute; right: max(14px, calc((100vw - 1180px) / 2)); bottom: 18px; z-index: 50; pointer-events: auto; border: 1px solid var(--mascot-border); border-radius: 999px; padding: 5px 9px; background: var(--mascot-surface); color: var(--mascot-text); box-shadow: var(--mascot-shadow); backdrop-filter: blur(16px) saturate(150%); font: 500 10px/1.2 var(--app-font-sans); cursor: pointer; opacity: .68; transition: opacity 180ms, transform 180ms; }
+.mascot-toggle:hover, .mascot-toggle:focus-visible { opacity: 1; transform: translateY(-2px); }
+.mascot-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mascot-eyes { transform: translate(var(--gx, 0), var(--gy, 0)); transition: transform 160ms ease-out; }
+.mascot-body { transform-origin: 50% 100%; }
+
+[data-activity="football"] .mascot-arm { animation: mascot-wave var(--mascot-duration) ease-in-out both; }
+[data-activity="penalty"] .mascot-performer--codex .mascot-body { animation: mascot-run var(--mascot-duration) ease-in-out both; }
+[data-activity="padel"] .mascot-arm--right { animation: mascot-racket var(--mascot-duration) ease-in-out both; }
+[data-activity="office"] .mascot-arm { animation: mascot-type calc(var(--mascot-duration) / 8) ease-in-out infinite alternate; }
+[data-activity="pub"] .mascot-arm--right { animation: mascot-toast var(--mascot-duration) ease-in-out both; }
+[data-activity="dock-climb"] .mascot-arm { animation: mascot-climb calc(var(--mascot-duration) / 8) ease-in-out infinite alternate; }
+.mascot-performer--codex .mascot-body { animation: mascot-breathe 2.6s ease-in-out infinite; }
+
+@keyframes mascot-wave { 0%,100%{transform:rotate(0)} 20%,35%{transform:rotate(-35deg)} 55%,72%{transform:rotate(28deg)} }
+@keyframes mascot-run { 0%,100%{scale:1 1} 50%{scale:1.05 .95} }
+@keyframes mascot-racket { 0%,35%,100%{transform:rotate(0)} 48%{transform:rotate(-58deg)} 68%{transform:rotate(38deg)} }
+@keyframes mascot-type { from{transform:translateY(0)} to{transform:translateY(4px)} }
+@keyframes mascot-toast { 0%,25%,75%,100%{transform:rotate(0)} 45%,60%{transform:rotate(-48deg) translateY(-5px)} }
+@keyframes mascot-climb { from{transform:translateY(-3px) rotate(-18deg)} to{transform:translateY(4px) rotate(18deg)} }
+@keyframes mascot-breathe { 0%,100%{scale:1 1} 50%{scale:1.015 .985} }
+
+@media (max-width: 767px) {
+  .mascot-host { position: fixed; height: 178px; z-index: 32; }
+  .mascot-performer { width: 45px; margin-left: -22px; margin-top: -54px; }
+  .mascot-scene--pitch, .mascot-scene--padel { left: 2%; right: 2%; }
+  .mascot-scene--office, .mascot-scene--pub { width: 96vw; }
+  .mascot-scene--goal { right: 1%; width: 145px; }
+  .mascot-toggle { right: 8px; bottom: calc(80px + env(safe-area-inset-bottom)); font-size: 9px; }
+  .mascot-dock-badge { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-host *, .mascot-host *::before, .mascot-host *::after { animation: none !important; transition: none !important; }
+}
