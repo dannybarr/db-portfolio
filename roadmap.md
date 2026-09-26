@@ -7,4 +7,4 @@
 - [x] Harmonize identity and dock with the new world
 - [x] Verify desktop, mobile, interactions, links, motion, and errors
 - [x] Restore exact archive folder art, labels, and popup styling
-- [ ] Add dock mascot loop: football, penalties, padel, desks, pub, and ladder dock climb
+- [x] Add dock mascot loop: football, penalties, padel, desks, pub, and ladder dock climb
