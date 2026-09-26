@@ -108,22 +108,21 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --folder-front-top: oklch(0.82 0.012 255);
-  --folder-front-bottom: oklch(0.64 0.018 255);
-  --folder-back-top: oklch(0.75 0.014 255);
-  --folder-back-bottom: oklch(0.58 0.018 255);
-  --folder-highlight: oklch(0.97 0.006 255);
-  --folder-shadow: oklch(0.18 0.018 255);
-  --folder-selection: oklch(0.48 0.13 255);
-  --folder-label-shadow: oklch(0.14 0.018 255 / 78%);
-  --file-art-surface: oklch(0.95 0.004 255);
+  --folder-front-top: oklch(0.849911 0.012369 259.824);
+  --folder-front-bottom: oklch(0.712546 0.018422 256.306);
+  --folder-back-top: oklch(0.802675 0.014318 258.351);
+  --folder-back-bottom: oklch(0.689812 0.018575 256.309);
+  --folder-highlight: oklch(1 0 0 / 60%);
+  --folder-shadow: oklch(0 0 0 / 15%);
+  --folder-selection: oklch(0.454238 0.018601 257.247);
+  --folder-label-shadow: oklch(1 0 0 / 90%);
   --selected-label: oklch(1 0 0);
   --train-sky: oklch(0.97 0.016 90);
   --desktop-ink: oklch(0.19 0.03 255);
   --desktop-selection: oklch(0.82 0.16 92);
-  --window-surface: oklch(0.99 0.002 255);
-  --window-chrome: oklch(0.945 0.004 255 / 94%);
-  --window-divider: oklch(0.82 0.006 255);
+  --window-surface: oklch(1 0 0);
+  --window-chrome: oklch(0.958147 0 0);
+  --window-divider: oklch(0.91887 0 0);
 }
 
 .dark {
@@ -192,42 +191,82 @@
   background: linear-gradient(to bottom, color-mix(in oklch, var(--train-sky) 18%, transparent), transparent 38%, oklch(0.2 0.02 255 / 8%));
 }
 
-.file-tile .file-label {
-  color: var(--desktop-ink);
-  background: oklch(1 0 0 / 66%);
-  box-shadow: 0 0 0 1px oklch(1 0 0 / 38%);
-  text-shadow: 0 1px 1px oklch(1 0 0 / 78%);
-  backdrop-filter: blur(5px) saturate(120%);
+.file-tile {
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: oklch(0.231576 0.003805 286.099);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: transform 300ms;
 }
 
-.file-tile [data-folder-art] {
-  filter: drop-shadow(0 3px 3px oklch(0.18 0.02 255 / 16%));
+.folder-art {
+  width: calc(var(--tile) * .885);
+  height: calc(var(--tile) * .708);
+  overflow: visible;
+  filter: drop-shadow(0 4px 6px var(--folder-shadow));
 }
 
-.file-tile:not(.is-dragging):hover [data-folder-art] {
-  transform: translateY(-2px);
+.file-label {
+  max-width: 160%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: max(9px, calc(var(--tile) * .125));
+  font-weight: 500;
+  letter-spacing: -.025em;
+  text-shadow: 0 1px 2px var(--folder-label-shadow), 0 0 1px var(--selected-label);
+  transition: background-color 150ms, color 150ms;
+}
+
+.file-tile:hover {
+  transform: scale(1.14);
+}
+
+.file-tile.is-dragging {
+  cursor: grabbing;
+  transform: scale(1.18);
+  filter: drop-shadow(0 14px 22px oklch(0.23 0.008 260 / 38%));
+}
+
+.file-tile:hover .file-label,
+.file-tile:focus-visible .file-label {
+  color: var(--selected-label);
+  background: var(--folder-selection);
+  text-shadow: none;
+}
+
+.file-tile:focus-visible .folder-art {
+  outline: 2px solid var(--folder-selection);
+  outline-offset: 5px;
+  border-radius: 5px;
 }
 
 .file-window-shell {
-  box-shadow: 0 46px 120px oklch(0.16 0.025 255 / 44%), 0 3px 14px oklch(0.16 0.025 255 / 18%), inset 0 1px 0 oklch(1 0 0 / 80%);
-  border: 1px solid oklch(1 0 0 / 62%);
+  box-shadow: 0 50px 130px oklch(0 0 0 / 50%), 0 2px 10px oklch(0 0 0 / 20%);
+  border: 0;
+  outline: none;
 }
 
 .window-chrome {
-  backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .file-tile [data-folder-art] { transition: none; }
+  .file-tile, .file-label { transition: none; }
 }
 
 @media (max-width: 767px) {
-  .file-tile .file-label {
-    max-width: 94px;
-    background: oklch(1 0 0 / 76%);
+  main[data-testid="page-portfolio"] {
+    --tile: 76px !important;
   }
 
-  .file-tile [data-folder-art] {
-    filter: drop-shadow(0 3px 4px oklch(0.18 0.02 255 / 22%));
+  .file-label {
+    font-size: 13px;
   }
 }
