@@ -108,14 +108,22 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --folder-front-top: oklch(0.86 0.08 237);
-  --folder-front-bottom: oklch(0.74 0.12 243);
-  --folder-back-top: oklch(0.79 0.1 241);
-  --folder-back-bottom: oklch(0.69 0.12 246);
-  --folder-highlight: oklch(0.96 0.025 230);
-  --folder-shadow: oklch(0.2 0.025 250);
-  --folder-selection: oklch(0.57 0.2 255);
-  --folder-label-shadow: oklch(0.12 0.015 250 / 85%);
+  --folder-front-top: oklch(0.82 0.012 255);
+  --folder-front-bottom: oklch(0.64 0.018 255);
+  --folder-back-top: oklch(0.75 0.014 255);
+  --folder-back-bottom: oklch(0.58 0.018 255);
+  --folder-highlight: oklch(0.97 0.006 255);
+  --folder-shadow: oklch(0.18 0.018 255);
+  --folder-selection: oklch(0.48 0.13 255);
+  --folder-label-shadow: oklch(0.14 0.018 255 / 78%);
+  --file-art-surface: oklch(0.95 0.004 255);
+  --selected-label: oklch(1 0 0);
+  --train-sky: oklch(0.97 0.016 90);
+  --desktop-ink: oklch(0.19 0.03 255);
+  --desktop-selection: oklch(0.82 0.16 92);
+  --window-surface: oklch(0.99 0.002 255);
+  --window-chrome: oklch(0.945 0.004 255 / 94%);
+  --window-divider: oklch(0.82 0.006 255);
 }
 
 .dark {
@@ -151,14 +159,22 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
-  --folder-front-top: oklch(0.86 0.08 237);
-  --folder-front-bottom: oklch(0.74 0.12 243);
-  --folder-back-top: oklch(0.79 0.1 241);
-  --folder-back-bottom: oklch(0.69 0.12 246);
-  --folder-highlight: oklch(0.96 0.025 230);
-  --folder-shadow: oklch(0.2 0.025 250);
-  --folder-selection: oklch(0.57 0.2 255);
-  --folder-label-shadow: oklch(0.12 0.015 250 / 85%);
+  --folder-front-top: oklch(0.82 0.012 255);
+  --folder-front-bottom: oklch(0.64 0.018 255);
+  --folder-back-top: oklch(0.75 0.014 255);
+  --folder-back-bottom: oklch(0.58 0.018 255);
+  --folder-highlight: oklch(0.97 0.006 255);
+  --folder-shadow: oklch(0.18 0.018 255);
+  --folder-selection: oklch(0.48 0.13 255);
+  --folder-label-shadow: oklch(0.14 0.018 255 / 78%);
+  --file-art-surface: oklch(0.95 0.004 255);
+  --selected-label: oklch(1 0 0);
+  --train-sky: oklch(0.97 0.016 90);
+  --desktop-ink: oklch(0.19 0.03 255);
+  --desktop-selection: oklch(0.82 0.16 92);
+  --window-surface: oklch(0.99 0.002 255);
+  --window-chrome: oklch(0.945 0.004 255 / 94%);
+  --window-divider: oklch(0.82 0.006 255);
 }
 
 @layer base {
@@ -169,5 +185,49 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+}
+
+.desktop-atmosphere {
+  background: linear-gradient(to bottom, color-mix(in oklch, var(--train-sky) 18%, transparent), transparent 38%, oklch(0.2 0.02 255 / 8%));
+}
+
+.file-tile .file-label {
+  color: var(--desktop-ink);
+  background: oklch(1 0 0 / 66%);
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 38%);
+  text-shadow: 0 1px 1px oklch(1 0 0 / 78%);
+  backdrop-filter: blur(5px) saturate(120%);
+}
+
+.file-tile [data-folder-art] {
+  filter: drop-shadow(0 3px 3px oklch(0.18 0.02 255 / 16%));
+}
+
+.file-tile:not(.is-dragging):hover [data-folder-art] {
+  transform: translateY(-2px);
+}
+
+.file-window-shell {
+  box-shadow: 0 46px 120px oklch(0.16 0.025 255 / 44%), 0 3px 14px oklch(0.16 0.025 255 / 18%), inset 0 1px 0 oklch(1 0 0 / 80%);
+  border: 1px solid oklch(1 0 0 / 62%);
+}
+
+.window-chrome {
+  backdrop-filter: blur(22px) saturate(135%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-tile [data-folder-art] { transition: none; }
+}
+
+@media (max-width: 767px) {
+  .file-tile .file-label {
+    max-width: 94px;
+    background: oklch(1 0 0 / 76%);
+  }
+
+  .file-tile [data-folder-art] {
+    filter: drop-shadow(0 3px 4px oklch(0.18 0.02 255 / 22%));
   }
 }

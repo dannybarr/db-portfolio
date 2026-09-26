@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the animated project train isolated in `src/components/project-train`; it consumes project records but must never own project data or window state, so the backdrop remains mounted across file interactions.

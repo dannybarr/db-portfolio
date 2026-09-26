@@ -1,0 +1,150 @@
+.project-train-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #fff;
+  contain: strict;
+}
+
+.project-train-backdrop--absolute {
+  position: absolute;
+}
+
+.project-train-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.project-train-scene--ready {
+  visibility: visible;
+}
+
+.project-train-backdrop--inactive,
+.project-train-backdrop--inactive .project-train-scene {
+  visibility: hidden;
+}
+
+.project-train-scene-art,
+.project-train-cliffs {
+  position: absolute;
+  inset: 0;
+  top: var(--project-train-sky-inset, 0px);
+  width: 100%;
+  height: calc(100% - var(--project-train-sky-inset, 0px));
+  object-fit: fill;
+  user-select: none;
+}
+
+.project-train-scene-art {
+  z-index: 0;
+}
+
+.project-train-track-plane {
+  position: absolute;
+  left: 50%;
+  top: var(--project-train-rail-y);
+  width: 1920px;
+  height: 0;
+  z-index: 1;
+  transform: translateX(-50%) scale(var(--project-train-scale, 1));
+  transform-origin: center top;
+}
+
+.project-train-track {
+  position: absolute;
+  left: 0;
+  top: calc(-1 * var(--project-train-locomotive-height));
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+  height: var(--project-train-locomotive-height);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.project-train-locomotive {
+  display: block;
+  flex: 0 0 auto;
+  width: var(--project-train-locomotive-width);
+  height: var(--project-train-locomotive-height);
+  object-fit: contain;
+  user-select: none;
+}
+
+.project-train-flatbed {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--project-train-flatbed-width);
+  height: var(--project-train-flatbed-height);
+  margin-left: var(--project-train-car-gap);
+}
+
+.project-train-locomotive + .project-train-flatbed {
+  margin-left: var(--project-train-engine-gap);
+}
+
+.project-train-flatbed-art {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--project-train-carriage-base-height);
+  object-fit: contain;
+  user-select: none;
+}
+
+.project-train-panel {
+  position: absolute;
+  left: var(--project-train-preview-x);
+  top: var(--project-train-preview-top);
+  width: var(--project-train-preview-width);
+  height: var(--project-train-preview-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 2px solid #27212a;
+  background: #fff;
+  user-select: none;
+}
+
+.project-train-title {
+  flex: 0 0 26px;
+  min-width: 0;
+  padding: 0 8px;
+  overflow: hidden;
+  color: #fff;
+  background: #111c40;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-train-preview {
+  display: block;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  user-select: none;
+}
+
+.project-train-cliffs {
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-train-track {
+    will-change: auto;
+  }
+}
