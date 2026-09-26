@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the animated project train isolated in `src/components/project-train`; it consumes project records but must never own project data or window state, so the backdrop remains mounted across file interactions.
+- Keep decorative dock choreography isolated in `src/components/home-mascot`; it receives only suspension and logo props, preserving dock controls and portfolio state ownership.
