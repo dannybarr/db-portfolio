@@ -225,7 +225,7 @@ export function ProjectTrainBackdrop({
         return;
       }
 
-      const group = groups[passIndexRef.current % groups.length];
+      const group = groups[passIndexRef.current % groups.length] ?? [];
       passIndexRef.current += 1;
       setCurrentGroup(group);
     };
