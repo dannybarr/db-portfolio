@@ -6,8 +6,7 @@ import type { Project as ApiProject } from '@/lib/projects';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
-const BACKDROP_VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4';
-import backdropPoster from '@/assets/desktop-backdrop-poster.jpg.asset.json';
+import { ProjectTrainBackdrop } from '@/components/project-train/ProjectTrainBackdrop';
 
 
 const BASE = '/';
@@ -59,10 +58,10 @@ const scatter: Scatter[] = [
 
 function FolderThumb({ index, active, artwork }: { index: number; active: boolean; artwork?: string | null | undefined }) {
   const id = (n: string) => `${n}-${index}`;
-  const BACK = 'M0 8C0 3.58 3.58 0 8 0H32L38 6H72C76.42 6 80 9.58 80 14V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V8Z';
-  const FRONT = 'M0 18C0 15.79 1.79 14 4 14H76C78.21 14 80 15.79 80 18V56C80 60.42 76.42 64 72 64H8C3.58 64 0 60.42 0 56V18Z';
+  const BACK = 'M6 22V10C6 6 8.5 4 12 4H33C36 4 38 5 39 8L44 15C45 16.5 47 17 49 17H90C94 17 96 19 96 23V74C96 78 94 80 90 80H10C6 80 4 78 4 74Z';
+  const FRONT = 'M3 27C3 23 5.5 21 9 21H91C94.5 21 97 23 97 27V74C97 78 94.5 80 91 80H9C5.5 80 3 78 3 74Z';
   return (
-    <svg viewBox="0 0 80 64" className="h-full w-full overflow-visible" aria-hidden="true">
+    <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
         <linearGradient id={id('frontGradient')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--folder-front-top)" />
@@ -72,20 +71,24 @@ function FolderThumb({ index, active, artwork }: { index: number; active: boolea
           <stop offset="0%" stopColor="var(--folder-back-top)" />
           <stop offset="100%" stopColor="var(--folder-back-bottom)" />
         </linearGradient>
-        <filter id={id('shadow')} x="-20%" y="-20%" width="140%" height="150%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="var(--folder-shadow)" floodOpacity="0.26" />
+        <filter id={id('shadow')} x="-20%" y="-20%" width="140%" height="155%">
+          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="var(--folder-shadow)" floodOpacity="0.3" />
         </filter>
+        <clipPath id={id('artClip')}><rect x="21" y="25" width="58" height="39" rx="3" /></clipPath>
       </defs>
       <g filter={`url(#${id('shadow')})`}>
         <path d={BACK} fill={`url(#${id('backGradient')})`} />
         <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
-        <path d="M4 14.5H76" stroke="var(--folder-highlight)" strokeOpacity="0.55" strokeWidth="0.8" />
+        <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeOpacity="0.68" strokeWidth="1.2" />
       </g>
       {artwork && (
-        <image href={`${BASE}images/${artwork}`} x="20" y="25" width="40" height="30" preserveAspectRatio="xMidYMid meet" className="opacity-90" />
+        <g clipPath={`url(#${id('artClip')})`}>
+          <rect x="21" y="25" width="58" height="39" rx="3" fill="var(--file-art-surface)" />
+          <image href={`${BASE}images/${artwork}`} x="25" y="28" width="50" height="32" preserveAspectRatio="xMidYMid meet" className="opacity-95" />
+        </g>
       )}
       {active && (
-        <path d={FRONT} fill="var(--folder-selection)" opacity="0.2" />
+        <path d={FRONT} fill="var(--folder-selection)" opacity="0.22" />
       )}
     </svg>
   );
@@ -649,17 +652,17 @@ function LaunchStage({
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         style={{ fontFamily: "'Space Grotesk', sans-serif", color: WIN_INK }}
-        className={`relative flex flex-col overflow-hidden bg-white ${
+        className={`file-window-shell relative flex flex-col overflow-hidden bg-[var(--window-surface)] ${
           mobile
             ? 'h-[100dvh] w-full'
             : `${
                 sideBySide ? 'h-auto max-h-[88dvh] w-[760px]' : 'h-[min(780px,90dvh)] w-[880px]'
-              } max-w-[92vw] rounded-[20px] shadow-[0_50px_130px_rgba(0,0,0,.5),0_2px_10px_rgba(0,0,0,.2)]`
+               } max-w-[92vw] rounded-[20px]`
         } ${stage === 'leaving' ? 'pointer-events-none animate-[windowOut_0.2s_ease-in_forwards]' : ''}`}
       >
         {/* Title bar */}
         <div
-          className={`flex shrink-0 items-center gap-[14px] border-b border-[#e4e4e4] bg-[#f1f1f1] px-[16px] ${
+          className={`window-chrome flex shrink-0 items-center gap-[14px] border-b border-[var(--window-divider)] bg-[var(--window-chrome)] px-[16px] ${
             mobile ? 'pb-[12px] pt-[calc(12px+env(safe-area-inset-top))]' : 'h-[42px]'
           }`}
         >
@@ -692,7 +695,7 @@ function LaunchStage({
             so the whole screenshot can be read, however tall it is. */}
         <div className={`win-scroll flex min-h-0 flex-1 overflow-y-auto overscroll-contain ${sideBySide ? 'flex-row items-center' : 'flex-col'}`}>
           <div
-            className={`${sideBySide ? 'min-w-0 flex-1 pl-[30px] pr-[6px] py-[26px]' : 'shrink-0'} ${
+            className={`window-copy ${sideBySide ? 'min-w-0 flex-1 pl-[30px] pr-[6px] py-[26px]' : 'shrink-0'} ${
               sideBySide ? '' : mobile ? 'px-[22px] pb-[22px] pt-[22px]' : 'px-[30px] pb-[26px] pt-[26px]'
             }`}
           >
@@ -958,7 +961,7 @@ function Portfolio() {
   return (
     <main
       ref={sceneRef}
-      className={`relative min-h-[100dvh] w-full bg-[#d9dadd] text-[#0b1b42] selection:bg-[#f7b600] selection:text-[#0b1b42] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
+      className={`relative min-h-[100dvh] w-full bg-[var(--train-sky)] text-[var(--desktop-ink)] selection:bg-[var(--desktop-selection)] selection:text-[var(--desktop-ink)] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
       style={{
         fontFamily: "'Space Grotesk', sans-serif",
         ...sceneVars,
@@ -968,27 +971,14 @@ function Portfolio() {
       }}
       data-testid="page-portfolio"
     >
-      {/* Backdrop — looping video, pinned to the viewport on mobile so it covers
-          the screen behind the scrolling grid instead of stretching with the content. */}
-      <video
-        src={BACKDROP_VIDEO_URL}
-        poster={backdropPoster.url}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-        className={`z-0 w-full object-cover object-center ${isMobile ? 'fixed inset-0 h-[100dvh]' : 'absolute inset-0 h-full'}`}
-      />
-
-      <div className={`pointer-events-none z-[1] bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(190,193,198,.26)_100%)] ${isMobile ? 'fixed inset-0' : 'absolute inset-0'}`} />
+      <ProjectTrainBackdrop projects={launchable} assetBase={BASE} pinned={isMobile} loading={isLoading} />
+      <div className={`desktop-atmosphere pointer-events-none z-[3] ${isMobile ? 'fixed inset-0' : 'absolute inset-0'}`} />
 
       {isMobile ? (
         /* ---------------- Mobile: header + vertically scrolling folder grid ---------------- */
         <div className="relative z-10 flex flex-col px-4 pb-[calc(112px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
           <header className="flex items-center justify-between">
-            <img src={`${BASE}images/brandmark.png`} alt="Brandmark" className="h-6 w-auto drop-shadow-[0_1px_2px_rgba(255,255,255,.6)]" />
+            <DblabsWordmark />
           </header>
 
           <div className="mt-4 flex items-end justify-between gap-3">
@@ -1033,13 +1023,13 @@ function Portfolio() {
                     onClick={(e) => openProject(project.id, e.currentTarget)}
                     aria-label={project.title}
                     title={project.title}
-                    className="group flex flex-col items-center gap-1.5 text-center outline-none transition-transform duration-150 active:scale-95"
+                    className="file-tile group flex flex-col items-center gap-1.5 text-center outline-none transition-transform duration-150 active:scale-95"
                     data-testid={`button-project-${project.id}`}
                   >
                     <div data-folder-art className="relative aspect-[85/68] w-full">
                       <FolderThumb index={i} active={false} artwork={project.iconImage} />
                     </div>
-                    <span className="line-clamp-2 w-full rounded-[3px] px-1 py-[2px] text-[11px] font-medium leading-tight tracking-normal text-white [text-shadow:0_1px_2px_var(--folder-label-shadow)] group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
+                    <span className="file-label line-clamp-2 w-full rounded-[4px] px-1 py-[2px] text-[11px] font-medium leading-tight tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
                 );
               })}
@@ -1108,7 +1098,7 @@ function Portfolio() {
                 draggable={false}
                 aria-label={project.title}
                 title={project.title}
-                className={`group absolute z-10 flex flex-col items-center gap-[5px] text-center outline-none hover:z-30 ${held ? 'cursor-grabbing transition-[scale] duration-100' : 'cursor-grab transition-transform duration-100 active:scale-[.97]'}`}
+                className={`file-tile group absolute z-10 flex flex-col items-center gap-[5px] text-center outline-none hover:z-30 ${held ? 'is-dragging cursor-grabbing transition-[scale] duration-100' : 'cursor-grab transition-transform duration-150 active:scale-[.97]'}`}
                 style={{
                   left: slotLeft(slot.x),
                   top: slot.y,
@@ -1126,7 +1116,7 @@ function Portfolio() {
                   <FolderThumb index={i} active={false} artwork={project.iconImage} />
                 </div>
                 <span
-                  className={`max-w-[145%] truncate rounded-[3px] px-[4px] py-[1px] font-medium tracking-normal text-white [text-shadow:0_1px_2px_var(--folder-label-shadow),0_0_2px_var(--folder-label-shadow)] ${activeProject ? '' : 'group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:[text-shadow:none]'}`}
+                  className={`file-label max-w-[145%] truncate rounded-[4px] px-[5px] py-[2px] font-medium tracking-normal ${activeProject ? '' : 'group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]'}`}
                   style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontSize: LABEL_SIZE }}
                   data-testid={`text-project-title-${project.id}`}
                 >{project.title}</span>

@@ -1,3 +1,8 @@
+import carriageAsset from "@/assets/train/carriage.svg.asset.json";
+import cliffsAsset from "@/assets/train/cliffs.svg.asset.json";
+import locomotiveAsset from "@/assets/train/locomotive.svg.asset.json";
+import sceneAsset from "@/assets/train/scene.svg.asset.json";
+
 /**
  * All measurements are in coordinates of the 1920 × 1080 source artwork.
  *
@@ -35,10 +40,10 @@ export const MAX_TRAIN_WIDTH =
   2 * TRAIN_GEOMETRY.carGap;
 
 export const TRAIN_ASSETS = {
-  scene: "images/train/scene.svg",
-  cliffs: "images/train/cliffs.svg",
-  locomotive: "images/train/locomotive.svg",
-  carriage: "images/train/carriage.svg",
+  scene: sceneAsset.url,
+  cliffs: cliffsAsset.url,
+  locomotive: locomotiveAsset.url,
+  carriage: carriageAsset.url,
 } as const;
 
 export const PROJECT_TRAIN_ANIMATION_ID = "project-train-pass";

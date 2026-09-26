@@ -30,6 +30,7 @@ export function getTrainViewportScale(width: number, height: number): number {
 }
 
 export function joinAssetPath(assetBase: string, path: string): string {
+  if (path.startsWith("/") || /^https?:\/\//.test(path)) return path;
   return `${assetBase.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
 }
 
