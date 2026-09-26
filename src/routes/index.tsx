@@ -56,7 +56,7 @@ const scatter: Scatter[] = [
   { x: '86%', y: '85%', onDark: true },
 ];
 
-function FolderThumb({ index, active, artwork }: { index: number; active: boolean; artwork?: string | null | undefined }) {
+function FolderThumb({ index }: { index: number }) {
   const id = (n: string) => `${n}-${index}`;
   const BACK = 'M6 22V10C6 6 8.5 4 12 4H33C36 4 38 5 39 8L44 15C45 16.5 47 17 49 17H90C94 17 96 19 96 23V74C96 78 94 80 90 80H10C6 80 4 78 4 74Z';
   const FRONT = 'M3 27C3 23 5.5 21 9 21H91C94.5 21 97 23 97 27V74C97 78 94.5 80 91 80H9C5.5 80 3 78 3 74Z';
@@ -71,25 +71,10 @@ function FolderThumb({ index, active, artwork }: { index: number; active: boolea
           <stop offset="0%" stopColor="var(--folder-back-top)" />
           <stop offset="100%" stopColor="var(--folder-back-bottom)" />
         </linearGradient>
-        <filter id={id('shadow')} x="-20%" y="-20%" width="140%" height="155%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="var(--folder-shadow)" floodOpacity="0.3" />
-        </filter>
-        <clipPath id={id('artClip')}><rect x="21" y="25" width="58" height="39" rx="3" /></clipPath>
       </defs>
-      <g filter={`url(#${id('shadow')})`}>
-        <path d={BACK} fill={`url(#${id('backGradient')})`} />
-        <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
-        <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeOpacity="0.68" strokeWidth="1.2" />
-      </g>
-      {artwork && (
-        <g clipPath={`url(#${id('artClip')})`}>
-          <rect x="21" y="25" width="58" height="39" rx="3" fill="var(--file-art-surface)" />
-          <image href={`${BASE}images/${artwork}`} x="25" y="28" width="50" height="32" preserveAspectRatio="xMidYMid meet" className="opacity-95" />
-        </g>
-      )}
-      {active && (
-        <path d={FRONT} fill="var(--folder-selection)" opacity="0.22" />
-      )}
+      <path d={BACK} fill={`url(#${id('backGradient')})`} />
+      <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
+      <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -654,10 +639,8 @@ function LaunchStage({
         style={{ fontFamily: "'Space Grotesk', sans-serif", color: WIN_INK }}
         className={`file-window-shell relative flex flex-col overflow-hidden bg-[var(--window-surface)] ${
           mobile
-            ? 'h-[100dvh] w-full'
-            : `${
-                sideBySide ? 'h-auto max-h-[88dvh] w-[760px]' : 'h-[min(780px,90dvh)] w-[880px]'
-               } max-w-[92vw] rounded-[20px]`
+            ? 'h-[100dvh] w-full max-w-none'
+            : 'h-[min(540px,88dvh)] w-[760px] max-w-[92vw] rounded-[20px]'
         } ${stage === 'leaving' ? 'pointer-events-none animate-[windowOut_0.2s_ease-in_forwards]' : ''}`}
       >
         {/* Title bar */}
@@ -1023,13 +1006,13 @@ function Portfolio() {
                     onClick={(e) => openProject(project.id, e.currentTarget)}
                     aria-label={project.title}
                     title={project.title}
-                    className="file-tile group flex min-w-0 flex-col items-center gap-1.5 text-center outline-none transition-transform duration-150 active:scale-95"
+                    className="file-tile group flex min-w-0 flex-col items-center text-center outline-none"
                     data-testid={`button-project-${project.id}`}
                   >
-                    <div data-folder-art className="relative aspect-[100/80] w-[min(78px,100%)]">
-                      <FolderThumb index={i} active={false} artwork={project.iconImage} />
+                    <div data-folder-art className="folder-art relative">
+                      <FolderThumb index={i} />
                     </div>
-                    <span className="file-label line-clamp-2 max-w-full rounded-[4px] px-1.5 py-[2px] text-[10px] font-medium leading-[1.15] tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
+                    <span className="file-label" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
                 );
               })}
@@ -1098,7 +1081,7 @@ function Portfolio() {
                 draggable={false}
                 aria-label={project.title}
                 title={project.title}
-                className={`file-tile group absolute z-10 flex flex-col items-center gap-[5px] text-center outline-none hover:z-30 ${held ? 'is-dragging cursor-grabbing transition-[scale] duration-100' : 'cursor-grab transition-transform duration-150 active:scale-[.97]'}`}
+                className={`file-tile group absolute z-10 flex flex-col items-center text-center outline-none hover:z-30 ${held ? 'is-dragging' : ''}`}
                 style={{
                   left: slotLeft(slot.x),
                   top: slot.y,
@@ -1112,12 +1095,11 @@ function Portfolio() {
                 }}
                 data-testid={`button-project-${project.id}`}
               >
-                <div data-folder-art className="relative transition-transform duration-300" style={{ width: ART_W, height: ART_H }}>
-                  <FolderThumb index={i} active={false} artwork={project.iconImage} />
+                <div data-folder-art className="folder-art relative" style={{ width: ART_W, height: ART_H }}>
+                  <FolderThumb index={i} />
                 </div>
                 <span
-                  className={`file-label max-w-[145%] truncate rounded-[4px] px-[5px] py-[2px] font-medium tracking-normal ${activeProject ? '' : 'group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]'}`}
-                  style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif', fontSize: LABEL_SIZE }}
+                  className="file-label"
                   data-testid={`text-project-title-${project.id}`}
                 >{project.title}</span>
               </button>
