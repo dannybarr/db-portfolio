@@ -997,7 +997,7 @@ function Portfolio() {
           )}
 
           {isLoading && (
-            <div className="mt-7 grid grid-cols-3 gap-x-3 gap-y-6">
+            <div className="mt-7 grid grid-cols-3 gap-x-3 gap-y-7">
               {Array.from({ length: SKELETON_TILES }, (_, i) => (
                 <div key={`skeleton-${i}`} className="flex flex-col items-center gap-1.5" data-testid={`skeleton-tile-${i}`}>
                   <div className="relative aspect-[85/68] w-full">
@@ -1023,13 +1023,13 @@ function Portfolio() {
                     onClick={(e) => openProject(project.id, e.currentTarget)}
                     aria-label={project.title}
                     title={project.title}
-                    className="file-tile group flex flex-col items-center gap-1.5 text-center outline-none transition-transform duration-150 active:scale-95"
+                    className="file-tile group flex min-w-0 flex-col items-center gap-1.5 text-center outline-none transition-transform duration-150 active:scale-95"
                     data-testid={`button-project-${project.id}`}
                   >
-                    <div data-folder-art className="relative aspect-[85/68] w-full">
+                    <div data-folder-art className="relative aspect-[100/80] w-[min(78px,100%)]">
                       <FolderThumb index={i} active={false} artwork={project.iconImage} />
                     </div>
-                    <span className="file-label line-clamp-2 w-full rounded-[4px] px-1 py-[2px] text-[11px] font-medium leading-tight tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
+                    <span className="file-label line-clamp-2 w-full rounded-[4px] px-1 py-[2px] text-[10px] font-medium leading-[1.15] tracking-normal group-focus-visible:bg-[var(--folder-selection)] group-focus-visible:text-[var(--selected-label)] group-focus-visible:[text-shadow:none]" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
                 );
               })}

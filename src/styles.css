@@ -194,7 +194,10 @@
 
 .file-tile .file-label {
   color: var(--desktop-ink);
-  text-shadow: 0 1px 1px oklch(1 0 0 / 82%), 0 0 4px oklch(1 0 0 / 65%);
+  background: oklch(1 0 0 / 66%);
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 38%);
+  text-shadow: 0 1px 1px oklch(1 0 0 / 78%);
+  backdrop-filter: blur(5px) saturate(120%);
 }
 
 .file-tile [data-folder-art] {
@@ -216,4 +219,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .file-tile [data-folder-art] { transition: none; }
+}
+
+@media (max-width: 767px) {
+  .file-tile .file-label {
+    max-width: 94px;
+    background: oklch(1 0 0 / 76%);
+  }
+
+  .file-tile [data-folder-art] {
+    filter: drop-shadow(0 3px 4px oklch(0.18 0.02 255 / 22%));
+  }
 }
