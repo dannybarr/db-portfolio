@@ -10,4 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the animated project train isolated in `src/components/project-train`; it consumes project records but must never own project data or window state, so the backdrop remains mounted across file interactions.
-- Keep decorative dock choreography isolated in `src/components/home-mascot`; it receives only suspension and logo props, preserving dock controls and portfolio state ownership.
+- Keep the mascot performance isolated in `src/components/home-mascot` (revision-2 artifact module: HomeMascot.tsx, mascots.tsx, mascotChoreo.ts, mascot.css). It must be mounted inside a `.mascot-host` wrapper as the scene's last in-flow child and receive only the `suspended` prop, never project data or window state. There is no dock: contact links live under the "Agentic Build Portfolio" label.
