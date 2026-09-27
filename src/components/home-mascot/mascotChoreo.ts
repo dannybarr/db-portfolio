@@ -51,7 +51,7 @@ export function buildTimeline(g:Layout):Segment[] {
   type Setter=(t:Track,at:number,p:Partial<Pose>,ease?:string)=>void;
   function scene(name:string,label:string,duration:number,author:(set:Setter)=>void,keep:Track[]=[]){
     const points=Object.fromEntries(TRACKS.map(t=>[t,[{...state[t],offset:0,easing:EASE.walk}]])) as Record<Track,Point[]>;
-    const set:Setter=(t,at,p,ease=EASE.walk)=>{const prev=points[t][points[t].length-1];points[t].push({...prev,...p,offset:at,easing:ease});};
+    const set:Setter=(t,at,p,ease=EASE.walk)=>{const prev=points[t][points[t].length-1]!;points[t].push({...prev,...p,offset:at,easing:ease});};
     author(set);
     // Keep angular momentum through the end; normalize complete turns instantly
     // instead of interpolating backwards to zero during the last tenth.
@@ -60,13 +60,13 @@ export function buildTimeline(g:Layout):Segment[] {
     // Roll in proportion to horizontal travel. Grounded waypoints use whole
     // turns so the eyes are upright at each rest, including off-screen rests.
     if(points.roll.length===1&&name!=='tumble'){
-      const start=points.grok[0],angle=state.roll.r,circumference=s*.9*Math.PI;
+      const start=points.grok[0]!,angle=state.roll.r,circumference=s*.9*Math.PI;
       const travel=Math.max(...points.grok.map(p=>Math.abs(p.x-start.x))),turns=Math.round(travel/circumference);
       points.roll=points.grok.map(p=>({...pose(),offset:p.offset,easing:p.easing,r:angle+(travel?(p.x-start.x)/travel*turns*360:0)}));
-      const end=points.roll[points.roll.length-1];
+      const end=points.roll[points.roll.length-1]!;
       if(end.offset<1)points.roll.push({...end,offset:1});
       // Identical orientations on this zero-time normalization keyframe.
-      points.roll.push({...points.roll[points.roll.length-1],offset:1,r:0});
+      points.roll.push({...points.roll[points.roll.length-1]!,offset:1,r:0});
     }
     for(const t of TRACKS){const a=points[t];const last=a[a.length-1]!;if(last.offset<1)set(t,1,keep.includes(t)?last:rest[t]!);state[t]={...last};}
     // Separate eye layer: attention follows the shared object/partner without
