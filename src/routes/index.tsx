@@ -21,7 +21,6 @@ const BASE = '/';
  */
 const sceneVars = {
   '--tile': 'clamp(36px, min(5.6vw, 9.5vh), 92px)',
-  '--dock-icon': 'clamp(34px, min(3.4vw, 5.6vh), 56px)',
 } as CSSProperties;
 
 /** Loading placeholders shown while the project list is in flight — matched to
@@ -111,17 +110,53 @@ const prefersReducedMotion = () =>
  *  towards white by the smallest amount that does — lightening keeps the hue
  *  recognisably the tile's, where darkening towards navy turned orange to brown. */
 
-/** Where each dock icon goes. Gmail opens a pre-addressed compose window;
- *  WhatsApp opens a direct chat with Daniel's UK number. */
-const DOCK_LINKS = {
+/** Contact links that used to live in the dock; they now sit under the
+ *  "Agentic Build Portfolio" label. Gmail opens a pre-addressed compose
+ *  window; WhatsApp opens a direct chat with Daniel's UK number. */
+const CONTACT_LINKS = {
   linkedin: { href: 'https://www.linkedin.com/in/dannybarr22', label: 'Daniel Barr on LinkedIn', external: true },
   gmail: { href: 'https://mail.google.com/mail/?view=cm&fs=1&to=dannybarr092%40gmail.com', label: 'Email Daniel Barr on Gmail', external: true },
   whatsapp: { href: 'https://wa.me/447368536367', label: 'Message Daniel Barr on WhatsApp', external: true },
 } as const;
 
-function DockIcon({ kind }: { kind: keyof typeof DOCK_LINKS }) {
+function DockIcon({ kind }: { kind: keyof typeof CONTACT_LINKS }) {
   const source = kind === 'gmail' ? 'gmail.svg' : kind === 'whatsapp' ? 'whatsapp.svg' : 'linkedin.png';
   return <img src={`${BASE}images/${source}`} alt={`${kind} app`} className="h-full w-full object-contain" />;
+}
+
+/** The glassy contact chips under the portfolio label — the old dock links,
+ *  restyled as a quiet row of frosted buttons in the same Apple glass style. */
+function ContactLinks({ align }: { align: 'start' | 'end' }) {
+  return (
+    <div className={`mt-3 flex items-center gap-2.5 ${align === 'end' ? 'justify-end' : 'justify-start'}`}>
+      {(Object.keys(CONTACT_LINKS) as (keyof typeof CONTACT_LINKS)[]).map((kind) => {
+        const link = CONTACT_LINKS[kind];
+        return (
+          <a
+            key={kind}
+            href={link.href}
+            {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            aria-label={link.label}
+            title={link.label}
+            data-testid={`button-contact-${kind}`}
+            className={`block rounded-[15px] p-[7px] transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${
+              align === 'end'
+                ? 'h-10 w-10 hover:-translate-y-1.5 hover:scale-110'
+                : 'h-11 w-11 active:scale-95 md:h-10 md:w-10 md:hover:-translate-y-1.5 md:hover:scale-110'
+            }`}
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.38))',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              boxShadow:
+                '0 0 0 .5px rgba(255,255,255,.75), 0 0 0 1px rgba(20,32,58,.10), 0 1px 0 0 rgba(255,255,255,.8) inset, 0 8px 18px -8px rgba(16,28,54,.35)',
+            }}
+          >
+            <DockIcon kind={kind} />
+          </a>
+        );
+      })}
+    </div>
+  );
 }
 
 function MockDashboard({ project, index }: { project: ApiProject; index: number }) {
@@ -866,7 +901,9 @@ function Portfolio() {
 
   // The desktop scene doubles as the drag surface for the folder tiles.
   const sceneRef = useRef<HTMLElement | null>(null);
-  const dockRef = useRef<HTMLDivElement | null>(null);
+  // The mascot stage replaced the dock at the bottom of the scene; folders
+  // still keep clear of it while dragging.
+  const mascotRef = useRef<HTMLElement | null>(null);
 
   // The layout lives on the server, so an arrangement one visitor makes is the
   // one everybody sees. A project with no saved position keeps its scatter slot.
@@ -885,7 +922,7 @@ function Portfolio() {
   const saveRef = useRef(savePosition.mutateAsync);
   saveRef.current = savePosition.mutateAsync;
 
-  const drag = useFolderDrag(sceneRef, dockRef, {
+  const drag = useFolderDrag(sceneRef, mascotRef, {
     serverOffsets,
     // The rejection is passed through on purpose: the hook needs to see a failed
     // save so it can keep the folder where this visitor dropped it.
@@ -964,13 +1001,10 @@ function Portfolio() {
   return (
     <main
       ref={sceneRef}
-      className={`relative min-h-[100dvh] w-full bg-[var(--train-sky)] text-[var(--desktop-ink)] selection:bg-[var(--desktop-selection)] selection:text-[var(--desktop-ink)] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
+      className={`relative flex min-h-[100dvh] w-full flex-col bg-[var(--train-sky)] text-[var(--desktop-ink)] selection:bg-[var(--desktop-selection)] selection:text-[var(--desktop-ink)] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
       style={{
         fontFamily: "'Space Grotesk', sans-serif",
         ...sceneVars,
-        // Touch targets don't scale with the viewport — the mobile dock is fixed
-        // at a comfortable finger size.
-        ...(isMobile ? ({ '--dock-icon': '52px' } as CSSProperties) : null),
       }}
       data-testid="page-portfolio"
     >
@@ -979,7 +1013,7 @@ function Portfolio() {
 
       {isMobile ? (
         /* ---------------- Mobile: header + vertically scrolling folder grid ---------------- */
-        <div className="relative z-10 flex flex-col px-4 pb-[calc(250px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
+        <div className="relative z-10 flex flex-col px-4 pb-10 pt-[calc(18px+env(safe-area-inset-top))]">
           <header className="flex items-center justify-between">
             <DblabsWordmark />
           </header>
@@ -988,6 +1022,7 @@ function Portfolio() {
             <div>
               <p className="text-[42px] font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42] drop-shadow-[0_1px_2px_rgba(255,255,255,.7)]" style={{ fontFamily: "'Minasans', sans-serif" }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2 text-[10px] tracking-[.2em] text-[#0b1b42]/60">Agentic Build Portfolio</p>
+              <ContactLinks align="start" />
             </div>
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="h-[132px] w-auto shrink-0 object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" data-testid="img-engineer" />
           </div>
@@ -1049,6 +1084,7 @@ function Portfolio() {
             <div>
               <p className="font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42]" style={{ fontFamily: "'Minasans', sans-serif", fontSize: 'clamp(32px, min(5.2vw, 9vh), 92px)' }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2.5 tracking-[.22em] text-[#0b1b42]/50" style={{ fontSize: 'clamp(9px, min(.85vw, 1.5vh), 14px)' }}>Agentic Build Portfolio</p>
+              <ContactLinks align="end" />
             </div>
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="w-auto object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" style={{ height: 'clamp(96px, min(14.6vw, 24vh), 260px)' }} data-testid="img-engineer" />
           </div>
@@ -1128,7 +1164,11 @@ function Portfolio() {
         </>
       )}
 
-      <HomeMascot suspended={active != null} logo={<span>DBLABS</span>} />
+      {/* The bottom of the scene is now the mascot stage — an in-flow strip the
+          trio performs in. The drag hook keeps dropped folders out of it. */}
+      <section ref={mascotRef} className="mascot-host relative z-20 mt-auto w-full" data-testid="mascot-stage">
+        <HomeMascot suspended={active != null} />
+      </section>
 
       {/* Dock — a floating macOS dock on desktop, a fixed touch bar on mobile.
           Apple's glass is not one blur: it is a refracting slab (blur +
