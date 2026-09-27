@@ -81,15 +81,16 @@ function FolderThumb({ index, project }: { index: number; project: ApiProject })
       <path d={BACK} fill={`url(#${id('backGradient')})`} />
       <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
       <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeWidth="1.5" />
-      {/* Front-of-folder art. It fills the face (x 3–97, y 21–80) inside a
-          slim, even margin, scaled to fit so the whole image always shows. */}
+      {/* Front-of-folder art. It takes nearly the whole face (x 3–97, y 21–80),
+          clear of the top highlight and rounded corners, scaled to fit so the
+          whole image always shows. */}
       {project.iconImage && (
         <image
           href={`${BASE}images/${project.iconImage}`}
-          x="10"
-          y="26"
-          width="80"
-          height="49"
+          x="6"
+          y="24.5"
+          width="88"
+          height="53"
           preserveAspectRatio="xMidYMid meet"
           filter={`url(#${id('artShadow')})`}
         />
