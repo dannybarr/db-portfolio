@@ -68,7 +68,7 @@ export function buildTimeline(g:Layout):Segment[] {
       // Identical orientations on this zero-time normalization keyframe.
       points.roll.push({...points.roll[points.roll.length-1]!,offset:1,r:0});
     }
-    for(const t of TRACKS){const a=points[t];const last=a[a.length-1]!;if(last.offset<1)set(t,1,keep.includes(t)?last:rest[t]!);state[t]={...last};}
+    for(const t of TRACKS){const a=points[t];if(a[a.length-1]!.offset<1)set(t,1,keep.includes(t)?a[a.length-1]!:rest[t]!);state[t]={...a[a.length-1]!};}
     // Separate eye layer: attention follows the shared object/partner without
     // fighting pointer gaze. No frame loop or React re-render is required.
     for(const actor of ACTORS){const t=LOOK[actor];points[t]=[{...rest[t],offset:0,easing:EASE.linear}];
