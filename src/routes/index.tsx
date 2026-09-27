@@ -21,7 +21,6 @@ const BASE = '/';
  */
 const sceneVars = {
   '--tile': 'clamp(36px, min(5.6vw, 9.5vh), 92px)',
-  '--dock-icon': 'clamp(34px, min(3.4vw, 5.6vh), 56px)',
 } as CSSProperties;
 
 /** Loading placeholders shown while the project list is in flight — matched to
@@ -111,17 +110,53 @@ const prefersReducedMotion = () =>
  *  towards white by the smallest amount that does — lightening keeps the hue
  *  recognisably the tile's, where darkening towards navy turned orange to brown. */
 
-/** Where each dock icon goes. Gmail opens a pre-addressed compose window;
- *  WhatsApp opens a direct chat with Daniel's UK number. */
-const DOCK_LINKS = {
+/** Contact links that used to live in the dock; they now sit under the
+ *  "Agentic Build Portfolio" label. Gmail opens a pre-addressed compose
+ *  window; WhatsApp opens a direct chat with Daniel's UK number. */
+const CONTACT_LINKS = {
   linkedin: { href: 'https://www.linkedin.com/in/dannybarr22', label: 'Daniel Barr on LinkedIn', external: true },
   gmail: { href: 'https://mail.google.com/mail/?view=cm&fs=1&to=dannybarr092%40gmail.com', label: 'Email Daniel Barr on Gmail', external: true },
   whatsapp: { href: 'https://wa.me/447368536367', label: 'Message Daniel Barr on WhatsApp', external: true },
 } as const;
 
-function DockIcon({ kind }: { kind: keyof typeof DOCK_LINKS }) {
+function DockIcon({ kind }: { kind: keyof typeof CONTACT_LINKS }) {
   const source = kind === 'gmail' ? 'gmail.svg' : kind === 'whatsapp' ? 'whatsapp.svg' : 'linkedin.png';
   return <img src={`${BASE}images/${source}`} alt={`${kind} app`} className="h-full w-full object-contain" />;
+}
+
+/** The glassy contact chips under the portfolio label — the old dock links,
+ *  restyled as a quiet row of frosted buttons in the same Apple glass style. */
+function ContactLinks({ align }: { align: 'start' | 'end' }) {
+  return (
+    <div className={`mt-3 flex items-center gap-2.5 ${align === 'end' ? 'justify-end' : 'justify-start'}`}>
+      {(Object.keys(CONTACT_LINKS) as (keyof typeof CONTACT_LINKS)[]).map((kind) => {
+        const link = CONTACT_LINKS[kind];
+        return (
+          <a
+            key={kind}
+            href={link.href}
+            {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            aria-label={link.label}
+            title={link.label}
+            data-testid={`button-contact-${kind}`}
+            className={`block rounded-[15px] p-[7px] transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${
+              align === 'end'
+                ? 'h-10 w-10 hover:-translate-y-1.5 hover:scale-110'
+                : 'h-11 w-11 active:scale-95 md:h-10 md:w-10 md:hover:-translate-y-1.5 md:hover:scale-110'
+            }`}
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.38))',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              boxShadow:
+                '0 0 0 .5px rgba(255,255,255,.75), 0 0 0 1px rgba(20,32,58,.10), 0 1px 0 0 rgba(255,255,255,.8) inset, 0 8px 18px -8px rgba(16,28,54,.35)',
+            }}
+          >
+            <DockIcon kind={kind} />
+          </a>
+        );
+      })}
+    </div>
+  );
 }
 
 function MockDashboard({ project, index }: { project: ApiProject; index: number }) {
@@ -866,7 +901,9 @@ function Portfolio() {
 
   // The desktop scene doubles as the drag surface for the folder tiles.
   const sceneRef = useRef<HTMLElement | null>(null);
-  const dockRef = useRef<HTMLDivElement | null>(null);
+  // The mascot stage replaced the dock at the bottom of the scene; folders
+  // still keep clear of it while dragging.
+  const mascotRef = useRef<HTMLElement | null>(null);
 
   // The layout lives on the server, so an arrangement one visitor makes is the
   // one everybody sees. A project with no saved position keeps its scatter slot.
@@ -885,7 +922,7 @@ function Portfolio() {
   const saveRef = useRef(savePosition.mutateAsync);
   saveRef.current = savePosition.mutateAsync;
 
-  const drag = useFolderDrag(sceneRef, dockRef, {
+  const drag = useFolderDrag(sceneRef, mascotRef, {
     serverOffsets,
     // The rejection is passed through on purpose: the hook needs to see a failed
     // save so it can keep the folder where this visitor dropped it.
@@ -964,13 +1001,10 @@ function Portfolio() {
   return (
     <main
       ref={sceneRef}
-      className={`relative min-h-[100dvh] w-full bg-[var(--train-sky)] text-[var(--desktop-ink)] selection:bg-[var(--desktop-selection)] selection:text-[var(--desktop-ink)] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
+      className={`relative flex min-h-[100dvh] w-full flex-col bg-[var(--train-sky)] text-[var(--desktop-ink)] selection:bg-[var(--desktop-selection)] selection:text-[var(--desktop-ink)] ${isMobile ? 'overflow-x-hidden' : 'overflow-hidden'}`}
       style={{
         fontFamily: "'Space Grotesk', sans-serif",
         ...sceneVars,
-        // Touch targets don't scale with the viewport — the mobile dock is fixed
-        // at a comfortable finger size.
-        ...(isMobile ? ({ '--dock-icon': '52px' } as CSSProperties) : null),
       }}
       data-testid="page-portfolio"
     >
@@ -979,7 +1013,7 @@ function Portfolio() {
 
       {isMobile ? (
         /* ---------------- Mobile: header + vertically scrolling folder grid ---------------- */
-        <div className="relative z-10 flex flex-col px-4 pb-[calc(250px+env(safe-area-inset-bottom))] pt-[calc(18px+env(safe-area-inset-top))]">
+        <div className="relative z-10 flex flex-col px-4 pb-10 pt-[calc(18px+env(safe-area-inset-top))]">
           <header className="flex items-center justify-between">
             <DblabsWordmark />
           </header>
@@ -988,6 +1022,7 @@ function Portfolio() {
             <div>
               <p className="text-[42px] font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42] drop-shadow-[0_1px_2px_rgba(255,255,255,.7)]" style={{ fontFamily: "'Minasans', sans-serif" }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2 text-[10px] tracking-[.2em] text-[#0b1b42]/60">Agentic Build Portfolio</p>
+              <ContactLinks align="start" />
             </div>
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="h-[132px] w-auto shrink-0 object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" data-testid="img-engineer" />
           </div>
@@ -1049,6 +1084,7 @@ function Portfolio() {
             <div>
               <p className="font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42]" style={{ fontFamily: "'Minasans', sans-serif", fontSize: 'clamp(32px, min(5.2vw, 9vh), 92px)' }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2.5 tracking-[.22em] text-[#0b1b42]/50" style={{ fontSize: 'clamp(9px, min(.85vw, 1.5vh), 14px)' }}>Agentic Build Portfolio</p>
+              <ContactLinks align="end" />
             </div>
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="w-auto object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" style={{ height: 'clamp(96px, min(14.6vw, 24vh), 260px)' }} data-testid="img-engineer" />
           </div>
@@ -1128,85 +1164,12 @@ function Portfolio() {
         </>
       )}
 
-      <HomeMascot suspended={active != null} logo={<span>DBLABS</span>} />
+      {/* The bottom of the scene is now the mascot stage — an in-flow strip the
+          trio performs in. The drag hook keeps dropped folders out of it. */}
+      <section ref={mascotRef} className="mascot-host relative z-20 mt-auto w-full" data-testid="mascot-stage">
+        <HomeMascot suspended={active != null} />
+      </section>
 
-      {/* Dock — a floating macOS dock on desktop, a fixed touch bar on mobile.
-          Apple's glass is not one blur: it is a refracting slab (blur +
-          saturation + brightness), a bright top specular sweep, a hairline
-          inner rim that fades toward the bottom, and a soft contact shadow. */}
-      <div
-        ref={dockRef}
-        data-mascot-dock
-        className={`group/dock isolate z-40 flex items-center rounded-[26px] ${
-          isMobile
-            ? 'fixed bottom-[calc(14px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 gap-4 px-5 py-2.5'
-            : 'absolute bottom-7 left-1/2 -translate-x-1/2 gap-3 px-5 py-3 md:bottom-8'
-        }`}
-        style={{
-          background:
-            'linear-gradient(180deg, rgba(255,255,255,.58) 0%, rgba(255,255,255,.30) 42%, rgba(226,232,242,.26) 100%)',
-          backdropFilter: 'blur(32px) saturate(190%) brightness(1.06)',
-          boxShadow:
-            '0 1px 0 0 rgba(255,255,255,.75) inset, 0 -1px 0 0 rgba(255,255,255,.18) inset, 0 0 0 .5px rgba(255,255,255,.55), 0 0 0 1px rgba(20,32,58,.10), 0 22px 44px -12px rgba(16,28,54,.42), 0 6px 14px -6px rgba(16,28,54,.30)',
-        }}
-      >
-        {/* Specular sweep across the top third — the giveaway of real Apple glass. */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[26px]"
-          style={{
-            background:
-              'radial-gradient(120% 90% at 50% -30%, rgba(255,255,255,.85) 0%, rgba(255,255,255,.30) 38%, rgba(255,255,255,0) 68%)',
-            maskImage: 'linear-gradient(180deg, #000 0%, transparent 78%)',
-          }}
-        />
-        {/* Faint edge chromatic lift so the rim reads as glass, not plastic. */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 rounded-[26px] opacity-60"
-          style={{
-            background:
-              'linear-gradient(100deg, rgba(120,180,255,.22) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 74%, rgba(255,170,210,.18) 100%)',
-          }}
-        />
-
-        <div className="group/tile relative shrink-0" style={{ width: 'var(--dock-icon)', height: 'var(--dock-icon)' }} data-testid="dock-profile">
-          {!isMobile && (
-            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[9px] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 backdrop-blur-xl backdrop-saturate-150 transition-all duration-200 ease-out group-hover/tile:translate-y-0 group-hover/tile:opacity-100" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48))', boxShadow: '0 0 0 .5px rgba(255,255,255,.7), 0 0 0 1px rgba(20,32,58,.10), 0 8px 20px -6px rgba(16,28,54,.35)' }}>Daniel Barr</span>
-          )}
-          <div className={`h-full w-full overflow-hidden rounded-[22.37%] border border-white/70 bg-gradient-to-b from-[#eef2f8] to-[#cfd8e6] shadow-[0_2px_5px_rgba(0,0,0,.2)] ${isMobile ? '' : 'transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] hover:-translate-y-3 hover:scale-[1.35]'}`}>
-            <img src={`${BASE}images/avatar.png`} alt="Daniel Barr" className="h-full w-full object-cover object-top" />
-          </div>
-        </div>
-        <span className="w-px rounded-full" style={{ height: 'calc(var(--dock-icon) * .75)', background: 'linear-gradient(180deg, rgba(20,32,58,0), rgba(20,32,58,.18) 50%, rgba(20,32,58,0))', boxShadow: '1px 0 0 rgba(255,255,255,.55)' }} />
-
-        {(Object.keys(DOCK_LINKS) as (keyof typeof DOCK_LINKS)[]).map((kind) => {
-          const link = DOCK_LINKS[kind];
-          return (
-            /* The label sits in this untransformed wrapper, not in the anchor:
-               inside the anchor it would inherit the icon's hover scale and
-               drift away from the dock. The group is named per icon so hovering
-               the dock itself doesn't light up all three labels at once. */
-            <div key={kind} className="group/dock-link relative shrink-0" style={{ width: 'var(--dock-icon)', height: 'var(--dock-icon)' }}>
-              {!isMobile && (
-                <span className="pointer-events-none absolute -top-11 left-1/2 z-10 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[9px] px-2.5 py-1 text-[12px] font-medium text-[#1d1d1f] opacity-0 backdrop-blur-xl backdrop-saturate-150 transition-all duration-200 ease-out group-hover/dock-link:translate-y-0 group-hover/dock-link:opacity-100" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48))', boxShadow: '0 0 0 .5px rgba(255,255,255,.7), 0 0 0 1px rgba(20,32,58,.10), 0 8px 20px -6px rgba(16,28,54,.35)' }}>
-                  {link.label}
-                </span>
-              )}
-              <a
-                href={link.href}
-                {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                aria-label={link.label}
-                data-testid={`button-dock-${kind}`}
-                className={`relative block h-full w-full rounded-[22.37%] shadow-[0_2px_5px_rgba(0,0,0,.2)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${isMobile ? 'active:scale-95 transition-transform duration-150' : "transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] after:absolute after:-bottom-[5px] after:left-1/2 after:h-[3px] after:w-[3px] after:-translate-x-1/2 after:rounded-full after:bg-black/45 after:content-[''] hover:-translate-y-3 hover:scale-[1.35]"}`}
-              >
-
-                <DockIcon kind={kind} />
-              </a>
-            </div>
-          );
-        })}
-      </div>
 
       {activeProject && (
         <LaunchStage
