@@ -16,7 +16,7 @@ for(const viewport of widths)for(const variant of [0,1,2]){
     for(let step=0;step<=240;step++){
       const t=step/240,poses=ACTORS.map(a=>sample(scene.points[a],t)),boxes=poses.map((p,i)=>bounds(p,layout.size,ACTORS[i]!));checked++;
       for(let i=0;i<3;i++){
-        const box=boxes[i],visible=box.right>stage.left&&box.left<stage.right;
+        const box=boxes[i]!,visible=box.right>stage.left&&box.left<stage.right;
         if(!visible)continue;
         check(box.bottom<=stage.bottom+1,`${viewport}/${variant} ${scene.name}@${t.toFixed(3)} ${ACTORS[i]} below floor band ${box.bottom-stage.bottom}`);
         if(scene.name!=='climb')check(box.top>=stage.top-1,`${viewport}/${variant} ${scene.name}@${t.toFixed(3)} ${ACTORS[i]} above stage ${stage.top-box.top}`);
