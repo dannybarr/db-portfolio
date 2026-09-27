@@ -61,7 +61,7 @@ export function HomeMascot({suspended=false,logo,sceneRequest,onSceneChange}:Hom
       const readings=ACTORS.map(a=>({a,node:nodes.current[a]!,rect:nodes.current[a]!.getBoundingClientRect()}));
       for(const {a,node,rect} of readings){const dx=e.clientX-(rect.left+rect.width/2),dy=e.clientY-(rect.top+rect.height*.35),d=Math.hypot(dx,dy),fall=Math.max(0,1-d/320),den=Math.max(d,1);
         node.style.setProperty('--gx',`${dx/den*fall*2}px`);node.style.setProperty('--gy',`${dy/den*fall*1.6}px`);node.style.setProperty('--lean',`${dx/den*fall*2}deg`);
-        if(a==='grok'&&d<110&&now-startleTime>5500){startleTime=now;node.dataset.startled='true';clearTimeout(startleTimer);startleTimer=setTimeout(()=>{delete node.dataset.startled;},620);}
+        if(a==='grok'&&d<110&&now-startleTime>5500){startleTime=now;node.dataset['startled']='true';clearTimeout(startleTimer);startleTimer=setTimeout(()=>{delete node.dataset['startled'];},620);}
       }
     }
     function scroll(){if(scrollFrame||pauses())return;scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;const now=performanceNow(),y=window.scrollY,v=(y-scrollLast)/Math.max(16,now-scrollAt);scrollLast=y;scrollAt=now;

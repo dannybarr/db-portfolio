@@ -12,7 +12,7 @@ for(const viewport of widths)for(const variant of [0,1,2]){
   for(let i=0;i<=60;i++){const t=i/200,p=sample(penalty.points.claude,t);check(Math.abs(p.y-layout.floor)<.001&&p.r===0,`Keeper moved before kick at ${t}`);}
   for(let n=0;n<timeline.length;n++){
     const scene=timeline[n]!,next=timeline[(n+1)%timeline.length]!;
-    for(const track of TRACKS){const last=scene.points[track].at(-1)!,first=next.points[track][0];for(const key of ['x','y','r','sx','sy','o'] as const)check(Math.abs(last[key]-first[key])<.001,`${viewport}/${variant} ${scene.name} seam ${track}.${key}: ${last[key]} != ${first[key]}`);}
+    for(const track of TRACKS){const last=scene.points[track].at(-1)!,first=next.points[track][0]!;for(const key of ['x','y','r','sx','sy','o'] as const)check(Math.abs(last[key]-first[key])<.001,`${viewport}/${variant} ${scene.name} seam ${track}.${key}: ${last[key]} != ${first[key]}`);}
     for(let step=0;step<=240;step++){
       const t=step/240,poses=ACTORS.map(a=>sample(scene.points[a],t)),boxes=poses.map((p,i)=>bounds(p,layout.size,ACTORS[i]!));checked++;
       for(let i=0;i<3;i++){
