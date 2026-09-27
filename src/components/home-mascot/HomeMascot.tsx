@@ -27,7 +27,7 @@ export function HomeMascot({suspended=false,logo,sceneRequest,onSceneChange}:Hom
     function play(next:number,time=0){
       if(disposed||!timeline.length)return;
       animations.current.forEach(a=>{a.onfinish=null;a.cancel();});animations.current=[];
-      index=motionReduced?0:(next+timeline.length)%timeline.length;const scene=timeline[index];
+      index=motionReduced?0:(next+timeline.length)%timeline.length;const scene=timeline[index]!;
       perf.dataset.activity='';void perf.offsetWidth;perf.style.setProperty('--vl-dur',`${scene.duration}ms`);perf.dataset.activity=scene.name;
       for(const t of TRACKS){const node=nodes.current[t];if(!node)continue;const a=node.animate(scene.tracks[t],{duration:scene.duration,fill:'both',easing:'linear'});a.pause();a.currentTime=motionReduced?0:Math.min(time,scene.duration-1);animations.current.push(a);}
       // One shared document timeline start prevents sibling-track clock drift.
@@ -45,14 +45,14 @@ export function HomeMascot({suspended=false,logo,sceneRequest,onSceneChange}:Hom
       perf.style.setProperty('--actor-size',`${geometry.size}px`);perf.style.setProperty('--ball-size',`${geometry.ballSize}px`);perf.style.setProperty('--stage-width',`${st.width}px`);perf.style.setProperty('--goal-width',`${Math.min(120,st.width*.2)}px`);
       const previous=timeline[index]?.name,progress=(Number(animations.current[0]?.currentTime)||0)/(timeline[index]?.duration||1),oldIndex=index;
       timeline=buildTimeline(geometry);let next=timeline.findIndex(s=>s.name===previous);
-      if(next<0){next=previous==='climb'?timeline.findIndex(s=>s.name==='steal'):Math.min(oldIndex,timeline.length-1);play(next);}else play(next,progress*timeline[next].duration);
+      if(next<0){next=previous==='climb'?timeline.findIndex(s=>s.name==='steal'):Math.min(oldIndex,timeline.length-1);play(next);}else play(next,progress*timeline[next]!.duration);
     }
     function queueMeasure(){cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(measure);}
     const resize=new ResizeObserver(queueMeasure);resize.observe(host);resize.observe(band);host.querySelectorAll('[data-mascot-avoid]').forEach(n=>resize.observe(n));
     const mutation=new MutationObserver(records=>{if(records.some(r=>Array.from(r.addedNodes).concat(Array.from(r.removedNodes)).some(n=>n instanceof Element&&(n.matches('[data-mascot-avoid]')||n.querySelector('[data-mascot-avoid]'))))){
       resize.disconnect();resize.observe(host);resize.observe(band);host.querySelectorAll('[data-mascot-avoid]').forEach(n=>resize.observe(n));queueMeasure();
     }});mutation.observe(host,{childList:true,subtree:true});
-    const visibility=new IntersectionObserver(entries=>{intersecting=entries[0].isIntersecting;sync();});visibility.observe(host);
+    const visibility=new IntersectionObserver(entries=>{intersecting=entries[0]?.isIntersecting??true;sync();});visibility.observe(host);
     const mediaChange=()=>{motionReduced=media.matches;setReduced(motionReduced);play(0);};media.addEventListener('change',mediaChange);setReduced(motionReduced);
     document.addEventListener('visibilitychange',sync);
     function neutral(){for(const a of ACTORS){const node=nodes.current[a];node?.style.setProperty('--gx','0px');node?.style.setProperty('--gy','0px');node?.style.setProperty('--lean','0deg');}}
