@@ -21,14 +21,14 @@ export function HomeMascot({suspended=false,logo,sceneRequest,onSceneChange}:Hom
     let timeline:Segment[]=[],index=0,geometry:Layout,resizeFrame=0,pointerTime=0,startleTime=-Infinity,scrollFrame=0,scrollLast=window.scrollY,scrollAt=performanceNow();
     let startleTimer:ReturnType<typeof setTimeout>|undefined,decayTimer:ReturnType<typeof setTimeout>|undefined;
     const pauses=()=>settings.current.manual||settings.current.suspended||motionReduced||document.hidden||!intersecting;
-    function sync(){const paused=pauses();perf.dataset.paused=String(paused);perf.dataset.reduced=String(motionReduced);setAutomatic(document.hidden||!intersecting||settings.current.suspended);
+    function sync(){const paused=pauses();perf.dataset['paused']=String(paused);perf.dataset['reduced']=String(motionReduced);setAutomatic(document.hidden||!intersecting||settings.current.suspended);
       animations.current.forEach(a=>{if(paused)a.pause();else a.play();});
     }
     function play(next:number,time=0){
       if(disposed||!timeline.length)return;
       animations.current.forEach(a=>{a.onfinish=null;a.cancel();});animations.current=[];
       index=motionReduced?0:(next+timeline.length)%timeline.length;const scene=timeline[index]!;
-      perf.dataset.activity='';void perf.offsetWidth;perf.style.setProperty('--vl-dur',`${scene.duration}ms`);perf.dataset.activity=scene.name;
+      perf.dataset['activity']='';void perf.offsetWidth;perf.style.setProperty('--vl-dur',`${scene.duration}ms`);perf.dataset['activity']=scene.name;
       for(const t of TRACKS){const node=nodes.current[t];if(!node)continue;const a=node.animate(scene.tracks[t],{duration:scene.duration,fill:'both',easing:'linear'});a.pause();a.currentTime=motionReduced?0:Math.min(time,scene.duration-1);animations.current.push(a);}
       // One shared document timeline start prevents sibling-track clock drift.
       if(!pauses()){const now=document.timeline.currentTime as number;animations.current.forEach(a=>{a.play();a.startTime=now-time;});}
