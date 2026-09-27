@@ -185,7 +185,7 @@ export function eased(t:number,ease:string):number {
 }
 export function sample(points:Point[],t:number):Pose {
   let i=0;while(i<points.length-2&&points[i+1].offset<t)i++;
-  const a=points[i],b=points[i+1]||a;const z=b.offset===a.offset?0:eased(Math.max(0,Math.min(1,(t-a.offset)/(b.offset-a.offset))),a.easing);
+  const a=points[i]!,b=points[i+1]||a;const z=b.offset===a.offset?0:eased(Math.max(0,Math.min(1,(t-a.offset)/(b.offset-a.offset))),a.easing);
   return Object.fromEntries(['x','y','r','sx','sy','o'].map(k=>[k,a[k as keyof Pose]+(b[k as keyof Pose]-a[k as keyof Pose])*z])) as Pose;
 }
 export const INK_BOUNDS:Record<Actor,Rect>={grok:{left:.05,right:.95,top:.05,bottom:.95},codex:{left:.125,right:.875,top:.05,bottom:.95},claude:{left:.05,right:.95,top:.228,bottom:.95}};
