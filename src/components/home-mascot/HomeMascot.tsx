@@ -1,6 +1,7 @@
 import {useEffect,useId,useRef,useState,type ReactNode} from 'react';
 import {Claude,Codex,Grok,Football,Pitch,Goal,PadelCourt,Cafe,Ladder,ClimbObject} from './mascots';
 import {ACTORS,LOOK,TRACKS,buildTimeline,measureLayout,type Layout,type Track,type Segment} from './mascotChoreo';
+import './mascot.css';
 
 export type HomeMascotProps={suspended?:boolean;logo?:ReactNode;sceneRequest?:{name:string;token:number};onSceneChange?:(name:string,label:string)=>void};
 /** Last in-flow child of .mascot-host. Import mascot.css once in your app. */
