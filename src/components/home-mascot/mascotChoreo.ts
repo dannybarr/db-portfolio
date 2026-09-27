@@ -179,12 +179,13 @@ export function buildTimeline(g:Layout):Segment[] {
 export function eased(t:number,ease:string):number {
   if(ease==='linear')return t;
   const v=ease.match(/[\d.]+/g)?.map(Number);if(!v||v.length!==4)return t;
+  const [x1,y1,x2,y2]=v as [number,number,number,number];
   const curve=(u:number,a:number,b:number)=>3*(1-u)**2*u*a+3*(1-u)*u*u*b+u**3;
-  let lo=0,hi=1;for(let i=0;i<35;i++){const m=(lo+hi)/2;if(curve(m,v[0],v[2])<t)lo=m;else hi=m;}
-  return curve((lo+hi)/2,v[1],v[3]);
+  let lo=0,hi=1;for(let i=0;i<35;i++){const m=(lo+hi)/2;if(curve(m,x1,x2)<t)lo=m;else hi=m;}
+  return curve((lo+hi)/2,y1,y2);
 }
 export function sample(points:Point[],t:number):Pose {
-  let i=0;while(i<points.length-2&&points[i+1].offset<t)i++;
+  let i=0;while(i<points.length-2&&points[i+1]!.offset<t)i++;
   const a=points[i]!,b=points[i+1]||a;const z=b.offset===a.offset?0:eased(Math.max(0,Math.min(1,(t-a.offset)/(b.offset-a.offset))),a.easing);
   return Object.fromEntries(['x','y','r','sx','sy','o'].map(k=>[k,a[k as keyof Pose]+(b[k as keyof Pose]-a[k as keyof Pose])*z])) as Pose;
 }
