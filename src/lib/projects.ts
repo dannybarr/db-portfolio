@@ -1,62 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { PROJECTS, type ProjectContent } from "@/lib/project-content";
 
-/** A desktop tile's record. Mirrors the `projects` table. */
-export type Project = {
-  id: number;
-  code: string;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  year: number;
-  sortOrder: number;
-  useCases: string[];
-  url: string | null;
-  previewImage: string | null;
-  videoUrl: string | null;
-  iconImage: string | null;
+/** A desktop tile's record: its content from the repo, plus where it sits. */
+export type Project = ProjectContent & {
   /** Where a visitor dropped this folder, as a fraction of the scene box. */
   positionX: number | null;
   positionY: number | null;
 };
 
-type Row = {
+/** The only part of a project Supabase still owns. */
+type PositionRow = {
   id: number;
-  code: string;
-  title: string;
-  description: string;
-  category: string;
-  status: string;
-  year: number;
-  sort_order: number;
-  use_cases: string[] | null;
-  url: string | null;
-  preview_image: string | null;
-  video_url: string | null;
-  icon_image: string | null;
   position_x: number | null;
   position_y: number | null;
 };
-
-const toProject = (row: Row): Project => ({
-  id: row.id,
-  code: row.code,
-  title: row.title,
-  description: row.description,
-  category: row.category,
-  status: row.status,
-  year: row.year,
-  sortOrder: row.sort_order,
-  useCases: row.use_cases ?? [],
-  url: row.url,
-  previewImage: row.preview_image,
-  videoUrl: row.video_url,
-  iconImage: row.icon_image,
-  positionX: row.position_x,
-  positionY: row.position_y,
-});
 
 export const projectsQueryKey = ["projects"] as const;
 
@@ -64,12 +23,16 @@ export function useListProjects() {
   return useQuery({
     queryKey: projectsQueryKey,
     queryFn: async (): Promise<Project[]> => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("sort_order", { ascending: true });
+      const { data, error } = await supabase.from("projects").select("id, position_x, position_y");
       if (error) throw error;
-      return ((data ?? []) as Row[]).map(toProject);
+      const positions = new Map(((data ?? []) as PositionRow[]).map((row) => [row.id, row]));
+      return [...PROJECTS]
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((content) => ({
+          ...content,
+          positionX: positions.get(content.id)?.position_x ?? null,
+          positionY: positions.get(content.id)?.position_y ?? null,
+        }));
     },
   });
 }

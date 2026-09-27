@@ -3,6 +3,7 @@ import type { CSSProperties, RefObject } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useListProjects, useUpdateProjectPosition } from '@/lib/projects';
 import type { Project as ApiProject } from '@/lib/projects';
+import { FOLDER_COLORS } from '@/lib/project-content';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
@@ -57,25 +58,43 @@ const scatter: Scatter[] = [
   { x: '86%', y: '85%', onDark: true },
 ];
 
-function FolderThumb({ index }: { index: number }) {
+function FolderThumb({ index, project }: { index: number; project: ApiProject }) {
   const id = (n: string) => `${n}-${index}`;
   const BACK = 'M6 22V10C6 6 8.5 4 12 4H33C36 4 38 5 39 8L44 15C45 16.5 47 17 49 17H90C94 17 96 19 96 23V74C96 78 94 80 90 80H10C6 80 4 78 4 74Z';
   const FRONT = 'M3 27C3 23 5.5 21 9 21H91C94.5 21 97 23 97 27V74C97 78 94.5 80 91 80H9C5.5 80 3 78 3 74Z';
+  const tint = FOLDER_COLORS[project.color];
   return (
     <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
         <linearGradient id={id('frontGradient')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--folder-front-top)" />
-          <stop offset="100%" stopColor="var(--folder-front-bottom)" />
+          <stop offset="0%" stopColor={tint.frontTop} />
+          <stop offset="100%" stopColor={tint.frontBottom} />
         </linearGradient>
         <linearGradient id={id('backGradient')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--folder-back-top)" />
-          <stop offset="100%" stopColor="var(--folder-back-bottom)" />
+          <stop offset="0%" stopColor={tint.backTop} />
+          <stop offset="100%" stopColor={tint.backBottom} />
         </linearGradient>
+        {/* Seats the art on the folder rather than floating above it. */}
+        <filter id={id('artShadow')} x="-20%" y="-20%" width="140%" height="150%">
+          <feDropShadow dx="0" dy="0.8" stdDeviation="0.9" floodColor="#000" floodOpacity=".22" />
+        </filter>
       </defs>
       <path d={BACK} fill={`url(#${id('backGradient')})`} />
       <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
       <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeWidth="1.5" />
+      {/* Front-of-folder art. It fills the face (x 3–97, y 21–80) inside a
+          slim, even margin, scaled to fit so the whole image always shows. */}
+      {project.iconImage && (
+        <image
+          href={`${BASE}images/${project.iconImage}`}
+          x="10"
+          y="26"
+          width="80"
+          height="49"
+          preserveAspectRatio="xMidYMid meet"
+          filter={`url(#${id('artShadow')})`}
+        />
+      )}
     </svg>
   );
 }
@@ -1011,7 +1030,7 @@ function Portfolio() {
                     data-testid={`button-project-${project.id}`}
                   >
                     <div data-folder-art className="folder-art relative">
-                      <FolderThumb index={i} />
+                      <FolderThumb index={i} project={project} />
                     </div>
                     <span className="file-label" data-testid={`text-project-title-${project.id}`}>{project.title}</span>
                   </button>
@@ -1097,7 +1116,7 @@ function Portfolio() {
                 data-testid={`button-project-${project.id}`}
               >
                 <div data-folder-art className="folder-art relative" style={{ width: ART_W, height: ART_H }}>
-                  <FolderThumb index={i} />
+                  <FolderThumb index={i} project={project} />
                 </div>
                 <span
                   className="file-label"
