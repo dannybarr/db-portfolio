@@ -10,3 +10,4 @@
 - [x] Add dock mascot loop: football, penalties, padel, desks, pub, and ladder dock climb
 - [x] Remove dock; move contact links under "Agentic Build Portfolio"
 - [x] Replace bottom animation with mascot-artifact revision 2 loop
+- [x] Compact project pop-ups into copy, screenshot, and use-case zones
