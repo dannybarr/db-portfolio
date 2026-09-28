@@ -538,13 +538,12 @@ function AppShot({ project, className }: { project: ApiProject; className?: stri
 type StageState = 'open' | 'leaving';
 
 /** Window chrome, matched to the reference: a macOS document window.
- *  Light title bar with the three lights, then the record itself — title,
- *  body copy, a centred meta grid — and the preview screenshot beneath it. */
+ *  Light title bar with the three lights, then a compact editorial layout —
+ *  project copy on the left, preview and use cases on the right. */
 const WIN_INK = '#111111';
 const WIN_BODY = '#6e6e6e';
 const WIN_META = '#5f5f5f';
 const META_LABEL = 'text-[10px] font-bold uppercase leading-none tracking-[0.09em]';
-const META_VALUE = 'mt-[7px] text-[14px] font-normal leading-snug';
 
 function LaunchStage({
   project,
@@ -568,18 +567,6 @@ function LaunchStage({
   const [videoExpanded, setVideoExpanded] = useState(false);
   const titleId = `launch-stage-title-${project.id}`;
   const isVideo = Boolean(project.videoUrl);
-  // A tall, phone-shaped screenshot sits in a slim column beside the text on
-  // desktop rather than full-width beneath it, which would make the window
-  // enormously tall for a narrow strip of image. Mobile always stacks.
-  const portraitShot = usePortraitShot(isVideo ? null : project.previewImage);
-  const sideBySide = portraitShot && !mobile;
-
-  const meta = [
-    { label: 'Year', value: project.year ? String(project.year) : '' },
-    { label: 'Project Type', value: project.category },
-    { label: 'Status', value: project.status },
-    { label: 'Credits', value: 'Daniel Barr' },
-  ].filter((entry) => entry.value);
 
   // The window zooms out of the tile that was clicked — short enough that the
   // file still reads as opening straight away.
@@ -730,17 +717,19 @@ function LaunchStage({
           </span>
         </div>
 
-        {/* Record — title, body, meta, then the screenshot. The window scrolls
-            so the whole screenshot can be read, however tall it is. */}
-        <div className={`win-scroll flex min-h-0 flex-1 overflow-y-auto overscroll-contain ${sideBySide ? 'flex-row items-center' : 'flex-col'}`}>
-          <div
-            className={`window-copy ${sideBySide ? 'min-w-0 flex-1 pl-[30px] pr-[6px] py-[26px]' : 'shrink-0'} ${
-              sideBySide ? '' : mobile ? 'px-[22px] pb-[22px] pt-[22px]' : 'px-[30px] pb-[26px] pt-[26px]'
-            }`}
-          >
+        {/* Compact record: copy and link on the left; screenshot and use cases
+            stacked on the right. Mobile keeps the same reading order. */}
+        <div
+          className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
+            mobile
+              ? 'flex flex-col gap-[22px] px-[22px] pb-[calc(24px+env(safe-area-inset-bottom))] pt-[22px]'
+              : 'grid grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] gap-[28px] p-[30px]'
+          }`}
+        >
+          <div className="window-copy min-w-0">
             <h2
               id={titleId}
-              className={`font-bold leading-[1.02] tracking-[-0.035em] ${mobile ? 'text-[34px]' : 'text-[clamp(34px,4.6vw,50px)]'}`}
+              className={`font-bold leading-[1.02] tracking-[-0.035em] ${mobile ? 'text-[34px]' : 'text-[clamp(34px,4vw,48px)]'}`}
               data-testid="text-detail-title"
             >
               {project.title}
@@ -756,29 +745,8 @@ function LaunchStage({
               </p>
             )}
 
-            <dl
-              className={`mx-auto grid w-full max-w-[600px] grid-cols-2 text-center ${
-                mobile ? 'mt-[24px] gap-x-[24px] gap-y-[18px]' : 'mt-[28px] gap-x-[40px] gap-y-[20px]'
-              }`}
-              data-testid="text-detail-meta"
-            >
-              {meta.map((entry) => (
-                <div key={entry.label}>
-                  <dt className={META_LABEL} style={{ color: '#1a1a1a' }}>{entry.label}</dt>
-                  <dd className={META_VALUE} style={{ color: WIN_META }}>{entry.value}</dd>
-                </div>
-              ))}
-
-              {project.useCases.length > 0 && (
-                <div className="col-span-2">
-                  <dt className={META_LABEL} style={{ color: '#1a1a1a' }}>Use Cases</dt>
-                  <dd className={META_VALUE} style={{ color: WIN_META }}>{project.useCases.join('  ·  ')}</dd>
-                </div>
-              )}
-            </dl>
-
             {project.url && (
-              <div className="mt-[24px] text-center">
+              <div className="mt-[26px]">
                 <a
                   href={project.url}
                   target="_blank"
@@ -795,32 +763,35 @@ function LaunchStage({
             )}
           </div>
 
-          {/* Preview screenshot — inset from the window edge, corners rounded */}
-          <div
-            className={
-              sideBySide
-                ? 'flex w-[268px] shrink-0 items-center justify-center py-[26px] pl-[18px] pr-[30px]'
-                : `shrink-0 ${mobile ? 'px-[18px] pb-[calc(20px+env(safe-area-inset-bottom))]' : 'px-[30px] pb-[30px]'}`
-            }
-          >
-            {/* A film keeps a fixed 16:9 slot; a screenshot keeps its own shape.
+          <div className="flex min-w-0 flex-col gap-[24px]">
+            {/* A film keeps a fixed 16:9 slot; screenshots stay fully visible.
                 The video's box must not be clipped here — it expands out of it. */}
-            <div className={`relative rounded-[14px] bg-[#f2f2f2] ${sideBySide ? 'flex w-fit max-w-full items-center justify-center' : 'w-full'} ${isVideo || !project.previewImage ? 'aspect-video' : ''} ${isVideo ? '' : 'overflow-hidden ring-1 ring-black/[.07]'}`}>
+            <div className={`relative flex w-full items-center justify-center rounded-[14px] bg-[#f2f2f2] ${isVideo || !project.previewImage ? 'aspect-video' : 'min-h-[150px] overflow-hidden ring-1 ring-black/[.07]'} ${isVideo ? '' : ''}`}>
               {isVideo ? (
                 <VideoShot project={project} panelRef={panelRef} stage={stage} onExpandedChange={setVideoExpanded} />
               ) : project.previewImage ? (
                 <AppShot
                   project={project}
-                  className={
-                    sideBySide
-                      ? 'block h-auto max-h-[min(520px,66dvh)] w-auto max-w-full bg-[#f2f2f2]'
-                      : undefined
-                  }
+                  className="block h-auto max-h-[min(290px,40dvh)] w-auto max-w-full bg-[#f2f2f2]"
                 />
               ) : (
                 <MockDashboard project={project} index={index} />
               )}
             </div>
+
+            {project.useCases.length > 0 && (
+              <section className="border-t border-[var(--window-divider)] pt-[20px]" data-testid="text-detail-use-cases">
+                <h3 className={META_LABEL}>Use Cases</h3>
+                <ul className="mt-[11px] grid gap-[9px]" style={{ color: WIN_META }}>
+                  {project.useCases.map((useCase) => (
+                    <li key={useCase} className="grid grid-cols-[7px_minmax(0,1fr)] gap-[9px] text-[13px] font-normal leading-[1.42]">
+                      <span className="mt-[7px] h-[3px] w-[3px] rounded-full bg-current" aria-hidden="true" />
+                      <span>{useCase}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         </div>
       </div>
