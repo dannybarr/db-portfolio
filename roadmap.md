@@ -11,3 +11,4 @@
 - [x] Remove dock; move contact links under "Agentic Build Portfolio"
 - [x] Replace bottom animation with mascot-artifact revision 2 loop
 - [x] Compact project pop-ups into copy, screenshot, and use-case zones
+- [x] Reduce the bottom performance to football kick-ups and free the full folder drag area

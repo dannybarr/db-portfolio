@@ -873,10 +873,6 @@ function Portfolio() {
 
   // The desktop scene doubles as the drag surface for the folder tiles.
   const sceneRef = useRef<HTMLElement | null>(null);
-  // The mascot stage replaced the dock at the bottom of the scene; folders
-  // still keep clear of it while dragging.
-  const mascotRef = useRef<HTMLElement | null>(null);
-
   // The layout lives on the server, so an arrangement one visitor makes is the
   // one everybody sees. A project with no saved position keeps its scatter slot.
   const serverOffsets = useMemo(() => {
@@ -894,7 +890,7 @@ function Portfolio() {
   const saveRef = useRef(savePosition.mutateAsync);
   saveRef.current = savePosition.mutateAsync;
 
-  const drag = useFolderDrag(sceneRef, mascotRef, {
+  const drag = useFolderDrag(sceneRef, {
     serverOffsets,
     // The rejection is passed through on purpose: the hook needs to see a failed
     // save so it can keep the folder where this visitor dropped it.
@@ -1136,9 +1132,8 @@ function Portfolio() {
         </>
       )}
 
-      {/* The bottom of the scene is now the mascot stage — an in-flow strip the
-          trio performs in. The drag hook keeps dropped folders out of it. */}
-      <section ref={mascotRef} className="mascot-host relative z-20 mt-auto w-full" data-testid="mascot-stage">
+      {/* Decorative only: the kick-up loop never captures input or reserves drag space. */}
+      <section className="mascot-host z-[4]" data-testid="mascot-stage">
         <HomeMascot suspended={active != null} />
       </section>
 

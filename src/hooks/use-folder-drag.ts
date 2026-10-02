@@ -66,9 +66,6 @@ type DragSession = {
   maxDx: number;
   minDy: number;
   maxDy: number;
-  /** Element box at grab time, used for dock avoidance. */
-  rect: DOMRect;
-  dockRect: DOMRect | null;
   dx: number;
   dy: number;
   moved: boolean;
@@ -82,7 +79,6 @@ type DragSession = {
  */
 export function useFolderDrag(
   sceneRef: RefObject<HTMLElement | null>,
-  dockRef: RefObject<HTMLElement | null>,
   options?: {
     /** Positions loaded from the server — the source of truth once they arrive. */
     serverOffsets?: Offsets | undefined;
@@ -258,8 +254,6 @@ export function useFolderDrag(
         maxDx: sceneRect.right - EDGE_PAD - rect.right,
         minDy: sceneRect.top + EDGE_PAD - rect.top,
         maxDy: sceneRect.bottom - EDGE_PAD - rect.bottom,
-        rect,
-        dockRect: dockRef.current?.getBoundingClientRect() ?? null,
         dx: 0,
         dy: 0,
         moved: false,
@@ -270,7 +264,7 @@ export function useFolderDrag(
         /* capture is best-effort */
       }
     },
-    [sceneRef, dockRef],
+    [sceneRef],
   );
 
   const onPointerMove = useCallback(
@@ -286,16 +280,6 @@ export function useFolderDrag(
       }
       let dx = clamp(rawX, s.minDx, s.maxDx);
       let dy = clamp(rawY, s.minDy, s.maxDy);
-      // Keep the folder out from behind the floating dock.
-      const dock = s.dockRect;
-      if (dock) {
-        const overlapsX = s.rect.right + dx > dock.left && s.rect.left + dx < dock.right;
-        const overlapsY = s.rect.bottom + dy > dock.top && s.rect.top + dy < dock.bottom;
-        if (overlapsX && overlapsY) {
-          const above = dock.top - EDGE_PAD - s.rect.bottom;
-          if (above >= s.minDy) dy = Math.min(dy, above);
-        }
-      }
       s.dx = dx;
       s.dy = dy;
       write(s.el, s.baseFx * s.sceneW + dx, s.baseFy * s.sceneH + dy);
