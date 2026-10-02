@@ -12,6 +12,7 @@
   --mascot-shadow: 0 2px 5px rgb(27 33 47 / 7%);
   --mascot-motion-ease: cubic-bezier(.22, .68, .24, 1);
   position: relative;
+  pointer-events: none;
   isolation: isolate;
 }
 
@@ -167,8 +168,8 @@
 .mascot-performer[data-startled="true"] .mascot-breathe,
 .mascot-performer[data-startled="1"] .mascot-breathe { animation: mascot-startle 520ms var(--mascot-motion-ease) both; }
 
-.mascot-controls { position: relative; display: flex; justify-content: center; align-items: center; height: 36px; }
-.mascot-controls button {
+.mascot-controls { position: relative; pointer-events: none; display: flex; justify-content: center; align-items: center; height: 36px; }
+.mascot-controls button { pointer-events: auto;
   appearance: none;
   border: 0;
   border-radius: var(--mascot-radius);

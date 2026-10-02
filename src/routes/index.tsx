@@ -129,7 +129,7 @@ function DockIcon({ kind }: { kind: keyof typeof CONTACT_LINKS }) {
  *  restyled as a quiet row of frosted buttons in the same Apple glass style. */
 function ContactLinks({ align }: { align: 'start' | 'end' }) {
   return (
-    <div className={`mt-3 flex items-center gap-2.5 ${align === 'end' ? 'justify-end' : 'justify-start'}`}>
+    <div className={`pointer-events-none mt-3 flex items-center gap-2.5 [&>*]:pointer-events-auto ${align === 'end' ? 'justify-end' : 'justify-start'}`}>
       {(Object.keys(CONTACT_LINKS) as (keyof typeof CONTACT_LINKS)[]).map((kind) => {
         const link = CONTACT_LINKS[kind];
         return (
@@ -1052,7 +1052,7 @@ function Portfolio() {
           <header className="absolute left-8 top-7 z-20 flex items-center gap-4 md:left-12 md:top-9">
             <DblabsWordmark />
           </header>
-          <div className="absolute right-[3vw] top-[3vh] z-20 flex items-start gap-[1.5vw] text-right">
+          <div className="pointer-events-none absolute right-[3vw] top-[3vh] z-20 flex items-start gap-[1.5vw] text-right">
             <div>
               <p className="font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42]" style={{ fontFamily: "'Minasans', sans-serif", fontSize: 'clamp(32px, min(5.2vw, 9vh), 92px)' }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2.5 tracking-[.22em] text-[#0b1b42]/50" style={{ fontSize: 'clamp(9px, min(.85vw, 1.5vh), 14px)' }}>Agentic Build Portfolio</p>
