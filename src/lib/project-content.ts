@@ -1,5 +1,7 @@
 import nfcLogo from "@/assets/nfc-desk-tracker-logo.png.asset.json";
 import nfcPreview from "@/assets/nfc-desk-tracker-preview.png.asset.json";
+import grilledLogo from "@/assets/grilled-folder-art.png.asset.json";
+import grilledPreview from "@/assets/grilled-preview.png.asset.json";
 
 /**
  * Everything a desktop folder says and shows lives here, in the repo. The
@@ -329,9 +331,9 @@ export const PROJECTS: ProjectContent[] = [
       "Practise under pressure with scored feedback",
     ],
     url: "https://grill-mastermind.replit.app/",
-    previewImage: null,
+    previewImage: grilledPreview.url,
     videoUrl: null,
-    iconImage: null,
+    iconImage: grilledLogo.url,
   },
   {
     id: 12,
