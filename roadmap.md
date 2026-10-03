@@ -12,3 +12,4 @@
 - [x] Replace bottom animation with mascot-artifact revision 2 loop
 - [x] Compact project pop-ups into copy, screenshot, and use-case zones
 - [x] Reduce the bottom performance to football kick-ups and free the full folder drag area
+- [x] Restore Claude and Grok for a three-mascot passing kick-up loop
