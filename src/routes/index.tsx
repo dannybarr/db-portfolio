@@ -567,6 +567,27 @@ function LaunchStage({
   const [videoExpanded, setVideoExpanded] = useState(false);
   const titleId = `launch-stage-title-${project.id}`;
   const isVideo = Boolean(project.videoUrl);
+  // Portrait screenshots (business card, NFC tracker) get their own record
+  // layout: use cases sit under the description in the copy column and the
+  // screenshot owns the full height of the right-hand side.
+  const portraitLayout =
+    !isVideo && Boolean(project.previewImage) && usePortraitShot(project.previewImage);
+
+  const useCases =
+    project.useCases.length > 0 ? (
+      <section className="border-t border-[var(--window-divider)] pt-[20px]" data-testid="text-detail-use-cases">
+        <h3 className={META_LABEL}>Use Cases</h3>
+        <ul className="mt-[11px] grid gap-[9px]" style={{ color: WIN_META }}>
+          {project.useCases.map((useCase) => (
+            <li key={useCase} className="grid grid-cols-[7px_minmax(0,1fr)] gap-[9px] text-[13px] font-normal leading-[1.42]">
+              <span className="mt-[7px] h-[3px] w-[3px] rounded-full bg-current" aria-hidden="true" />
+              <span>{useCase}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ) : null;
+
 
   // The window zooms out of the tile that was clicked — short enough that the
   // file still reads as opening straight away.
