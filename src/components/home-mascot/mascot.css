@@ -1,6 +1,7 @@
 .mascot-host {
   --kickup-cycle: 5400ms;
   --kickup-spread: clamp(82px, 18vw, 210px);
+  --kickup-half-spread: clamp(41px, 9vw, 105px);
   position: absolute;
   inset-inline: 0;
   bottom: 0;
@@ -57,7 +58,7 @@
 }
 
 .kickup-player--claude {
-  translate: calc(-1 * var(--kickup-spread)) 0;
+  translate: calc(0px - var(--kickup-spread)) 0;
   animation: kickup-claude-balance var(--kickup-cycle) ease-in-out infinite;
 }
 
@@ -134,16 +135,16 @@
 }
 
 @keyframes kickup-football {
-  0%, 100% { transform: translate(calc(-1 * var(--kickup-spread)), -4px) rotate(0deg); }
-  10% { transform: translate(calc(-.62 * var(--kickup-spread)), -66px) rotate(150deg); }
+  0%, 100% { transform: translate(calc(0px - var(--kickup-spread)), -4px) rotate(0deg); }
+  10% { transform: translate(calc(0px - var(--kickup-half-spread)), -66px) rotate(150deg); }
   23% { transform: translate(-7px, -8px) rotate(340deg); }
   29% { transform: translate(4px, -13px) rotate(430deg); }
-  39% { transform: translate(calc(.48 * var(--kickup-spread)), -70px) rotate(600deg); }
+  39% { transform: translate(var(--kickup-half-spread), -70px) rotate(600deg); }
   52% { transform: translate(var(--kickup-spread), -5px) rotate(790deg); }
-  58% { transform: translate(calc(.95 * var(--kickup-spread)), -12px) rotate(860deg); }
-  71% { transform: translate(calc(.22 * var(--kickup-spread)), -82px) rotate(1080deg); }
-  86% { transform: translate(calc(-.72 * var(--kickup-spread)), -58px) rotate(1320deg); }
-  96% { transform: translate(calc(-1 * var(--kickup-spread)), -6px) rotate(1470deg); }
+  58% { transform: translate(var(--kickup-spread), -12px) rotate(860deg); }
+  71% { transform: translate(var(--kickup-half-spread), -82px) rotate(1080deg); }
+  86% { transform: translate(calc(0px - var(--kickup-half-spread)), -58px) rotate(1320deg); }
+  96% { transform: translate(calc(0px - var(--kickup-spread)), -6px) rotate(1470deg); }
 }
 
 @keyframes kickup-claude-leg {
@@ -200,7 +201,11 @@
 }
 
 @media (max-width: 640px) {
-  .mascot-host { --kickup-spread: clamp(76px, 24vw, 105px); height: 96px; }
+  .mascot-host {
+    --kickup-spread: clamp(76px, 24vw, 105px);
+    --kickup-half-spread: clamp(38px, 12vw, 52px);
+    height: 96px;
+  }
   .kickup-player { bottom: 6px; width: 52px; height: 52px; margin-left: -26px; }
   .kickup-player--grok { width: 48px; height: 48px; margin-left: -24px; }
   .kickup-ball { bottom: 11px; left: calc(50% - 8px); width: 16px; height: 16px; }
