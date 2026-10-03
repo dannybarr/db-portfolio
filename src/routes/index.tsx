@@ -3,7 +3,7 @@ import type { CSSProperties, RefObject } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useListProjects, useUpdateProjectPosition } from '@/lib/projects';
 import type { Project as ApiProject } from '@/lib/projects';
-import { FOLDER_COLORS } from '@/lib/project-content';
+import { FOLDER_COLORS, projectImageUrl } from '@/lib/project-content';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
@@ -86,7 +86,7 @@ function FolderThumb({ index, project }: { index: number; project: ApiProject })
           whole image always shows. */}
       {project.iconImage && (
         <image
-          href={`${BASE}images/${project.iconImage}`}
+          href={projectImageUrl(project.iconImage)}
           x="6"
           y="24.5"
           width="88"
@@ -457,7 +457,7 @@ function VideoShot({
       >
         <video
           ref={videoRef}
-          poster={project.previewImage ? `${BASE}images/${project.previewImage}` : undefined}
+          poster={project.previewImage ? projectImageUrl(project.previewImage) : undefined}
           preload="metadata"
           playsInline
           controls={expanded}
@@ -526,7 +526,7 @@ const PORTRAIT_RATIO = 1.25;
 function AppShot({ project, className }: { project: ApiProject; className?: string | undefined }) {
   return (
     <img
-      src={`${BASE}images/${project.previewImage}`}
+      src={project.previewImage ? projectImageUrl(project.previewImage) : undefined}
       alt={`${project.title} preview`}
       decoding="async"
       className={className ?? 'block h-auto w-full bg-[#f2f2f2]'}
@@ -1195,7 +1195,7 @@ const ART_H = 'calc(var(--tile) * .708)';
 function measureShot(previewImage: string): Promise<void> | void {
   if (shotRatios.has(previewImage)) return;
   const img = new Image();
-  img.src = `${BASE}images/${previewImage}`;
+  img.src = projectImageUrl(previewImage);
   const record = () => {
     if (img.naturalWidth) shotRatios.set(previewImage, img.naturalHeight / img.naturalWidth);
   };
