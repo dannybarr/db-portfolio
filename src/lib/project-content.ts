@@ -1,9 +1,12 @@
+import nfcLogo from "@/assets/nfc-desk-tracker-logo.png.asset.json";
+import nfcPreview from "@/assets/nfc-desk-tracker-preview.png.asset.json";
+
 /**
  * Everything a desktop folder says and shows lives here, in the repo. The
  * `projects` table in Supabase only remembers where visitors dropped each
  * folder, matched on `id`.
  *
- * Images live in `public/images/`; store the file name only.
+ * Images use CDN asset URLs or legacy file names from `public/images/`.
  * - `iconImage`: the art on the front of the folder. Transparent PNG, trimmed
  *   tight to the artwork, at least 256px on its longest side.
  * - `previewImage`: the screenshot at the foot of the project window.
@@ -29,6 +32,13 @@ export type ProjectContent = {
   videoUrl: string | null;
   iconImage: string | null;
 };
+
+/** Resolve CDN assets while preserving existing public image filenames. */
+export function projectImageUrl(image: string): string {
+  return image.startsWith("/") || image.startsWith("https://")
+    ? image
+    : `/images/${image}`;
+}
 
 /** Front and back faces of each folder, top and bottom of their gradients.
  *  Each tint is built from Apple's system colour of the same name. */
@@ -188,9 +198,9 @@ export const PROJECTS: ProjectContent[] = [
       "Review where your focus time goes each week",
     ],
     url: "https://deskfocus.replit.app/",
-    previewImage: null,
+    previewImage: nfcPreview.url,
     videoUrl: null,
-    iconImage: "nfc-desk-tracker-art.png",
+    iconImage: nfcLogo.url,
   },
   {
     id: 6,
