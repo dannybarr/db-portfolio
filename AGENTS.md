@@ -10,4 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the animated project train isolated in `src/components/project-train`; it consumes project records but must never own project data or window state, so the backdrop remains mounted across file interactions.
-- Keep the football kick-up isolated in `src/components/home-mascot`; mount it as a pointer-transparent bottom overlay receiving only `suspended`, so it never reserves or blocks folder drag space.
+- Keep the three-mascot football kick-up isolated in `src/components/home-mascot`; mount it as a pointer-transparent bottom overlay receiving only `suspended`, so it never reserves or blocks folder drag space.
