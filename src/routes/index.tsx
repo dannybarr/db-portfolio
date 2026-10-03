@@ -738,8 +738,11 @@ function LaunchStage({
           </span>
         </div>
 
-        {/* Compact record: copy and link on the left; screenshot and use cases
-            stacked on the right. Mobile keeps the same reading order. */}
+        {/* Compact record. Landscape: copy and link on the left; screenshot
+            and use cases stacked on the right. Portrait shots (business card,
+            NFC tracker): use cases move under the description and the
+            screenshot takes the full right-hand side. Mobile keeps the same
+            reading order in one column. */}
         <div
           className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
             mobile
@@ -766,6 +769,8 @@ function LaunchStage({
               </p>
             )}
 
+            {portraitLayout && useCases}
+
             {project.url && (
               <div className="mt-[26px]">
                 <a
@@ -784,37 +789,40 @@ function LaunchStage({
             )}
           </div>
 
-          <div className="flex min-w-0 flex-col gap-[24px]">
-            {/* A film keeps a fixed 16:9 slot; screenshots stay fully visible.
-                The video's box must not be clipped here — it expands out of it. */}
-            <div className={`relative flex w-full items-center justify-center rounded-[14px] bg-[#f2f2f2] ${isVideo || !project.previewImage ? 'aspect-video' : 'min-h-[150px] overflow-hidden ring-1 ring-black/[.07]'} ${isVideo ? '' : ''}`}>
-              {isVideo ? (
-                <VideoShot project={project} panelRef={panelRef} stage={stage} onExpandedChange={setVideoExpanded} />
-              ) : project.previewImage ? (
-                <AppShot
-                  project={project}
-                  className="block h-auto max-h-[min(290px,40dvh)] w-auto max-w-full bg-[#f2f2f2]"
-                />
-              ) : (
-                <MockDashboard project={project} index={index} />
-              )}
+          {portraitLayout ? (
+            /* Full-height portrait shot: the image owns the whole right side. */
+            <div className="relative flex h-full min-h-[260px] w-full items-center justify-center self-stretch overflow-hidden rounded-[14px] bg-[#f2f2f2] ring-1 ring-black/[.07]">
+              <AppShot
+                project={project}
+                className={
+                  mobile
+                    ? 'block h-auto max-h-[min(460px,58dvh)] w-auto max-w-full object-contain bg-[#f2f2f2]'
+                    : 'block h-full w-auto max-w-full object-contain bg-[#f2f2f2]'
+                }
+              />
             </div>
+          ) : (
+            <div className="flex min-w-0 flex-col gap-[24px]">
+              {/* A film keeps a fixed 16:9 slot; screenshots stay fully visible.
+                  The video's box must not be clipped here — it expands out of it. */}
+              <div className={`relative flex w-full items-center justify-center rounded-[14px] bg-[#f2f2f2] ${isVideo || !project.previewImage ? 'aspect-video' : 'min-h-[150px] overflow-hidden ring-1 ring-black/[.07]'} ${isVideo ? '' : ''}`}>
+                {isVideo ? (
+                  <VideoShot project={project} panelRef={panelRef} stage={stage} onExpandedChange={setVideoExpanded} />
+                ) : project.previewImage ? (
+                  <AppShot
+                    project={project}
+                    className="block h-auto max-h-[min(290px,40dvh)] w-auto max-w-full bg-[#f2f2f2]"
+                  />
+                ) : (
+                  <MockDashboard project={project} index={index} />
+                )}
+              </div>
 
-            {project.useCases.length > 0 && (
-              <section className="border-t border-[var(--window-divider)] pt-[20px]" data-testid="text-detail-use-cases">
-                <h3 className={META_LABEL}>Use Cases</h3>
-                <ul className="mt-[11px] grid gap-[9px]" style={{ color: WIN_META }}>
-                  {project.useCases.map((useCase) => (
-                    <li key={useCase} className="grid grid-cols-[7px_minmax(0,1fr)] gap-[9px] text-[13px] font-normal leading-[1.42]">
-                      <span className="mt-[7px] h-[3px] w-[3px] rounded-full bg-current" aria-hidden="true" />
-                      <span>{useCase}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
+              {useCases}
+            </div>
+          )}
         </div>
+
       </div>
     </div>
   );
