@@ -1,5 +1,6 @@
 import carriageAsset from "@/assets/train/carriage.svg.asset.json";
-import cliffsAsset from "@/assets/train/cliffs.svg.asset.json";
+// Classic canyon backup: "@/assets/train/cliffs-classic.svg.asset.json"
+import cliffsAsset from "@/assets/train/cliffs-golden-gate.svg.asset.json";
 import locomotiveAsset from "@/assets/train/locomotive.svg.asset.json";
 // Classic stone-arch backup: "@/assets/train/scene-classic.svg.asset.json"
 import sceneAsset from "@/assets/train/scene-golden-gate.svg.asset.json";
