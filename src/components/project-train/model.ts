@@ -34,6 +34,14 @@ export function joinAssetPath(assetBase: string, path: string): string {
   return `${assetBase.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
 }
 
+/** A preview may already be a CDN asset pointer (leading slash or full URL), in
+ *  which case it must reach the browser untouched rather than be filed under
+ *  `images/` like the legacy public filenames. */
+function isAbsoluteAsset(path: string): boolean {
+  return path.startsWith("/") || /^https?:\/\//.test(path);
+}
+
+
 export function getLaunchablePreviewSources(
   projects: readonly ProjectTrainProject[],
   assetBase: string,
@@ -46,9 +54,10 @@ export function getLaunchablePreviewSources(
 
     return [{
       key: `${project.id ?? "project"}:${index}:${previewImage}`,
-      src: joinAssetPath(assetBase, `images/${previewImage}`),
+      src: joinAssetPath(assetBase, isAbsoluteAsset(previewImage) ? previewImage : `images/${previewImage}`),
       title: project.title?.trim() || project.name?.trim() || "",
     }];
+
   });
 }
 

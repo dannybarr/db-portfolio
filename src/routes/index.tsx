@@ -111,54 +111,6 @@ const prefersReducedMotion = () =>
  *  towards white by the smallest amount that does — lightening keeps the hue
  *  recognisably the tile's, where darkening towards navy turned orange to brown. */
 
-/** Contact links that used to live in the dock; they now sit under the
- *  "Agentic Build Portfolio" label. Gmail opens a pre-addressed compose
- *  window; WhatsApp opens a direct chat with Daniel's UK number. */
-const CONTACT_LINKS = {
-  linkedin: { href: 'https://www.linkedin.com/in/dannybarr22', label: 'Daniel Barr on LinkedIn', external: true },
-  gmail: { href: 'https://mail.google.com/mail/?view=cm&fs=1&to=dannybarr092%40gmail.com', label: 'Email Daniel Barr on Gmail', external: true },
-  whatsapp: { href: 'https://wa.me/447368536367', label: 'Message Daniel Barr on WhatsApp', external: true },
-} as const;
-
-function DockIcon({ kind }: { kind: keyof typeof CONTACT_LINKS }) {
-  const source = kind === 'gmail' ? 'gmail.svg' : kind === 'whatsapp' ? 'whatsapp.svg' : 'linkedin.png';
-  return <img src={`${BASE}images/${source}`} alt={`${kind} app`} className="h-full w-full object-contain" />;
-}
-
-/** The glassy contact chips under the portfolio label — the old dock links,
- *  restyled as a quiet row of frosted buttons in the same Apple glass style. */
-function ContactLinks({ align }: { align: 'start' | 'end' }) {
-  return (
-    <div className={`pointer-events-none mt-3 flex items-center gap-2.5 [&>*]:pointer-events-auto ${align === 'end' ? 'justify-end' : 'justify-start'}`}>
-      {(Object.keys(CONTACT_LINKS) as (keyof typeof CONTACT_LINKS)[]).map((kind) => {
-        const link = CONTACT_LINKS[kind];
-        return (
-          <a
-            key={kind}
-            href={link.href}
-            {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            aria-label={link.label}
-            title={link.label}
-            data-testid={`button-contact-${kind}`}
-            className={`block rounded-[15px] p-[7px] transition-transform duration-300 [transition-timing-function:cubic-bezier(.2,.9,.25,1.15)] focus-visible:outline-2 focus-visible:outline-[#f7b600] ${
-              align === 'end'
-                ? 'h-10 w-10 hover:-translate-y-1.5 hover:scale-110'
-                : 'h-11 w-11 active:scale-95 md:h-10 md:w-10 md:hover:-translate-y-1.5 md:hover:scale-110'
-            }`}
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.38))',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              boxShadow:
-                '0 0 0 .5px rgba(255,255,255,.75), 0 0 0 1px rgba(20,32,58,.10), 0 1px 0 0 rgba(255,255,255,.8) inset, 0 8px 18px -8px rgba(16,28,54,.35)',
-            }}
-          >
-            <DockIcon kind={kind} />
-          </a>
-        );
-      })}
-    </div>
-  );
-}
 
 function MockDashboard({ project, index }: { project: ApiProject; index: number }) {
   const styleType = index % 3;
@@ -1019,8 +971,8 @@ function Portfolio() {
             <div>
               <p className="text-[42px] font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42] drop-shadow-[0_1px_2px_rgba(255,255,255,.7)]" style={{ fontFamily: "'Minasans', sans-serif" }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2 text-[10px] tracking-[.2em] text-[#0b1b42]/60">Agentic Build Portfolio</p>
-              <ContactLinks align="start" />
             </div>
+
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="h-[132px] w-auto shrink-0 object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" data-testid="img-engineer" />
           </div>
 
@@ -1081,8 +1033,8 @@ function Portfolio() {
             <div>
               <p className="font-extrabold leading-[.92] tracking-[.01em] text-[#0b1b42]" style={{ fontFamily: "'Minasans', sans-serif", fontSize: 'clamp(32px, min(5.2vw, 9vh), 92px)' }} data-testid="text-name">DANIEL<br />BARR</p>
               <p className="mt-2.5 tracking-[.22em] text-[#0b1b42]/50" style={{ fontSize: 'clamp(9px, min(.85vw, 1.5vh), 14px)' }}>Agentic Build Portfolio</p>
-              <ContactLinks align="end" />
             </div>
+
             <img src={`${BASE}images/engineer.png`} alt="Daniel Barr, expert engineer" className="w-auto object-contain drop-shadow-[0_3px_6px_rgba(11,27,66,.25)]" style={{ height: 'clamp(96px, min(14.6vw, 24vh), 260px)' }} data-testid="img-engineer" />
           </div>
 
