@@ -220,6 +220,7 @@
   white-space: nowrap;
   border-radius: 4px;
   padding: 1px 5px;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
   font-size: max(9px, calc(var(--tile) * .125));
   font-weight: 500;
   letter-spacing: -.025em;
