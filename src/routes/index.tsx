@@ -9,6 +9,7 @@ import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
 import { ProjectTrainBackdrop } from '@/components/project-train/ProjectTrainBackdrop';
 import { HomeMascot } from '@/components/home-mascot/HomeMascot';
+import { WindowScene } from '@/components/project-window/WindowScene';
 
 
 const BASE = '/';
@@ -62,6 +63,9 @@ function FolderThumb({ index, project }: { index: number; project: ApiProject })
   const BACK = 'M6 22V10C6 6 8.5 4 12 4H33C36 4 38 5 39 8L44 15C45 16.5 47 17 49 17H90C94 17 96 19 96 23V74C96 78 94 80 90 80H10C6 80 4 78 4 74Z';
   const FRONT = 'M3 27C3 23 5.5 21 9 21H91C94.5 21 97 23 97 27V74C97 78 94.5 80 91 80H9C5.5 80 3 78 3 74Z';
   const tint = FOLDER_COLORS[project.color];
+  // The art box, shrunk around its own centre when a project asks for less.
+  const k = project.artScale ?? 1;
+  const art = { w: 72 * k, h: 43 * k };
   return (
     <svg viewBox="0 0 100 80" className="h-full w-full overflow-visible" aria-hidden="true">
       <defs>
@@ -81,16 +85,16 @@ function FolderThumb({ index, project }: { index: number; project: ApiProject })
       <path d={BACK} fill={`url(#${id('backGradient')})`} />
       <path d={FRONT} fill={`url(#${id('frontGradient')})`} />
       <path d="M4 27C4 24 6 22 9 22H91C94 22 96 24 96 27" fill="none" stroke="var(--folder-highlight)" strokeWidth="1.5" />
-      {/* Front-of-folder art. It takes nearly the whole face (x 3–97, y 21–80),
-          clear of the top highlight and rounded corners, scaled to fit so the
-          whole image always shows. */}
+      {/* Front-of-folder art, centred on the face (x 3–97, y 21–80) with room
+          around it so it reads as an icon, scaled to fit so the whole image
+          always shows. */}
       {project.iconImage && (
         <image
           href={projectImageUrl(project.iconImage)}
-          x="6"
-          y="24.5"
-          width="88"
-          height="53"
+          x={50 - art.w / 2}
+          y={51 - art.h / 2}
+          width={art.w}
+          height={art.h}
           preserveAspectRatio="xMidYMid meet"
           filter={`url(#${id('artShadow')})`}
         />
@@ -489,13 +493,46 @@ function AppShot({ project, className }: { project: ApiProject; className?: stri
 
 type StageState = 'open' | 'leaving';
 
-/** Window chrome, matched to the reference: a macOS document window.
- *  Light title bar with the three lights, then a compact editorial layout —
- *  project copy on the left, preview and use cases on the right. */
+/** Window chrome is a macOS document window: light title bar, three lights.
+ *  Inside, the page follows the DBLABS research briefing: warm paper with a
+ *  pink-lavender glow top right, Inter Black navy titles, IBM Plex Mono body
+ *  and blue labels. Copy and link on the left; mascot scene top right and the
+ *  screenshot bottom right. */
 const WIN_INK = '#111111';
-const WIN_BODY = '#6e6e6e';
-const WIN_META = '#5f5f5f';
-const META_LABEL = 'text-[10px] font-bold uppercase leading-none tracking-[0.09em]';
+const BRIEF = {
+  paper: '#FAF9F5',
+  glow: '#EDD8E9',
+  navy: '#1A1F71',
+  blue: '#1434CB',
+  body: '#4A4E63',
+  muted: '#7B7F93',
+  rule: '#E0DFEE',
+  border: '#E0E5F5',
+  tint: '#EDF1FF',
+  display: "'Inter', 'Space Grotesk', sans-serif",
+  mono: "'IBM Plex Mono', ui-monospace, monospace",
+} as const;
+const BRIEF_LABEL = 'text-[10.5px] font-semibold uppercase leading-none tracking-[0.12em]';
+
+/** The window's call to action, in the briefing's solid blue. */
+function ProjectLink({ project }: { project: ApiProject }) {
+  if (!project.url) return null;
+  return (
+    <a
+      href={project.url}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="group/cta mt-[20px] inline-flex items-center gap-[9px] rounded-[4px] px-[16px] py-[11px] text-[13.5px] font-bold tracking-[-0.01em] text-white transition-[background-color,transform] hover:bg-[#0F2AAE] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[#f7b600]"
+      style={{ fontFamily: BRIEF.display, backgroundColor: BRIEF.blue }}
+      data-testid="link-project-cta"
+    >
+      Open {project.title}
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="transition-transform duration-200 group-hover/cta:translate-x-[2px]">
+        <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
+}
 
 function LaunchStage({
   project,
@@ -525,20 +562,7 @@ function LaunchStage({
   const portraitLayout =
     !isVideo && Boolean(project.previewImage) && usePortraitShot(project.previewImage);
 
-  const useCases =
-    project.useCases.length > 0 ? (
-      <section className="border-t border-[var(--window-divider)] pt-[20px]" data-testid="text-detail-use-cases">
-        <h3 className={META_LABEL}>Use Cases</h3>
-        <ul className="mt-[11px] grid gap-[9px]" style={{ color: WIN_META }}>
-          {project.useCases.map((useCase) => (
-            <li key={useCase} className="grid grid-cols-[7px_minmax(0,1fr)] gap-[9px] text-[13px] font-normal leading-[1.42]">
-              <span className="mt-[7px] h-[3px] w-[3px] rounded-full bg-current" aria-hidden="true" />
-              <span>{useCase}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ) : null;
+  const projectNumber = String(project.sortOrder).padStart(2, '0');
 
 
   // The window zooms out of the tile that was clicked — short enough that the
@@ -656,7 +680,7 @@ function LaunchStage({
         className={`file-window-shell relative flex flex-col overflow-hidden bg-[var(--window-surface)] ${
           mobile
             ? 'h-[100dvh] w-full max-w-none'
-            : 'h-[min(540px,88dvh)] w-[760px] max-w-[92vw] rounded-[20px]'
+            : 'max-h-[min(680px,92dvh)] w-[920px] max-w-[94vw] rounded-[20px]'
         } ${stage === 'leaving' ? 'pointer-events-none animate-[windowOut_0.2s_ease-in_forwards]' : ''}`}
       >
         {/* Title bar */}
@@ -690,89 +714,120 @@ function LaunchStage({
           </span>
         </div>
 
-        {/* Compact record. Landscape: copy and link on the left; screenshot
-            and use cases stacked on the right. Portrait shots (business card,
-            NFC tracker): use cases move under the description and the
-            screenshot takes the full right-hand side. Mobile keeps the same
-            reading order in one column. */}
+        {/* The record, laid out like the DBLABS briefing. Desktop: header strip
+            across the top; copy, use cases and link on the left; mascot scene
+            top right and the screenshot bottom right. Mobile reads in one
+            column: scene, copy, screenshot, link. */}
         <div
           className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
-            mobile
-              ? 'flex flex-col gap-[22px] px-[22px] pb-[calc(24px+env(safe-area-inset-bottom))] pt-[22px]'
-              : 'grid grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] gap-[28px] p-[30px]'
+            mobile ? 'px-[20px] pb-[calc(26px+env(safe-area-inset-bottom))] pt-[18px]' : 'px-[34px] pb-[30px] pt-[22px]'
           }`}
+          style={{
+            fontFamily: BRIEF.mono,
+            color: BRIEF.body,
+            background: `radial-gradient(120% 90% at 100% 0%, ${BRIEF.glow} 0%, rgba(237,216,233,.55) 22%, rgba(250,249,245,0) 58%), ${BRIEF.paper}`,
+          }}
         >
-          <div className="window-copy min-w-0">
-            <h2
-              id={titleId}
-              className={`font-bold leading-[1.02] tracking-[-0.035em] ${mobile ? 'text-[34px]' : 'text-[clamp(34px,4vw,48px)]'}`}
-              data-testid="text-detail-title"
-            >
-              {project.title}
-            </h2>
+          {/* Header strip */}
+          <header className="flex items-center justify-between gap-[16px] border-b pb-[14px]" style={{ borderColor: BRIEF.rule }}>
+            <DblabsWordmark size={mobile ? '17px' : '19px'} />
+            <span className={`${BRIEF_LABEL} truncate text-right`} style={{ color: BRIEF.blue }} data-testid="text-detail-kicker">
+              Project {projectNumber} / {project.category}
+            </span>
+          </header>
 
-            {project.description && (
-              <p
-                className="mt-[16px] text-[15px] font-light leading-[1.62]"
-                style={{ color: WIN_BODY }}
-                data-testid="text-detail-description"
-              >
-                {project.description}
+          <div
+            className={
+              mobile
+                ? 'mt-[18px] flex flex-col gap-[22px]'
+                : 'mt-[22px] grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-x-[34px]'
+            }
+          >
+            {mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[300px]" />}
+
+            {/* Copy column */}
+            <div className="window-copy min-w-0">
+              <p className={BRIEF_LABEL} style={{ color: BRIEF.blue }}>
+                {[project.status, project.year].filter(Boolean).join(' / ')}
               </p>
-            )}
+              <h2
+                id={titleId}
+                className={`mt-[10px] font-black leading-[.98] tracking-[-0.035em] ${mobile ? 'text-[32px]' : 'text-[clamp(32px,3.6vw,44px)]'}`}
+                style={{ fontFamily: BRIEF.display, color: BRIEF.navy }}
+                data-testid="text-detail-title"
+              >
+                {project.title}
+              </h2>
 
-            {portraitLayout && useCases}
+              {project.description && (
+                <p className="mt-[14px] text-[13px] leading-[1.62]" data-testid="text-detail-description">
+                  {project.description}
+                </p>
+              )}
 
-            {project.url && (
-              <div className="mt-[26px]">
-                <a
-                  href={project.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="group/cta inline-flex items-center gap-[7px] text-[13px] font-semibold tracking-[.01em] text-[#111111] underline decoration-[#cfcfcf] underline-offset-[5px] transition-colors hover:decoration-[#111111] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f7b600]"
-                  data-testid="link-project-cta"
-                >
-                  Open {project.title}
-                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="transition-transform duration-200 group-hover/cta:translate-x-[2px]">
-                    <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </div>
-            )}
-          </div>
+              {project.useCases.length > 0 && (
+                <section className="mt-[22px]" data-testid="text-detail-use-cases">
+                  <h3
+                    className="text-[16px] font-extrabold tracking-[-0.02em]"
+                    style={{ fontFamily: BRIEF.display, color: BRIEF.navy }}
+                  >
+                    Use cases
+                  </h3>
+                  <ol className="mt-[10px] overflow-hidden rounded-[4px] border bg-white" style={{ borderColor: BRIEF.border }}>
+                    {project.useCases.map((useCase, i) => (
+                      <li
+                        key={useCase}
+                        className="grid grid-cols-[30px_minmax(0,1fr)] gap-[8px] px-[14px] py-[8px] text-[12.5px] leading-[1.5]"
+                        style={i > 0 ? { borderTop: `1px solid ${BRIEF.border}` } : undefined}
+                      >
+                        <span className="font-semibold" style={{ color: BRIEF.blue }}>
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <span>{useCase}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )}
 
-          {portraitLayout ? (
-            /* Full-height portrait shot: the image owns the whole right side. */
-            <div className="relative flex h-full min-h-[260px] w-full items-center justify-center self-stretch overflow-hidden rounded-[14px] bg-[#f2f2f2] ring-1 ring-black/[.07]">
-              <AppShot
-                project={project}
-                className={
-                  mobile
-                    ? 'block h-auto max-h-[min(460px,58dvh)] w-auto max-w-full object-contain bg-[#f2f2f2]'
-                    : 'block h-full w-auto max-w-full object-contain bg-[#f2f2f2]'
-                }
-              />
+              <p className="mt-[16px] text-[11px] leading-[1.5]" style={{ color: BRIEF.muted }}>
+                Credits: Daniel Barr
+              </p>
+
+              {project.url && !mobile && <ProjectLink project={project} />}
             </div>
-          ) : (
-            <div className="flex min-w-0 flex-col gap-[24px]">
-              {/* A film keeps a fixed 16:9 slot; screenshots stay fully visible.
-                  The video's box must not be clipped here — it expands out of it. */}
-              <div className={`relative flex w-full items-center justify-center rounded-[14px] bg-[#f2f2f2] ${isVideo || !project.previewImage ? 'aspect-video' : 'min-h-[150px] overflow-hidden ring-1 ring-black/[.07]'} ${isVideo ? '' : ''}`}>
+
+            {/* Scene and screenshot column */}
+            <div className={`flex min-w-0 flex-col ${mobile ? 'gap-[22px]' : 'gap-[18px]'}`}>
+              {!mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[340px]" />}
+
+              {/* A film keeps a fixed 16:9 slot and must not be clipped here, as
+                  it expands out of it. Screenshots stay fully visible. */}
+              <div
+                className={`relative flex items-center justify-center rounded-[6px] border bg-white ${portraitLayout ? 'w-fit max-w-full self-center' : 'w-full'} ${
+                  isVideo ? 'aspect-video' : 'overflow-hidden p-[6px] shadow-[0_10px_30px_-18px_rgba(26,31,113,.35)]'
+                } ${!isVideo && !project.previewImage ? 'aspect-video' : ''}`}
+                style={{ borderColor: BRIEF.border }}
+              >
                 {isVideo ? (
                   <VideoShot project={project} panelRef={panelRef} stage={stage} onExpandedChange={setVideoExpanded} />
                 ) : project.previewImage ? (
                   <AppShot
                     project={project}
-                    className="block h-auto max-h-[min(290px,40dvh)] w-auto max-w-full bg-[#f2f2f2]"
+                    className={`block h-auto w-auto max-w-full rounded-[3px] ${
+                      portraitLayout
+                        ? mobile ? 'max-h-[min(460px,58dvh)]' : 'max-h-[min(470px,62dvh)]'
+                        : mobile ? 'max-h-[min(300px,40dvh)]' : 'max-h-[250px]'
+                    }`}
                   />
                 ) : (
                   <MockDashboard project={project} index={index} />
                 )}
               </div>
 
-              {useCases}
+              {project.url && mobile && <ProjectLink project={project} />}
             </div>
-          )}
+          </div>
         </div>
 
       </div>
@@ -781,11 +836,11 @@ function LaunchStage({
 }
 
 /* DBLABS wordmark — "DBL[flask]BS" with the lab flask standing in for the A. */
-function DblabsWordmark() {
+function DblabsWordmark({ size = 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }: { size?: string }) {
   return (
     <span
       className="inline-flex select-none items-baseline font-[900] leading-none tracking-[-.035em] drop-shadow-[0_1px_2px_rgba(255,255,255,.6)]"
-      style={{ fontSize: 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }}
+      style={{ fontSize: size }}
       aria-label="DBLABS"
       data-testid="brandmark"
     >

@@ -33,6 +33,8 @@ export type ProjectContent = {
   previewImage: string | null;
   videoUrl: string | null;
   iconImage: string | null;
+  /** Shrinks the folder art from its full-face size, e.g. 0.85. Defaults to 1. */
+  artScale?: number;
 };
 
 /** Resolve CDN assets while preserving existing public image filenames. */
@@ -224,7 +226,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://db-lp-platform.lovable.app",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "lp-education-art.png",
   },
   {
     id: 7,
@@ -246,7 +248,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://db-custompitchscreener.lovable.app",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "venture-thesis-art.png",
   },
   {
     id: 8,
@@ -267,7 +269,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://dbarr.xyz/",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "personal-website-art.png",
   },
   {
     id: 9,
@@ -279,7 +281,7 @@ export const PROJECTS: ProjectContent[] = [
     status: "Live",
     year: 2026,
     sortOrder: 9,
-    color: "red",
+    color: "graphite",
     useCases: [
       "Spot quality companies trading down",
       "Separate temporary setbacks from real problems",
@@ -289,7 +291,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://the-dip-roan.vercel.app/",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "the-dip-art.png",
   },
   {
     id: 10,
@@ -355,7 +357,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://screen-fbi.replit.app/",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "screen-art.png",
   },
   {
     id: 13,
@@ -377,7 +379,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://passported.lovable.app/",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "passported-art.png",
   },
   {
     id: 14,
@@ -389,7 +391,7 @@ export const PROJECTS: ProjectContent[] = [
     status: "Live",
     year: 2026,
     sortOrder: 14,
-    color: "pink",
+    color: "blue",
     useCases: [
       "Practise speaking Mandarin out loud, anytime",
       "Get live corrections on tones and pronunciation",
@@ -399,7 +401,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://mandarin-mentor-ai-88.lovable.app",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "mandarin-art.png",
   },
   {
     id: 15,
@@ -443,7 +445,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://wardrobe-vaulted.lovable.app",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "wardrobe-art.png",
   },
   {
     id: 17,
@@ -465,7 +467,7 @@ export const PROJECTS: ProjectContent[] = [
     url: "https://the-value-of-ai-routers.vercel.app/",
     previewImage: null,
     videoUrl: null,
-    iconImage: null,
+    iconImage: "ai-compute-art.png",
   },
   { id: 18, sortOrder: 18, ...COMING_SOON, useCases: [] },
   { id: 19, sortOrder: 19, ...COMING_SOON, useCases: [] },

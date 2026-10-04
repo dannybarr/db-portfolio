@@ -271,3 +271,9 @@
     font-size: 10px;
   }
 }
+
+/* Project window mascot scene: the dock's game props stay with the dock. */
+.window-scene .mascot-juggle-props,
+.window-scene .mascot-racket {
+  display: none;
+}
