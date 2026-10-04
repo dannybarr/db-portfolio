@@ -12,6 +12,7 @@ import sceneAsset from "@/assets/train/scene.svg.asset.json";
 export const TRAIN_GEOMETRY = {
   sceneWidth: 1920,
   sceneHeight: 1080,
+  sceneryHeightRatio: 0.76,
   railY: 344,
   locomotiveWidth: 356,
   locomotiveHeight: 143,

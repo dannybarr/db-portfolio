@@ -14,9 +14,9 @@
 
 .project-train-scene {
   position: absolute;
-  inset: 0;
+  inset: auto 0 0;
   width: 100%;
-  height: 100%;
+  height: var(--project-train-scene-height, 76%);
   overflow: hidden;
   visibility: hidden;
 }

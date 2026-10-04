@@ -162,17 +162,19 @@ export function ProjectTrainBackdrop({
 
     const setScale = () => {
       const bounds = root.getBoundingClientRect();
+      const sceneHeight = bounds.height * TRAIN_GEOMETRY.sceneryHeightRatio;
+      root.style.setProperty("--project-train-scene-height", `${sceneHeight}px`);
       // On portrait screens, retain clear sky behind the existing mobile header.
       // The lower scenery still reaches the bottom edge, rather than letterboxing.
-      const skyInset = Math.min(100, Math.max(0, (bounds.height - bounds.width) * 0.15));
+      const skyInset = Math.min(100, Math.max(0, (sceneHeight - bounds.width) * 0.15));
       root.style.setProperty(
         "--project-train-scale",
-        String(getTrainViewportScale(bounds.width, bounds.height)),
+        String(getTrainViewportScale(bounds.width, sceneHeight)),
       );
       root.style.setProperty("--project-train-sky-inset", `${skyInset}px`);
       root.style.setProperty(
         "--project-train-rail-y",
-        `${skyInset + (bounds.height - skyInset) * TRAIN_GEOMETRY.railY / TRAIN_GEOMETRY.sceneHeight}px`,
+        `${skyInset + (sceneHeight - skyInset) * TRAIN_GEOMETRY.railY / TRAIN_GEOMETRY.sceneHeight}px`,
       );
     };
 
