@@ -522,8 +522,8 @@ function ProjectLink({ project }: { project: ApiProject }) {
       href={project.url}
       target="_blank"
       rel="noreferrer noopener"
-      className="group/cta mt-[20px] inline-flex items-center gap-[9px] rounded-[4px] px-[16px] py-[11px] text-[13.5px] font-bold tracking-[-0.01em] text-white transition-[background-color,transform] hover:bg-[#0F2AAE] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[#f7b600]"
-      style={{ fontFamily: BRIEF.display, backgroundColor: BRIEF.blue }}
+      className="project-window-link group/cta flex min-h-[38px] w-full shrink-0 items-center justify-center gap-[9px] rounded-[4px] px-[12px] py-[8px] text-center text-[12px] font-bold leading-[1.3] transition-[background-color,transform] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px]"
+      style={{ fontFamily: BRIEF.display }}
       data-testid="link-project-cta"
     >
       Open {project.title}
@@ -680,7 +680,7 @@ function LaunchStage({
         className={`file-window-shell relative flex flex-col overflow-hidden bg-[var(--window-surface)] ${
           mobile
             ? 'h-[100dvh] w-full max-w-none'
-            : 'max-h-[min(680px,92dvh)] w-[920px] max-w-[94vw] rounded-[20px]'
+             : 'h-[min(680px,92dvh)] w-[920px] max-w-[94vw] rounded-[20px]'
         } ${stage === 'leaving' ? 'pointer-events-none animate-[windowOut_0.2s_ease-in_forwards]' : ''}`}
       >
         {/* Title bar */}
@@ -720,7 +720,7 @@ function LaunchStage({
             column: scene, copy, screenshot, link. */}
         <div
           className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
-            mobile ? 'px-[20px] pb-[calc(26px+env(safe-area-inset-bottom))] pt-[18px]' : 'px-[34px] pb-[30px] pt-[22px]'
+             mobile ? 'px-[18px] pb-[calc(14px+env(safe-area-inset-bottom))] pt-[12px]' : 'px-[26px] pb-[20px] pt-[16px]'
           }`}
           style={{
             fontFamily: BRIEF.mono,
@@ -729,7 +729,7 @@ function LaunchStage({
           }}
         >
           {/* Header strip */}
-          <header className="flex items-center justify-between gap-[16px] border-b pb-[14px]" style={{ borderColor: BRIEF.rule }}>
+           <header className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[12px] border-b pb-[10px]" style={{ borderColor: BRIEF.rule }}>
             <DblabsWordmark size={mobile ? '17px' : '19px'} />
             <span className={`${BRIEF_LABEL} truncate text-right`} style={{ color: BRIEF.blue }} data-testid="text-detail-kicker">
               Project {projectNumber} / {project.category}
@@ -739,11 +739,11 @@ function LaunchStage({
           <div
             className={
               mobile
-                ? 'mt-[18px] flex flex-col gap-[22px]'
-                : 'mt-[22px] grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-x-[34px]'
+                 ? 'mt-[12px] flex flex-col gap-[12px]'
+                 : 'mt-[16px] grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-x-[24px]'
             }
           >
-            {mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[300px]" />}
+             {mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[160px]" />}
 
             {/* Copy column */}
             <div className="window-copy min-w-0">
@@ -752,7 +752,7 @@ function LaunchStage({
               </p>
               <h2
                 id={titleId}
-                className={`mt-[10px] font-black leading-[.98] tracking-[-0.035em] ${mobile ? 'text-[32px]' : 'text-[clamp(32px,3.6vw,44px)]'}`}
+                 className={`mt-[8px] font-black leading-[1.04] tracking-normal ${mobile ? 'text-[26px]' : 'text-[34px] max-[900px]:text-[28px]'}`}
                 style={{ fontFamily: BRIEF.display, color: BRIEF.navy }}
                 data-testid="text-detail-title"
               >
@@ -760,27 +760,27 @@ function LaunchStage({
               </h2>
 
               {project.description && (
-                <p className="mt-[14px] text-[13px] leading-[1.62]" data-testid="text-detail-description">
+                 <p className="mt-[10px] text-[12px] leading-[1.5]" data-testid="text-detail-description">
                   {project.description}
                 </p>
               )}
 
               {project.useCases.length > 0 && (
-                <section className="mt-[22px]" data-testid="text-detail-use-cases">
+                 <section className="mt-[14px]" data-testid="text-detail-use-cases">
                   <h3
-                    className="text-[16px] font-extrabold tracking-[-0.02em]"
+                     className="text-[14px] font-extrabold tracking-normal"
                     style={{ fontFamily: BRIEF.display, color: BRIEF.navy }}
                   >
                     Use cases
                   </h3>
-                  <ol className="mt-[10px] overflow-hidden rounded-[4px] border bg-white" style={{ borderColor: BRIEF.border }}>
+                   <ol className="mt-[7px] overflow-hidden rounded-[4px] border bg-window-surface" style={{ borderColor: BRIEF.border }}>
                     {project.useCases.map((useCase, i) => (
                       <li
                         key={useCase}
-                        className="grid grid-cols-[30px_minmax(0,1fr)] gap-[8px] px-[14px] py-[8px] text-[12.5px] leading-[1.5]"
+                         className="grid grid-cols-[20px_minmax(0,1fr)] items-start gap-[6px] px-[10px] py-[6px] text-[11px] leading-[1.4]"
                         style={i > 0 ? { borderTop: `1px solid ${BRIEF.border}` } : undefined}
                       >
-                        <span className="font-semibold" style={{ color: BRIEF.blue }}>
+                         <span className="text-[10px] font-semibold leading-[1.54]" style={{ color: BRIEF.blue }}>
                           {String(i + 1).padStart(2, '0')}
                         </span>
                         <span>{useCase}</span>
@@ -790,21 +790,20 @@ function LaunchStage({
                 </section>
               )}
 
-              <p className="mt-[16px] text-[11px] leading-[1.5]" style={{ color: BRIEF.muted }}>
+               <p className="mt-[10px] text-[10px] leading-[1.4]" style={{ color: BRIEF.muted }}>
                 Credits: Daniel Barr
               </p>
 
-              {project.url && !mobile && <ProjectLink project={project} />}
             </div>
 
             {/* Scene and screenshot column */}
-            <div className={`flex min-w-0 flex-col ${mobile ? 'gap-[22px]' : 'gap-[18px]'}`}>
-              {!mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[340px]" />}
+             <div className="flex min-w-0 flex-col gap-[10px]">
+               {!mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[280px]" />}
 
               {/* A film keeps a fixed 16:9 slot and must not be clipped here, as
                   it expands out of it. Screenshots stay fully visible. */}
               <div
-                className={`relative flex items-center justify-center rounded-[6px] border bg-white ${portraitLayout ? 'w-fit max-w-full self-center' : 'w-full'} ${
+                 className={`relative flex w-full items-center justify-center rounded-[6px] border bg-window-surface ${
                   isVideo ? 'aspect-video' : 'overflow-hidden p-[6px] shadow-[0_10px_30px_-18px_rgba(26,31,113,.35)]'
                 } ${!isVideo && !project.previewImage ? 'aspect-video' : ''}`}
                 style={{ borderColor: BRIEF.border }}
@@ -816,8 +815,8 @@ function LaunchStage({
                     project={project}
                     className={`block h-auto w-auto max-w-full rounded-[3px] ${
                       portraitLayout
-                        ? mobile ? 'max-h-[min(460px,58dvh)]' : 'max-h-[min(470px,62dvh)]'
-                        : mobile ? 'max-h-[min(300px,40dvh)]' : 'max-h-[250px]'
+                         ? mobile ? 'max-h-[min(220px,26dvh)]' : 'max-h-[min(470px,calc(92dvh-170px))]'
+                         : mobile ? 'max-h-[min(180px,22dvh)]' : 'max-h-[min(250px,calc(92dvh-280px))]'
                     }`}
                   />
                 ) : (
@@ -825,7 +824,7 @@ function LaunchStage({
                 )}
               </div>
 
-              {project.url && mobile && <ProjectLink project={project} />}
+               <ProjectLink project={project} />
             </div>
           </div>
         </div>
