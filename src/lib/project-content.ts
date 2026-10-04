@@ -377,7 +377,7 @@ export const PROJECTS: ProjectContent[] = [
       "Deepen each member's connection to the brand",
     ],
     url: "https://passported.lovable.app/",
-    previewImage: null,
+    previewImage: "passported-preview.webp",
     videoUrl: null,
     iconImage: "passported-art.png",
   },
