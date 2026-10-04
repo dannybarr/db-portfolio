@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import type { CSSProperties, RefObject } from 'react';
+import type { CSSProperties, ReactNode, RefObject } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useListProjects, useUpdateProjectPosition } from '@/lib/projects';
 import type { Project as ApiProject } from '@/lib/projects';
@@ -8,8 +8,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
 import { ProjectTrainBackdrop } from '@/components/project-train/ProjectTrainBackdrop';
-import { HomeMascot } from '@/components/home-mascot/HomeMascot';
+import { SectionDock } from '@/components/about-sections/SectionDock';
+import { SectionBody } from '@/components/about-sections/SectionBody';
+import { SECTIONS, type SectionCard, type SectionId } from '@/lib/section-content';
 import { WindowScene } from '@/components/project-window/WindowScene';
+import { BRIEF, BRIEF_LABEL, BRIEF_PAPER } from '@/components/project-window/brief';
+import { DblabsLogo } from '@/components/project-window/DblabsLogo';
 
 
 const BASE = '/';
@@ -499,20 +503,6 @@ type StageState = 'open' | 'leaving';
  *  and blue labels. Copy and link on the left; mascot scene top right and the
  *  screenshot bottom right. */
 const WIN_INK = '#111111';
-const BRIEF = {
-  paper: '#FAF9F5',
-  glow: '#EDD8E9',
-  navy: '#1A1F71',
-  blue: '#1434CB',
-  body: '#4A4E63',
-  muted: '#7B7F93',
-  rule: '#E0DFEE',
-  border: '#E0E5F5',
-  tint: '#EDF1FF',
-  display: "'Inter', 'Space Grotesk', sans-serif",
-  mono: "'IBM Plex Mono', ui-monospace, monospace",
-} as const;
-const BRIEF_LABEL = 'text-[10.5px] font-semibold uppercase leading-none tracking-[0.12em]';
 
 /** The window's call to action, in the briefing's solid blue. */
 function ProjectLink({ project }: { project: ApiProject }) {
@@ -534,37 +524,36 @@ function ProjectLink({ project }: { project: ApiProject }) {
   );
 }
 
-function LaunchStage({
-  project,
-  index,
+/** The window frame every desktop window shares: backdrop, macOS title bar,
+ *  the zoom out of the tile that opened it, focus handling and the Tab trap.
+ *  Project and section windows supply only what goes inside. */
+function WindowShell({
+  title,
+  titleId,
   stage,
   mobile,
   originRect,
   onClose,
   onExited,
+  panelRef,
+  closeHidden = false,
+  testId = 'panel-launch-stage',
+  children,
 }: {
-  project: ApiProject;
-  index: number;
+  title: string;
+  titleId: string;
   stage: StageState;
   mobile: boolean;
   /** The tile that was clicked, so the window can zoom out of it. */
   originRect: DOMRect | null;
   onClose: () => void;
   onExited: () => void;
+  panelRef: RefObject<HTMLDivElement | null>;
+  /** Hides the close light, e.g. behind an expanded film. */
+  closeHidden?: boolean;
+  testId?: string;
+  children: ReactNode;
 }) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [videoExpanded, setVideoExpanded] = useState(false);
-  const titleId = `launch-stage-title-${project.id}`;
-  const isVideo = Boolean(project.videoUrl);
-  // Portrait screenshots (business card, NFC tracker) get their own record
-  // layout: use cases sit under the description in the copy column and the
-  // screenshot owns the full height of the right-hand side.
-  const portraitLayout =
-    !isVideo && Boolean(project.previewImage) && usePortraitShot(project.previewImage);
-
-  const projectNumber = String(project.sortOrder).padStart(2, '0');
-
-
   // The window zooms out of the tile that was clicked — short enough that the
   // file still reads as opening straight away.
   useLayoutEffect(() => {
@@ -660,7 +649,7 @@ function LaunchStage({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto" data-testid="panel-launch-stage">
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto" data-testid={testId}>
       {/* Backdrop */}
       <div
         className={`absolute inset-0 bg-black/30 ${stage === 'leaving' ? 'animate-[fadeOut_0.2s_ease-out_forwards]' : 'animate-[fadeIn_0.25s_ease-out_forwards]'}`}
@@ -695,11 +684,11 @@ function LaunchStage({
               onClick={onClose}
               aria-label="Close"
               // Hidden behind the expanded film — and out of the tab order with it.
-              disabled={videoExpanded}
-              aria-hidden={videoExpanded}
+              disabled={closeHidden}
+              aria-hidden={closeHidden}
               data-testid="button-close-detail"
               className={`group/light flex h-[12px] w-[12px] items-center justify-center rounded-full bg-[#ff5f57] transition-transform hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[#f7b600] ${
-                videoExpanded ? 'pointer-events-none opacity-0' : ''
+                closeHidden ? 'pointer-events-none opacity-0' : ''
               } ${mobile ? 'scale-[1.35]' : ''}`}
             >
               <svg width="7" height="7" viewBox="0 0 7 7" fill="none" className="opacity-0 transition-opacity group-hover/light:opacity-100">
@@ -710,10 +699,59 @@ function LaunchStage({
             <span className={`h-[12px] w-[12px] rounded-full bg-[#28c840] ${mobile ? 'scale-[1.35]' : ''}`} aria-hidden="true" />
           </div>
           <span className="truncate text-[13px] font-medium tracking-[-0.01em] text-[#4a4a4a]" data-testid="text-window-title">
-            {project.title}
+            {title}
           </span>
         </div>
 
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function LaunchStage({
+  project,
+  index,
+  stage,
+  mobile,
+  originRect,
+  onClose,
+  onExited,
+}: {
+  project: ApiProject;
+  index: number;
+  stage: StageState;
+  mobile: boolean;
+  /** The tile that was clicked, so the window can zoom out of it. */
+  originRect: DOMRect | null;
+  onClose: () => void;
+  onExited: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [videoExpanded, setVideoExpanded] = useState(false);
+  const titleId = `launch-stage-title-${project.id}`;
+  const isVideo = Boolean(project.videoUrl);
+  // Portrait screenshots (business card, NFC tracker) get their own record
+  // layout: use cases sit under the description in the copy column and the
+  // screenshot owns the full height of the right-hand side.
+  const portraitLayout =
+    !isVideo && Boolean(project.previewImage) && usePortraitShot(project.previewImage);
+
+  const projectNumber = String(project.sortOrder).padStart(2, '0');
+
+
+  return (
+    <WindowShell
+      title={project.title}
+      titleId={titleId}
+      stage={stage}
+      mobile={mobile}
+      originRect={originRect}
+      onClose={onClose}
+      onExited={onExited}
+      panelRef={panelRef}
+      closeHidden={videoExpanded}
+    >
         {/* The record, laid out like the DBLABS briefing. Desktop: header strip
             across the top; copy, use cases and link on the left; mascot scene
             top right and the screenshot bottom right. Mobile reads in one
@@ -725,12 +763,12 @@ function LaunchStage({
           style={{
             fontFamily: BRIEF.mono,
             color: BRIEF.body,
-            background: `radial-gradient(120% 90% at 100% 0%, ${BRIEF.glow} 0%, rgba(237,216,233,.55) 22%, rgba(250,249,245,0) 58%), ${BRIEF.paper}`,
+            background: BRIEF_PAPER,
           }}
         >
           {/* Header strip */}
            <header className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[12px] border-b pb-[10px]" style={{ borderColor: BRIEF.rule }}>
-            <DblabsWordmark size={mobile ? '17px' : '19px'} />
+            <DblabsLogo size={mobile ? 17 : 19} />
             <span className={`${BRIEF_LABEL} truncate text-right`} style={{ color: BRIEF.blue }} data-testid="text-detail-kicker">
               Project {projectNumber} / {project.category}
             </span>
@@ -828,18 +866,67 @@ function LaunchStage({
             </div>
           </div>
         </div>
+    </WindowShell>
+  );
+}
 
+/** An about card's window: the same frame and paper as a project window,
+ *  with the section's own content inside. */
+function SectionStage({
+  section,
+  stage,
+  mobile,
+  originRect,
+  onClose,
+  onExited,
+}: {
+  section: SectionCard;
+  stage: StageState;
+  mobile: boolean;
+  originRect: DOMRect | null;
+  onClose: () => void;
+  onExited: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = `section-stage-title-${section.id}`;
+  return (
+    <WindowShell
+      title={section.title}
+      titleId={titleId}
+      stage={stage}
+      mobile={mobile}
+      originRect={originRect}
+      onClose={onClose}
+      onExited={onExited}
+      panelRef={panelRef}
+      testId="panel-section-stage"
+    >
+      <div
+        className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
+          mobile ? 'px-[20px] pb-[calc(26px+env(safe-area-inset-bottom))] pt-[18px]' : 'px-[34px] pb-[22px] pt-[22px]'
+        }`}
+        style={{ fontFamily: BRIEF.mono, color: BRIEF.body, background: BRIEF_PAPER }}
+      >
+        <header className="flex items-center justify-between gap-[16px] border-b pb-[14px]" style={{ borderColor: BRIEF.rule }}>
+          <DblabsLogo size={mobile ? 17 : 19} />
+          <span className={`${BRIEF_LABEL} truncate text-right`} style={{ color: BRIEF.blue }}>
+            About / {section.subtitle}
+          </span>
+        </header>
+        <div className={mobile ? 'mt-[18px]' : 'mt-[22px]'}>
+          <SectionBody section={section} titleId={titleId} mobile={mobile} />
+        </div>
       </div>
-    </div>
+    </WindowShell>
   );
 }
 
 /* DBLABS wordmark — "DBL[flask]BS" with the lab flask standing in for the A. */
-function DblabsWordmark({ size = 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }: { size?: string }) {
+function DblabsWordmark() {
   return (
     <span
       className="inline-flex select-none items-baseline font-[900] leading-none tracking-[-.035em] drop-shadow-[0_1px_2px_rgba(255,255,255,.6)]"
-      style={{ fontSize: size }}
+      style={{ fontSize: 'clamp(20px, min(2.2vw, 3.6vh), 36px)' }}
       aria-label="DBLABS"
       data-testid="brandmark"
     >
@@ -895,6 +982,8 @@ export const Route = createFileRoute('/')({
 
 function Portfolio() {
   const [active, setActive] = useState<number | null>(null);
+  // The about card whose window is open, if any. Shares the stage below.
+  const [activeSection, setActiveSection] = useState<SectionId | null>(null);
   // 'open' — the window is up; 'leaving' — it is fading back out.
   const [stage, setStage] = useState<StageState>('open');
   const [origin, setOrigin] = useState<DOMRect | null>(null);
@@ -942,6 +1031,13 @@ function Portfolio() {
     setActive(id);
   };
 
+  const openSection = (id: SectionId, opener: HTMLElement) => {
+    openerRef.current = opener;
+    setOrigin(opener.getBoundingClientRect());
+    setStage('open');
+    setActiveSection(id);
+  };
+
   // Start the exit animation; the window calls back once it has faded out.
   const closeProject = () => {
     if (stageRef.current === 'leaving') return;
@@ -950,6 +1046,7 @@ function Portfolio() {
 
   const finishClose = () => {
     setActive(null);
+    setActiveSection(null);
     setStage('open');
     setOrigin(null);
     const opener = openerRef.current;
@@ -962,11 +1059,11 @@ function Portfolio() {
 
   // Lock the page behind the full-screen mobile stage so only the stage scrolls.
   useEffect(() => {
-    if (!isMobile || active == null) return;
+    if (!isMobile || (active == null && activeSection == null)) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = previous; };
-  }, [isMobile, active]);
+  }, [isMobile, active, activeSection]);
 
   // Measure every preview up front so a window knows on its first render
   // whether its screenshot is portrait — otherwise the layout would settle a
@@ -979,8 +1076,8 @@ function Portfolio() {
 
   // A folder must never stay stuck to the pointer behind the open window.
   useEffect(() => {
-    if (active != null) drag.cancelDrag();
-  }, [active, drag.cancelDrag]);
+    if (active != null || activeSection != null) drag.cancelDrag();
+  }, [active, activeSection, drag.cancelDrag]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1000,6 +1097,7 @@ function Portfolio() {
 
   const activeIndex = active != null ? sorted.findIndex((p) => p.id === active) : -1;
   const activeProject = activeIndex >= 0 ? sorted[activeIndex] : null;
+  const activeSectionCard = SECTIONS.find((s) => s.id === activeSection) ?? null;
 
   return (
     <main
@@ -1076,6 +1174,8 @@ function Portfolio() {
               })}
             </div>
           )}
+
+          <SectionDock mobile onOpen={openSection} />
         </div>
       ) : (
         /* ---------------- Desktop / tablet: the fluid scatter scene ---------------- */
@@ -1167,11 +1267,20 @@ function Portfolio() {
         </>
       )}
 
-      {/* Decorative only: the kick-up loop never captures input or reserves drag space. */}
-      <section className="mascot-host z-[4]" data-testid="mascot-stage">
-        <HomeMascot suspended={active != null} />
-      </section>
+      {/* About cards: centred at the foot of the desktop scene. */}
+      {!isMobile && <SectionDock mobile={false} onOpen={openSection} />}
 
+
+      {activeSectionCard && (
+        <SectionStage
+          section={activeSectionCard}
+          stage={stage}
+          mobile={isMobile}
+          originRect={origin}
+          onClose={closeProject}
+          onExited={finishClose}
+        />
+      )}
 
       {activeProject && (
         <LaunchStage
