@@ -117,7 +117,9 @@
   --folder-selection: oklch(0.454238 0.018601 257.247);
   --folder-label-shadow: oklch(1 0 0 / 90%);
   --selected-label: oklch(1 0 0);
-  --train-sky: oklch(0.97 0.016 90);
+  --train-sky: oklch(0.978 0.006 92);
+  --sunset-glow: oklch(0.79 0.13 55);
+  --sunset-dusk: oklch(0.62 0.15 38);
   --desktop-ink: oklch(0.19 0.03 255);
   --desktop-selection: oklch(0.82 0.16 92);
   --window-surface: oklch(1 0 0);
@@ -171,7 +173,9 @@
   --folder-label-shadow: oklch(0.14 0.018 255 / 78%);
   --file-art-surface: oklch(0.95 0.004 255);
   --selected-label: oklch(1 0 0);
-  --train-sky: oklch(0.97 0.016 90);
+  --train-sky: oklch(0.978 0.006 92);
+  --sunset-glow: oklch(0.79 0.13 55);
+  --sunset-dusk: oklch(0.62 0.15 38);
   --desktop-ink: oklch(0.19 0.03 255);
   --desktop-selection: oklch(0.82 0.16 92);
   --window-surface: oklch(0.99 0.002 255);
@@ -190,8 +194,16 @@
   }
 }
 
+/* Page atmosphere mirrors the pop-up brief treatment: warm paper with a
+   sunset haze seated in the top-right corner, echoing the train scene's
+   canyon palette instead of the old cool blue wash. */
 .desktop-atmosphere {
-  background: linear-gradient(to bottom, color-mix(in oklch, var(--train-sky) 18%, transparent), transparent 38%, oklch(0.2 0.02 255 / 8%));
+  background:
+    radial-gradient(120% 95% at 100% 0%,
+      color-mix(in oklch, var(--sunset-glow) 44%, transparent) 0%,
+      color-mix(in oklch, var(--sunset-glow) 18%, transparent) 26%,
+      transparent 58%),
+    linear-gradient(to bottom, transparent 64%, color-mix(in oklch, var(--sunset-dusk) 10%, transparent));
 }
 
 .file-tile {
