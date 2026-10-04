@@ -117,7 +117,7 @@
   --folder-selection: oklch(0.454238 0.018601 257.247);
   --folder-label-shadow: oklch(1 0 0 / 90%);
   --selected-label: oklch(1 0 0);
-  --train-sky: oklch(0.978 0.006 92);
+  --train-sky: oklch(0.9818 0.0054 95.1);
   --sunset-glow: oklch(0.79 0.13 55);
   --sunset-dusk: oklch(0.62 0.15 38);
   --desktop-ink: oklch(0.19 0.03 255);
@@ -173,7 +173,7 @@
   --folder-label-shadow: oklch(0.14 0.018 255 / 78%);
   --file-art-surface: oklch(0.95 0.004 255);
   --selected-label: oklch(1 0 0);
-  --train-sky: oklch(0.978 0.006 92);
+  --train-sky: oklch(0.9818 0.0054 95.1);
   --sunset-glow: oklch(0.79 0.13 55);
   --sunset-dusk: oklch(0.62 0.15 38);
   --desktop-ink: oklch(0.19 0.03 255);
@@ -200,10 +200,10 @@
 .desktop-atmosphere {
   background:
     radial-gradient(120% 95% at 100% 0%,
-      color-mix(in oklch, var(--sunset-glow) 44%, transparent) 0%,
-      color-mix(in oklch, var(--sunset-glow) 18%, transparent) 26%,
-      transparent 58%),
-    linear-gradient(to bottom, transparent 64%, color-mix(in oklch, var(--sunset-dusk) 10%, transparent));
+      color-mix(in oklch, var(--sunset-glow) 60%, transparent) 0%,
+      color-mix(in oklch, var(--sunset-glow) 30%, transparent) 28%,
+      transparent 62%),
+    linear-gradient(to bottom, transparent 62%, color-mix(in oklch, var(--sunset-dusk) 14%, transparent));
 }
 
 .file-tile {
