@@ -739,11 +739,11 @@ function LaunchStage({
           <div
             className={
               mobile
-                 ? 'mt-[12px] flex flex-col gap-[12px]'
+                 ? 'mt-[10px] flex flex-col gap-[8px]'
                  : 'mt-[16px] grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-x-[24px]'
             }
           >
-             {mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[160px]" />}
+             {mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[140px]" />}
 
             {/* Copy column */}
             <div className="window-copy min-w-0">
@@ -815,7 +815,7 @@ function LaunchStage({
                     project={project}
                     className={`block h-auto w-auto max-w-full rounded-[3px] ${
                       portraitLayout
-                         ? mobile ? 'max-h-[min(220px,26dvh)]' : 'max-h-[min(470px,calc(92dvh-170px))]'
+                         ? mobile ? 'max-h-[min(220px,26dvh)]' : 'max-h-[min(450px,calc(92dvh-200px))]'
                          : mobile ? 'max-h-[min(180px,22dvh)]' : 'max-h-[min(250px,calc(92dvh-280px))]'
                     }`}
                   />
