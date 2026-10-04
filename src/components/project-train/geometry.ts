@@ -1,7 +1,8 @@
 import carriageAsset from "@/assets/train/carriage.svg.asset.json";
 import cliffsAsset from "@/assets/train/cliffs.svg.asset.json";
 import locomotiveAsset from "@/assets/train/locomotive.svg.asset.json";
-import sceneAsset from "@/assets/train/scene.svg.asset.json";
+// Classic stone-arch backup: "@/assets/train/scene-classic.svg.asset.json"
+import sceneAsset from "@/assets/train/scene-golden-gate.svg.asset.json";
 
 /**
  * All measurements are in coordinates of the 1920 × 1080 source artwork.
