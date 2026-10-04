@@ -668,7 +668,7 @@ function LaunchStage({
         data-testid="backdrop-launch-stage"
       />
 
-      {/* The window. Mobile takes the whole screen and scrolls. */}
+      {/* Content-sized window, with scrolling only when the viewport requires it. */}
       <div
         ref={panelRef}
         role="dialog"
@@ -679,8 +679,8 @@ function LaunchStage({
         style={{ fontFamily: "'Space Grotesk', sans-serif", color: WIN_INK }}
         className={`file-window-shell relative flex flex-col overflow-hidden bg-[var(--window-surface)] ${
           mobile
-            ? 'h-[100dvh] w-full max-w-none'
-             : 'h-[min(680px,92dvh)] w-[920px] max-w-[94vw] rounded-[20px]'
+             ? 'h-auto max-h-[92dvh] w-[94vw] max-w-none rounded-[20px]'
+              : 'h-auto max-h-[min(680px,92dvh)] w-[920px] max-w-[94vw] rounded-[20px]'
         } ${stage === 'leaving' ? 'pointer-events-none animate-[windowOut_0.2s_ease-in_forwards]' : ''}`}
       >
         {/* Title bar */}
@@ -719,7 +719,7 @@ function LaunchStage({
             top right and the screenshot bottom right. Mobile reads in one
             column: scene, copy, screenshot, link. */}
         <div
-          className={`win-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain ${
+          className={`win-scroll min-h-0 flex-auto overflow-y-auto overscroll-contain ${
              mobile ? 'px-[18px] pb-[calc(14px+env(safe-area-inset-bottom))] pt-[12px]' : 'px-[26px] pb-[20px] pt-[16px]'
           }`}
           style={{
