@@ -4,6 +4,8 @@
  * Images live in `public/images/sections/`.
  */
 
+import masterclassCohort from "@/assets/masterclass-executive-founding-cohort.png.asset.json";
+
 export type SectionId = "day-job" | "thinking" | "education" | "about-me" | "cv";
 
 export type SectionCard = {
@@ -121,9 +123,9 @@ export const EDUCATION: { group: string; items: EducationItem[] }[] = [
         logo: img("logo-corndel.png"),
       },
       {
-        title: "MasterClass Executive Founding Cohort",
-        detail: "A new kind of business education for the age of AI",
-        monogram: "MC",
+        title: "MasterClass Executive × Chicago Booth — Founding Cohort",
+        detail: "The modern MBA — business education for the age of AI.",
+        logo: masterclassCohort.url,
       },
     ],
   },
