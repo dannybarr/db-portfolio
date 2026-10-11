@@ -26,7 +26,7 @@ export default function ProjectPdfViewer({ url }: { url: string }) {
   const navigate = (page: number) => {
     const target = viewport.current?.querySelector<HTMLElement>(`[data-pdf-page="${page}"]`);
     if (!target) return;
-    viewport.current?.scrollTo({ top: target.offsetTop - 12, behavior: 'smooth' });
+    viewport.current?.scrollTo({ top: target.offsetTop - 12, behavior: 'instant' });
     setCurrent(page);
   };
 
