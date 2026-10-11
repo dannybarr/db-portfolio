@@ -36,20 +36,20 @@ export const SECTIONS: SectionCard[] = [
 ];
 
 export const DAY_JOB = {
-  lead: "I am currently enrolled on Visa's leadership apprentice program, rotating through different business functions to build comprehensive capability. I currently work in Growth Products team, on the frontier of payments including scaling stablecoins, blockchain, and AI led product development & efficiency / productivity with an emphasis on vibe-coded exploration for commercial impact. I got here having left a footprint in Risk and Fraud, Client Services, and Sales (AE / BD).",
+  lead: "I work where strategy meets building. By day I'm in Visa's Corporate Strategy team, working on growth, long-range planning, top line performance and revenue planning. Alongside that, I founded and lead Visa's AI lab in Europe, a team of five turning frontier AI into products the business can actually use. I got here through rotations in Growth Products, Risk and Fraud, Client Services and Digital Sales, so I've seen payments from the client side, the regulator side and the P&L.",
   highlights: [
-    "Risk work submitted to ECB / BOE",
-    "Led client optimisation reviews",
-    "Signed Visa commercial deals",
-    "Scaling stablecoin adoption at industry level",
+    "Founded and lead Visa's AI lab in Europe, team of five",
+    "Corporate Strategy: long-range planning and growth",
+    "Systemic risk work submitted to the ECB and Bank of England",
+    "Stablecoin settlement pilot with a global systemically important bank",
   ],
   focus: {
-    kicker: "Creating the next wave of",
-    words: ["STABLECOINS", "AGENTIC PAYMENTS", "WEB3", "INNOVATION"],
-    line: "Operating where payments, blockchain and AI meet, inside Visa's Growth Products team.",
+    kicker: "Building the next wave of",
+    words: ["AGENTIC COMMERCE", "AI AT VISA", "STABLECOIN RAILS", "PAYMENTS STRATEGY"],
+    line: "Shaping long-range strategy by day, and leading a five-person AI lab that turns new ideas into working prototypes.",
     more: [
-      "Bringing traditional finance on chain, helping Web3 players plug into Visa's payments infrastructure, and shaping how AI agents will transact. Opening up new clients and industries along the way.",
-      "Day to day that means translating stablecoins and blockchain into plain commercial value for clients and internal teams, and turning frontier technology into things Visa can actually sell.",
+      "The lab exists to close the gap between what AI can do and what Visa actually ships. We run fast experiments across agentic commerce, cybersecurity and wider AI, working directly with the European Chief Product Officer, and turn the strongest ideas into prototypes the business can test.",
+      "The strategy work covers growth, top line performance and revenue planning over the long term. It means my AI work always starts from a commercial question, never a technology looking for a home.",
     ],
   },
   news: {
@@ -61,38 +61,53 @@ export const DAY_JOB = {
   },
   experience: [
     {
+      title: "Corporate Strategy (Current)",
+      body: [
+        "Working on growth, long-range planning, top line performance and revenue planning, and how the market's shifts shape where Visa invests next.",
+        "Bringing an operator's view from four rotations to strategic questions, and a builder's view to how the business should adopt AI.",
+      ],
+    },
+    {
+      title: "AI Lab, Founder and Lead (Current)",
+      body: [
+        "Founded Visa's AI lab in Europe and lead a team of five, working directly with the European Chief Product Officer.",
+        "We run rapid experiments and build prototypes across agentic commerce, cybersecurity and broader AI, and publish the thinking behind them.",
+        "We build with frontier AI to create commercial value, run experiments that educate the wider business and collaborate across the industry to lead from the front.",
+        "Train senior leaders to find where AI fits their workflows, build those use cases with them, and run AI workshops for Visa teams worldwide.",
+      ],
+    },
+    {
+      title: "Growth Products: Stablecoins",
+      body: [
+        "Built the stablecoin and onchain opportunity with traditional clients, crypto natives and new client types, winning stablecoin linked card issuing deals.",
+        "Launched a stablecoin settlement pilot with a global systemically important bank, the first of its kind, coordinating risk, treasury, product, marketing and finance.",
+        "Supported stablecoin settlement across Europe, scaling volumes and securing market approvals country by country, plus the Visa Stablecoin Platform launch in Switzerland.",
+      ],
+    },
+    {
       title: "Risk & Fraud",
       body: [
-        "Led competitive intelligence across Risk and Fraud, with product-level analysis that fed directly into Visa's strategic positioning.",
-        "Kicked off the refresh of Visa's Systemic Risk Analysis submitted to the European Central Bank.",
-        "Ran industry-level vulnerabilities benchmarking in response to Bank of England expectations.",
-        "Helped revamp Visa's Risk Events Programme, tightening process and reporting.",
+        "Orchestrated Visa's systemic risk analysis for the European Central Bank and built vulnerability benchmarking for the Bank of England.",
+        "Led competitive intelligence across 50 risk and fraud products to inform decisions at SVP level.",
+        "Closed 5 operational risk audit actions in 3 months with 100% compliance.",
       ],
     },
     {
       title: "Client Services",
       body: [
-        "As a Client Success Manager, I ran card scheme optimisation reviews for mid-market and enterprise clients, turning the analysis into measurable commercial wins.",
-        "Led AI and Power BI initiatives at a global level, building sharper KPI frameworks and workflows that improved how the team served clients.",
-        "Supported clients across end-to-end implementation projects, reporting directly to VP level on senior strategic work.",
+        "Found issuers with below benchmark scheme performance, dug into their transaction data for the root causes and matched the findings to the right Visa solutions, supporting a 3% approval rate uplift for a major issuer.",
+        "Reported directly to VP level and led AI and Power BI work that sharpened how the team served clients.",
       ],
     },
     {
       title: "Digital Sales",
       body: [
-        "Account Management: a portfolio of 10+ clients across issuers and acquirers, from fintechs to national banks. Deepening relationships, spotting opportunities, and partnering with them to grow on Visa.",
-        "Business Development: a BDR remit. Cold outreach, cross-functional pipeline building, booking meetings and opening doors.",
-        "Sales Operations: led a team of AI ambassadors, scaling adoption of digital tools and laying the groundwork for structured sales plays, sprints and segmentation.",
+        "Managed a portfolio of 10+ issuers and acquirers, from fintechs to national banks.",
+        "Identified $1.5 million in new AANR through outbound business development.",
+        "Led a digital enablement sprint for Apple Pay and mobile apps end to end, generating $384,000 AANR, and unlocked a further $32,400 by bringing analytics to a high risk merchant portfolio.",
+        "Led a team of AI ambassadors scaling adoption of digital tools across sales.",
       ],
     },
-    {
-      title: "Growth Products",
-      body: [
-        "My current rotation, on the frontier of payments. Working across stablecoins, on-chain finance, and how AI agents will pay.",
-        "Translating blockchain and stablecoins into plain commercial value for clients and internal teams, and helping Visa turn frontier technology into things it can actually sell.",
-      ],
-    },
-    { title: "Next Rotation", body: ["The next chapter begins September 2026."] },
   ],
 };
 
@@ -172,11 +187,12 @@ export const EDUCATION: { group: string; items: EducationItem[] }[] = [
 ];
 
 export const ABOUT_ME = {
-  lead: "I turn frontier technology into products and commercial value.",
+  lead: "I'm on a mission to make an impact.",
   body: [
-    "I work in Growth Products at Visa, on the frontier of payments: stablecoins, blockchain, and AI for new product development and efficiency / productivity optimisation. My job is to take technology most people are still reading about and turn it into something financial companies can leverage for tangible upside and offer value to their customers.",
-    "Outside Visa I run DBLABS, a side project built on the principle of exploring and learning artificial intelligence by building consumer AI apps and workflows. Getting creative, taking ideas to real products, serving real customers.",
-    "Alongside that, I'm studying towards a BSc Chartered Management Degree, part of the Masterclass Executive x Chicago Booth x OpenAI founding cohort and am continuing to learn Chinese Mandarin. I am always looking for new opportunities, a chance to learn and meet new people.",
+    "At Visa I'm in Corporate Strategy, working on growth, long-range planning, top line performance and revenue planning. I also founded and lead our AI lab in Europe, a team of five working alongside the European Chief Product Officer. We build with frontier AI to create commercial value, run experiments that educate the wider business, and collaborate across the industry to lead from the front.",
+    "Outside Visa I run DBLABS, my own lab for building agentic products and consumer apps. Through it I help businesses adapt to an agentic world, from answer engine optimisation (AEO) audits to advising gyms and VCs. Compounding learning, daily.",
+    "Alongside that I'm studying for a BSc in Chartered Management, I'm in the founding cohort of the Masterclass Executive programme with Chicago Booth and OpenAI, and I'm learning Mandarin.",
+    "Always up for meeting people on a mission.",
   ],
   links: [
     { label: "Let's speak", url: "mailto:dannybarr092@gmail.com", kind: "email" as const },
