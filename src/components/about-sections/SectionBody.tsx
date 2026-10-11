@@ -383,7 +383,15 @@ function Education({ mobile }: { mobile: boolean }) {
             className="flex items-center gap-[12px] px-[12px] py-[9px]"
             style={rowBorder(i)}
           >
-            {item.logo ? (
+            {item.logo && item.logoFit === "descriptor" ? (
+              <span className="relative min-h-[72px] w-[64px] shrink-0 self-stretch">
+                <img
+                  src={item.logo}
+                  alt="MasterClass Executive and Chicago Booth founding cohort"
+                  className="absolute inset-0 h-full w-full object-contain object-left"
+                />
+              </span>
+            ) : item.logo ? (
               <img
                 src={item.logo}
                 alt=""

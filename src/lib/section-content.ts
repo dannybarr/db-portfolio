@@ -4,7 +4,7 @@
  * Images live in `public/images/sections/`.
  */
 
-import masterclassCohort from "@/assets/masterclass-executive-founding-cohort.png.asset.json";
+import masterclassCohort from "@/assets/masterclass-cohort-transparent.png";
 
 export type SectionId = "day-job" | "thinking" | "education" | "about-me" | "cv";
 
@@ -109,6 +109,7 @@ type EducationItem = {
   detail: string;
   /** A logo file, or a short monogram when there is no logo. */
   logo?: string;
+  logoFit?: "descriptor";
   monogram?: string;
   grade?: string;
 };
@@ -125,7 +126,8 @@ export const EDUCATION: { group: string; items: EducationItem[] }[] = [
       {
         title: "MasterClass Executive × Chicago Booth — Founding Cohort",
         detail: "The modern MBA — business education for the age of AI.",
-        logo: masterclassCohort.url,
+        logo: masterclassCohort,
+        logoFit: "descriptor",
       },
     ],
   },
