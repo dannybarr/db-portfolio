@@ -489,6 +489,8 @@ export const PROJECTS: ProjectContent[] = [
     videoUrl: null,
     iconImage: aeoArt.url,
     documentUrl: aeoGuide.url,
+    // The document is also the launch URL used by desktop and train filters.
+    ...{ url: aeoGuide.url },
   },
   { id: 19, sortOrder: 19, ...COMING_SOON, useCases: [] },
   { id: 20, sortOrder: 20, ...COMING_SOON, useCases: [] },
