@@ -2,6 +2,8 @@ import nfcLogo from "@/assets/nfc-desk-tracker-logo.png.asset.json";
 import nfcPreview from "@/assets/nfc-desk-tracker-preview.png.asset.json";
 import grilledLogo from "@/assets/grilled-folder-art.png.asset.json";
 import grilledPreview from "@/assets/grilled-preview.png.asset.json";
+import aeoArt from "@/assets/aeo-folder-art.png.asset.json";
+import aeoGuide from "@/assets/aeo-guide.pdf.asset.json";
 
 /**
  * Everything a desktop folder says and shows lives here, in the repo. The
@@ -33,6 +35,8 @@ export type ProjectContent = {
   previewImage: string | null;
   videoUrl: string | null;
   iconImage: string | null;
+  /** An interactive document replaces the screenshot when present. */
+  documentUrl?: string;
   /** Shrinks the folder art from its full-face size, e.g. 0.85. Defaults to 1. */
   artScale?: number;
 };
@@ -469,7 +473,23 @@ export const PROJECTS: ProjectContent[] = [
     videoUrl: null,
     iconImage: "ai-compute-art.png",
   },
-  { id: 18, sortOrder: 18, ...COMING_SOON, useCases: [] },
+  {
+    id: 18,
+    sortOrder: 18,
+    code: "AEO",
+    title: "AEO",
+    description: "Danny's Guide to AEO — answer engine optimisation, discovery and commerce.",
+    category: "Research",
+    status: "Live",
+    year: 2026,
+    color: "purple",
+    useCases: [],
+    url: null,
+    previewImage: null,
+    videoUrl: null,
+    iconImage: aeoArt.url,
+    documentUrl: aeoGuide.url,
+  },
   { id: 19, sortOrder: 19, ...COMING_SOON, useCases: [] },
   { id: 20, sortOrder: 20, ...COMING_SOON, useCases: [] },
 ];

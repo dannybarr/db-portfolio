@@ -1,6 +1,6 @@
-import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { lazy, Suspense, useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import type { CSSProperties, ReactNode, RefObject } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { ClientOnly, createFileRoute } from '@tanstack/react-router';
 import { useListProjects, useUpdateProjectPosition } from '@/lib/projects';
 import type { Project as ApiProject } from '@/lib/projects';
 import { FOLDER_COLORS, projectImageUrl } from '@/lib/project-content';
@@ -14,6 +14,8 @@ import { SECTIONS, type SectionCard, type SectionId } from '@/lib/section-conten
 import { WindowScene } from '@/components/project-window/WindowScene';
 import { BRIEF, BRIEF_LABEL, BRIEF_PAPER } from '@/components/project-window/brief';
 import { DblabsLogo } from '@/components/project-window/DblabsLogo';
+
+const ProjectPdfViewer = lazy(() => import('@/components/project-window/ProjectPdfViewer'));
 
 
 const BASE = '/';
@@ -774,7 +776,16 @@ function LaunchStage({
             </span>
           </header>
 
-          <div
+          {project.documentUrl ? (
+            <>
+              <h2 id={titleId} className="mt-3 text-[26px] font-black leading-tight" style={{ fontFamily: BRIEF.display, color: BRIEF.navy }} data-testid="text-detail-title">{project.title}</h2>
+              <ClientOnly fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
+                <Suspense fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
+                  <ProjectPdfViewer url={project.documentUrl} />
+                </Suspense>
+              </ClientOnly>
+            </>
+          ) : <div
             className={
               mobile
                  ? 'mt-[10px] flex flex-col gap-[8px]'
@@ -864,7 +875,7 @@ function LaunchStage({
 
                <ProjectLink project={project} />
             </div>
-          </div>
+          </div>}
         </div>
     </WindowShell>
   );
