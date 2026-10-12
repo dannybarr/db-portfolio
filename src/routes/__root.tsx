@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { INTRO_HEAD_SCRIPT, INTRO_HEAD_STYLE } from "@/components/boot-intro/intro-head";
 
 function NotFoundComponent() {
   return (
@@ -113,8 +114,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // The intro script may add a class to <html> before React hydrates.
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: INTRO_HEAD_SCRIPT }} />
+        <style dangerouslySetInnerHTML={{ __html: INTRO_HEAD_STYLE }} />
         <HeadContent />
       </head>
       <body>

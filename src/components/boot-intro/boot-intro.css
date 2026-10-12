@@ -1,0 +1,302 @@
+/* First-visit boot intro: terminal boot log, three mascots building DANNY in
+   blocks, a keynote title, then an iris reveal into the desktop. */
+
+@property --iris {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -10%;
+}
+
+.boot-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  color: #f4f4f2;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The dark stage. The iris reveal cuts a growing hole in it from the centre. */
+.boot-bg {
+  position: absolute;
+  inset: 0;
+  --iris: -10%;
+  background:
+    radial-gradient(70% 60% at 50% 42%, rgb(43 63 214 / 18%) 0%, transparent 70%),
+    radial-gradient(50% 40% at 50% 100%, rgb(217 119 87 / 12%) 0%, transparent 75%), #0a0a0c;
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 46%,
+    transparent var(--iris),
+    #000 calc(var(--iris) + 9%)
+  );
+  mask-image: radial-gradient(
+    circle at 50% 46%,
+    transparent var(--iris),
+    #000 calc(var(--iris) + 9%)
+  );
+}
+
+/* Faint dot grid, like the lab's drafting paper, drifting slowly. */
+.boot-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 7%) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(80% 70% at 50% 45%, #000 30%, transparent 80%);
+}
+
+/* ---------- Boot log ---------- */
+.boot-log {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  width: min(620px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  font-size: clamp(10.5px, 1vw, 15px);
+  line-height: 1.75;
+  color: rgb(244 244 242 / 72%);
+  letter-spacing: 0.01em;
+  /* Keeps the spacing, but long lines wrap on narrow screens. */
+  white-space: pre-wrap;
+}
+
+.boot-log .ok {
+  color: #8fd9a8;
+}
+
+.boot-log .dim {
+  color: rgb(244 244 242 / 40%);
+}
+
+.boot-log .hi {
+  color: #ffffff;
+}
+
+/* Project files ticking in, wrapping under their line. */
+.boot-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.6ch;
+  padding-left: 3ch;
+  white-space: normal;
+  color: rgb(244 244 242 / 55%);
+}
+
+.boot-item {
+  white-space: nowrap;
+}
+
+.boot-log .c-claude {
+  color: #e8906f;
+}
+
+.boot-log .c-codex {
+  color: #97b4ff;
+}
+
+.boot-log .c-grok {
+  color: #ffffff;
+}
+
+.boot-caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: #f4f4f2;
+  animation: boot-blink 0.9s steps(1) infinite;
+}
+
+@keyframes boot-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Blocks ---------- */
+.boot-block {
+  position: absolute;
+  border-radius: 2px;
+  opacity: 0;
+  will-change: transform, opacity;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 35%),
+    inset 0 -1px 0 rgb(0 0 0 / 18%);
+}
+
+.boot-block[data-by="claude"] {
+  background: #d97757;
+}
+
+.boot-block[data-by="codex"] {
+  background: linear-gradient(180deg, #97b4ff, #6688eb);
+}
+
+.boot-block[data-by="grok"] {
+  background: #f4f4f2;
+}
+
+/* ---------- Mascots ---------- */
+.boot-mascot {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 10px 14px rgb(0 0 0 / 45%));
+}
+
+.boot-mascot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.boot-mascot .mascot-juggle-props,
+.boot-mascot .mascot-racket {
+  display: none;
+}
+
+/* A small spotlight pool under each mascot. */
+.boot-mascot::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -6%;
+  height: 10%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 16%), transparent);
+}
+
+.boot-mascot.is-building > svg {
+  animation: boot-hop 0.34s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+  transform-origin: 50% 100%;
+}
+
+.boot-mascot[data-who="codex"].is-building > svg {
+  animation-delay: -0.11s;
+}
+
+.boot-mascot[data-who="grok"].is-building > svg {
+  animation-delay: -0.22s;
+}
+
+@keyframes boot-hop {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  30% {
+    transform: translateY(0) scale(1.06, 0.92);
+  }
+  60% {
+    transform: translateY(-14%) scale(0.96, 1.05);
+  }
+}
+
+/* ---------- Drums ---------- */
+.boot-drum {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 8px 12px rgb(0 0 0 / 45%));
+}
+
+/* Squashes from its base when struck. */
+.boot-drum-body {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 85%;
+}
+
+.boot-drum-body svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.boot-stick {
+  position: absolute;
+  transform-origin: 0 50%;
+}
+
+.boot-stick--right {
+  transform-origin: 100% 50%;
+}
+
+/* Right-hand stick points inward. */
+.boot-stick--right svg {
+  transform: scaleX(-1);
+}
+
+.boot-stick svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Impact ring on the drum head. */
+.boot-ring {
+  position: absolute;
+  border: 2px solid rgb(255 255 255 / 85%);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Skip ---------- */
+.boot-skip {
+  position: absolute;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 14px;
+  border: 1px solid rgb(244 244 242 / 22%);
+  border-radius: 6px;
+  background: rgb(10 10 12 / 60%);
+  color: rgb(244 244 242 / 78%);
+  font:
+    600 11px/1 "IBM Plex Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.boot-skip:hover,
+.boot-skip:focus-visible {
+  color: #fff;
+  border-color: rgb(244 244 242 / 55%);
+  outline: none;
+}
+
+.boot-skip kbd {
+  padding: 3px 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font: inherit;
+  letter-spacing: 0.08em;
+}
+
+.boot-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

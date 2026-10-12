@@ -9,6 +9,7 @@ import { useFolderDrag } from '@/hooks/use-folder-drag';
 import type { FolderOffset } from '@/hooks/use-folder-drag';
 import { ProjectTrainBackdrop } from '@/components/project-train/ProjectTrainBackdrop';
 import { SectionDock } from '@/components/about-sections/SectionDock';
+import { BootIntro } from '@/components/boot-intro/BootIntro';
 import { SectionBody } from '@/components/about-sections/SectionBody';
 import { SECTIONS, type SectionCard, type SectionId } from '@/lib/section-content';
 import { WindowScene } from '@/components/project-window/WindowScene';
@@ -1281,6 +1282,9 @@ function Portfolio() {
       {/* About cards: centred at the foot of the desktop scene. */}
       {!isMobile && <SectionDock mobile={false} onOpen={openSection} />}
 
+
+      {/* The intro; renders nothing once it has played or been skipped. */}
+      <BootIntro />
 
       {activeSectionCard && (
         <SectionStage
