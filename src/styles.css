@@ -410,7 +410,7 @@
   scroll-snap-align: start;
 }
 
-/* Section windows: folds and the cycling focus word. */
+/* Section windows: folds. */
 .section-details > summary::-webkit-details-marker {
   display: none;
 }
@@ -419,13 +419,9 @@
   transform: rotate(180deg);
 }
 
-.section-flip {
-  transition: opacity 400ms ease, transform 400ms ease;
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .section-card,
-  .section-flip {
+  .section-card {
     transition: none;
   }
 

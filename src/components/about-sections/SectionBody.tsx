@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { BRIEF, BRIEF_LABEL } from "@/components/project-window/brief";
 import {
@@ -160,9 +160,10 @@ function DayJob({ mobile }: { mobile: boolean }) {
             : "grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] gap-x-[34px]"
         }
       >
-        <div className="min-w-0">
-          <p className="text-[13px] leading-[1.62]">{DAY_JOB.lead}</p>
-          <ul className="mt-[16px] grid grid-cols-1 gap-[8px] sm:grid-cols-2">
+        <p className="min-w-0 text-[13px] leading-[1.62]">{DAY_JOB.lead}</p>
+
+        <div className="flex min-w-0 flex-col gap-[16px]">
+          <ul className="grid grid-cols-1 gap-[8px]">
             {DAY_JOB.highlights.map((item) => (
               <li
                 key={item}
@@ -177,10 +178,6 @@ function DayJob({ mobile }: { mobile: boolean }) {
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className="flex min-w-0 flex-col gap-[16px]">
-          <VisaFocus />
           <News />
         </div>
       </div>
@@ -217,73 +214,6 @@ function DayJob({ mobile }: { mobile: boolean }) {
         </Card>
       </section>
     </>
-  );
-}
-
-/** The briefing's tinted callout: a blue rule, the cycling focus word and a
- *  "find out more" fold. */
-function VisaFocus() {
-  const { kicker, words, line, more } = DAY_JOB.focus;
-  const [index, setIndex] = useState(0);
-  const [shown, setShown] = useState(true);
-
-  useEffect(() => {
-    let swap: number | undefined;
-    const timer = window.setInterval(() => {
-      setShown(false);
-      swap = window.setTimeout(() => {
-        setIndex((i) => (i + 1) % words.length);
-        setShown(true);
-      }, 400);
-    }, 2600);
-    return () => {
-      window.clearInterval(timer);
-      window.clearTimeout(swap);
-    };
-  }, [words.length]);
-
-  return (
-    <div
-      className="rounded-[4px] border-l-[3px] px-[16px] py-[14px]"
-      style={{ backgroundColor: BRIEF.tint, borderColor: BRIEF.blue }}
-    >
-      <p className={BRIEF_LABEL} style={{ color: BRIEF.blue }}>
-        The Visa Focus
-      </p>
-      <p
-        className="mt-[10px] text-[11px] uppercase tracking-[0.14em]"
-        style={{ color: BRIEF.muted }}
-      >
-        {kicker}
-      </p>
-      <p
-        className="section-flip mt-[4px] min-h-[1.15em] text-[clamp(24px,2.6vw,30px)] font-black leading-[1.1] tracking-[-0.03em]"
-        style={{
-          fontFamily: BRIEF.display,
-          color: BRIEF.navy,
-          opacity: shown ? 1 : 0,
-          transform: shown ? "none" : "translateY(-6px)",
-        }}
-        aria-live="off"
-      >
-        {words[index]}
-      </p>
-      <p className="mt-[8px] text-[12px] leading-[1.55]">{line}</p>
-      <details className="section-details mt-[10px]">
-        <summary
-          className="flex cursor-pointer list-none items-center gap-[8px] text-[11px] font-semibold uppercase tracking-[0.12em]"
-          style={{ color: BRIEF.blue }}
-        >
-          Find out more
-          <Chevron />
-        </summary>
-        <div className="mt-[8px] grid gap-[10px] text-[12px] leading-[1.6]">
-          {more.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
-      </details>
-    </div>
   );
 }
 
@@ -344,12 +274,13 @@ function Thinking() {
         ))}
       </div>
       <section className="mt-[22px]">
-        <Heading>Take a read</Heading>
+        <Heading>{THINKING.heading}</Heading>
         <div className="mt-[12px]">
           <ActionLink
             href={THINKING.cta.url}
             primary
             icon={
+              // The official X mark.
               <svg
                 viewBox="0 0 24 24"
                 width="14"
@@ -357,7 +288,7 @@ function Thinking() {
                 fill="currentColor"
                 aria-hidden="true"
               >
-                <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
             }
           >
@@ -459,12 +390,12 @@ function AboutMe() {
       >
         {ABOUT_ME.lead}
       </p>
-      <div className="mt-[14px] grid gap-[12px] text-[13px] leading-[1.62]">
+      <div className="mt-[9px] grid gap-[9px] text-[13px] leading-[1.62]">
         {ABOUT_ME.body.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
       </div>
-      <div className="mt-[22px] flex flex-wrap gap-[10px]">
+      <div className="mt-[18px] flex flex-wrap gap-[10px]">
         {ABOUT_ME.links.map((link, i) => (
           <ActionLink
             key={link.label}

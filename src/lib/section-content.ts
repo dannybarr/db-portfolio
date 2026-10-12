@@ -43,15 +43,6 @@ export const DAY_JOB = {
     "Systemic risk work submitted to the ECB and Bank of England",
     "Stablecoin settlement pilot with a global systemically important bank",
   ],
-  focus: {
-    kicker: "Building the next wave of",
-    words: ["AGENTIC COMMERCE", "AI AT VISA", "STABLECOIN RAILS", "PAYMENTS STRATEGY"],
-    line: "Shaping long-range strategy by day, and leading a five-person AI lab that turns new ideas into working prototypes.",
-    more: [
-      "The lab exists to close the gap between what AI can do and what Visa actually ships. We run fast experiments across agentic commerce, cybersecurity and wider AI, working directly with the European Chief Product Officer, and turn the strongest ideas into prototypes the business can test.",
-      "The strategy work covers growth, top line performance and revenue planning over the long term. It means my AI work always starts from a commercial question, never a technology looking for a home.",
-    ],
-  },
   news: {
     tag: "Stablecoins",
     source: "Visa Investor Relations · 2026",
@@ -114,9 +105,11 @@ export const DAY_JOB = {
 export const THINKING = {
   lead: [
     "Intentional walks spent thinking critically. The source to creativity.",
-    "Notice the Meta Glasses? Superpower. Chuck them on, Wispr Flow attached and speak my thoughts",
+    "Notice the Meta Glasses? Superpower. Chuck them on, Wispr Flow attached and speak my thoughts.",
+    "The best of it goes to X. That's where I share my thoughts, ideas and contributions to the AI community, from where the industry is heading to what I'm building and launching next.",
   ],
-  cta: { label: "Danny's Substack", url: "https://substack.com/@dannybarr" },
+  heading: "See my contributions",
+  cta: { label: "@DannyBarr17", url: "https://x.com/DannyBarr17" },
 };
 
 type EducationItem = {
@@ -192,6 +185,7 @@ export const ABOUT_ME = {
     "At Visa I'm in Corporate Strategy, working on growth, long-range planning, top line performance and revenue planning. I also founded and lead our AI lab in Europe, a team of five working alongside the European Chief Product Officer. We build with frontier AI to create commercial value, run experiments that educate the wider business, and collaborate across the industry to lead from the front.",
     "Outside Visa I run DBLABS, my own lab for building agentic products and consumer apps. Through it I help businesses adapt to an agentic world, from answer engine optimisation (AEO) audits to advising gyms and VCs. Compounding learning, daily.",
     "Alongside that I'm studying for a BSc in Chartered Management, I'm in the founding cohort of the Masterclass Executive programme with Chicago Booth and OpenAI, and I'm learning Mandarin.",
+    "Outside all that I'm an avid football, padel and golf fan, I love a side mission holiday (up next is China!) and I'm a Lime bike power user.",
     "Always up for meeting people on a mission.",
   ],
   links: [
