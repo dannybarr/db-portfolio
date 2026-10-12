@@ -105,7 +105,6 @@ export const DAY_JOB = {
 export const THINKING = {
   lead: [
     "Intentional walks spent thinking critically. The source to creativity.",
-    "Notice the Meta Glasses? Superpower. Chuck them on, Wispr Flow attached and speak my thoughts.",
     "The best of it goes to X. That's where I share my thoughts, ideas and contributions to the AI community, from where the industry is heading to what I'm building and launching next.",
   ],
   heading: "See my contributions",
@@ -132,8 +131,8 @@ export const EDUCATION: { group: string; items: EducationItem[] }[] = [
         logo: img("logo-corndel.png"),
       },
       {
-        title: "MasterClass Executive × Chicago Booth — Founding Cohort",
-        detail: "The modern MBA — business education for the age of AI.",
+        title: "MasterClass Executive × Chicago Booth: Founding Cohort",
+        detail: "The modern MBA, business education for the age of AI.",
         logo: masterclassCohort,
         logoFit: "descriptor",
       },
