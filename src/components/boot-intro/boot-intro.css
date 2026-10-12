@@ -12,6 +12,9 @@
   inset: 0;
   z-index: 1000;
   overflow: hidden;
+  /* Solid until Terminal goes full screen, so the site never shows through
+     the desktop fading in. The dark stage takes over from there. */
+  background: #0a0a0c;
   color: #f4f4f2;
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   -webkit-font-smoothing: antialiased;
@@ -21,6 +24,8 @@
 .boot-bg {
   position: absolute;
   inset: 0;
+  /* Hidden behind the desktop until Terminal goes full screen. */
+  opacity: 0;
   --iris: -10%;
   background:
     radial-gradient(70% 60% at 50% 42%, rgb(43 63 214 / 18%) 0%, transparent 70%),
@@ -49,17 +54,20 @@
 
 /* ---------- Boot log ---------- */
 .boot-log {
-  position: absolute;
-  left: 50%;
-  top: 20%;
-  width: min(620px, calc(100vw - 32px));
-  transform: translateX(-50%);
-  font-size: clamp(10.5px, 1vw, 15px);
-  line-height: 1.75;
+  font-size: clamp(11px, 0.92vw, 13.5px);
+  line-height: 1.7;
   color: rgb(244 244 242 / 72%);
   letter-spacing: 0.01em;
   /* Keeps the spacing, but long lines wrap on narrow screens. */
   white-space: pre-wrap;
+}
+
+.boot-log .p-user {
+  color: #8fd9a8;
+}
+
+.boot-log .p-path {
+  color: #97b4ff;
 }
 
 .boot-log .ok {
@@ -252,11 +260,311 @@
   pointer-events: none;
 }
 
+/* ---------- Desktop opening ---------- */
+/* One scale drives the whole desktop, so phones get the same menu bar, dock
+   and window, just smaller. */
+.boot-intro {
+  --ui: 1;
+}
+
+@media (max-width: 1100px) {
+  .boot-intro {
+    --ui: 0.9;
+  }
+}
+
+@media (max-width: 760px) {
+  .boot-intro {
+    --ui: 0.78;
+  }
+}
+
+@media (max-width: 480px) {
+  .boot-intro {
+    --ui: 0.68;
+  }
+}
+
+.boot-mac {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: radial-gradient(120% 90% at 50% 20%, #2a4f7c 0%, #0b1424 70%);
+}
+
+.boot-wall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.boot-wall.is-loaded {
+  opacity: 1;
+}
+
+/* A soft vignette keeps the menu bar and dock legible over any sky. */
+.boot-mac::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 18%) 0%, transparent 12%),
+    linear-gradient(0deg, rgb(0 0 0 / 22%) 0%, transparent 18%);
+  pointer-events: none;
+}
+
+/* ---------- Menu bar ---------- */
+.boot-menubar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(28px * var(--ui));
+  padding: 0 calc(14px * var(--ui));
+  background: rgb(18 28 44 / 34%);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  color: #fff;
+  font:
+    500 calc(13px * var(--ui)) / 1 "Inter",
+    -apple-system,
+    sans-serif;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.boot-menubar-left {
+  display: flex;
+  align-items: center;
+  gap: calc(18px * var(--ui));
+}
+
+.boot-menubar-left svg {
+  width: 0.85em;
+  height: 1em;
+}
+
+.boot-app-name {
+  font-weight: 700;
+}
+
+.boot-menu-item {
+  color: rgb(255 255 255 / 88%);
+}
+
+.boot-clock {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Dock ---------- */
+.boot-dock {
+  position: absolute;
+  left: 50%;
+  bottom: max(calc(8px * var(--ui)), env(safe-area-inset-bottom));
+  z-index: 2;
+  --icon: calc(56px * var(--ui));
+  /* The shelf keeps its height; magnified icons rise above it, as on a Mac. */
+  box-sizing: border-box;
+  height: calc(var(--icon) + 14px * var(--ui));
+  display: flex;
+  align-items: flex-end;
+  gap: calc(8px * var(--ui));
+  padding: calc(7px * var(--ui)) calc(10px * var(--ui));
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: calc(24px * var(--ui));
+  background: rgb(255 255 255 / 18%);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 35%),
+    0 12px 32px rgb(0 0 0 / 28%);
+  opacity: 0;
+  transform: translate(-50%, 140%);
+}
+
+.boot-dock-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* A thin divider before Trash, as on a Mac. */
+.boot-dock-slot.is-trash {
+  padding-left: calc(10px * var(--ui));
+  margin-left: calc(2px * var(--ui));
+}
+
+.boot-dock-slot.is-trash::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: rgb(255 255 255 / 34%);
+}
+
+/* Sized, not scaled, so magnification widens the dock and the neighbours
+   slide apart. */
+.boot-dock-icon {
+  width: var(--icon);
+  height: var(--icon);
+}
+
+.boot-dock-art,
+.boot-dock-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.boot-dock-art {
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 calc(3px * var(--ui)) calc(4px * var(--ui)) rgb(0 0 0 / 22%));
+}
+
+.boot-dock-tip {
+  position: absolute;
+  bottom: calc(100% + 12px * var(--ui));
+  left: 50%;
+  padding: calc(5px * var(--ui)) calc(10px * var(--ui));
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: calc(7px * var(--ui));
+  background: rgb(30 30 34 / 82%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  font:
+    500 calc(12.5px * var(--ui)) / 1 "Inter",
+    -apple-system,
+    sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+}
+
+/* Running-app dot. */
+.boot-dock-dot {
+  position: absolute;
+  bottom: calc(-5px * var(--ui));
+  width: calc(4px * var(--ui));
+  height: calc(4px * var(--ui));
+  border-radius: 50%;
+  background: rgb(255 255 255 / 85%);
+  opacity: 0;
+}
+
+.boot-dock-dot.is-on {
+  opacity: 1;
+}
+
+.boot-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  opacity: 0;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 35%));
+  pointer-events: none;
+  will-change: transform;
+}
+
+.boot-cursor svg {
+  width: calc(22px * var(--ui));
+  height: calc(30px * var(--ui));
+}
+
+/* ---------- Terminal window ---------- */
+/* A quarter of the screen; on phones, a true quarter would be too narrow to
+   read, so it takes the widest size that still sits as a window. */
+.boot-term {
+  position: absolute;
+  z-index: 3;
+  --win-w: max(50vw, min(88vw, 520px));
+  --win-h: 50vh;
+  left: calc((100vw - var(--win-w)) / 2);
+  top: calc((100vh - var(--win-h)) / 2 - 2vh);
+  width: var(--win-w);
+  height: var(--win-h);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: calc(12px * var(--ui));
+  background: rgb(14 14 18 / 94%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 30px 80px rgb(0 0 0 / 55%),
+    0 0 0 0.5px rgb(0 0 0 / 60%);
+  opacity: 0;
+}
+
+.boot-term-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: calc(32px * var(--ui));
+  padding: 0 calc(12px * var(--ui));
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  background: linear-gradient(180deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 3%));
+}
+
+.boot-lights {
+  display: flex;
+  gap: calc(8px * var(--ui));
+}
+
+.boot-lights i {
+  width: calc(12px * var(--ui));
+  height: calc(12px * var(--ui));
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.boot-lights i:nth-child(2) {
+  background: #febc2e;
+}
+
+.boot-lights i:nth-child(3) {
+  background: #28c840;
+}
+
+.boot-term-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(255 255 255 / 55%);
+  font:
+    500 calc(12.5px * var(--ui)) / 1 "Inter",
+    -apple-system,
+    sans-serif;
+  white-space: nowrap;
+}
+
+.boot-term-body {
+  flex: 1;
+  overflow: hidden;
+  padding: calc(14px * var(--ui)) calc(18px * var(--ui));
+}
+
 /* ---------- Skip ---------- */
 .boot-skip {
   position: absolute;
   right: max(20px, env(safe-area-inset-right));
   bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -299,4 +607,11 @@
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* On phones the skip button sits above the dock and its label. */
+@media (max-width: 640px) {
+  .boot-skip {
+    bottom: calc(max(8px, env(safe-area-inset-bottom)) + 104px);
+  }
 }

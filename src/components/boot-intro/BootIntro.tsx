@@ -1,17 +1,23 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 import { Claude, Codex, Grok } from "@/components/home-mascot/mascots";
-import { PROJECTS } from "@/lib/project-content";
 import "./boot-intro.css";
 import { INTRO_CLASS } from "./intro-head";
 
 /**
- * Intro. A ten-second terminal boot sequence runs (self test, project files
- * ticking in, agents waking), then Claude, Codex and Grok
- * build DANNY from blocks, then play it in on drums for three seconds: a
- * roll that speeds up, a beat of silence and one big hit. On that hit the
- * word flies into the DANIEL BARR nameplate as the dark stage irises open
- * onto the desktop.
+ * Intro. A Mac-style desktop fades in over a London wallpaper. A cursor glides
+ * to the dock and opens Terminal, which types a boot command and runs the boot
+ * log (self test, modules, agents waking). Terminal then goes full screen into
+ * the dark stage, where Claude, Codex and Grok build DANNY from blocks and play
+ * it in on drums for three seconds. On the final hit the word flies into the
+ * DANIEL BARR nameplate as the stage irises open onto the portfolio.
  *
  * Whether it plays is decided before first paint by INTRO_HEAD_SCRIPT (see
  * __root.tsx): every visit to the home page, never for reduced motion, and
@@ -110,11 +116,182 @@ function Stick() {
   );
 }
 
-// The boot log mounts the same projects the desktop shows as folders.
-const BOOT_PROJECTS = [...PROJECTS]
-  .filter((p) => Boolean(p.url || p.videoUrl))
-  .sort((a, b) => a.sortOrder - b.sortOrder)
-  .map((p) => p.title.toLowerCase());
+// ---------- Desktop opening ----------
+// One sharp 2880px wallpaper for every screen: phones crop it by height, so
+// a smaller file would only look softer there.
+const WALLPAPER = "/images/intro/wallpaper-london.webp";
+
+type DockApp = "folder" | "notes" | "browser" | "terminal" | "mail" | "trash";
+const DOCK: { app: DockApp; label: string }[] = [
+  { app: "folder", label: "Projects" },
+  { app: "notes", label: "Notes" },
+  { app: "browser", label: "Browser" },
+  { app: "terminal", label: "Terminal" },
+  { app: "mail", label: "Mail" },
+  { app: "trash", label: "Trash" },
+];
+const TERMINAL_INDEX = DOCK.findIndex((d) => d.app === "terminal");
+
+/** Dock icons, drawn for this site. */
+function DockIcon({ app }: { app: DockApp }) {
+  const tile = (fill: string, children: ReactNode) => (
+    <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <rect x="4" y="4" width="56" height="56" rx="13" fill={fill} />
+      <rect x="4" y="4" width="56" height="56" rx="13" fill="url(#dock-sheen)" />
+      {children}
+    </svg>
+  );
+  switch (app) {
+    case "folder":
+      return (
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path
+            d="M7 19V13Q7 9 11 9H25Q28 9 29.5 11.5L32 15H53Q57 15 57 19V50Q57 54 53 54H11Q7 54 7 50Z"
+            fill="#4BAFF3"
+          />
+          <path d="M5 24Q5 20 9 20H55Q59 20 59 24V50Q59 55 54 55H10Q5 55 5 50Z" fill="#8ECFF8" />
+          <path
+            d="M6 24Q6 21 9 21H55Q58 21 58 24"
+            stroke="#fff"
+            strokeOpacity=".6"
+            strokeWidth="1.4"
+            fill="none"
+          />
+        </svg>
+      );
+    case "notes":
+      return tile(
+        "#FFFDF4",
+        <>
+          <path d="M4 17Q4 4 17 4H47Q60 4 60 17V20H4Z" fill="#F7CF4A" />
+          {[30, 38, 46].map((y) => (
+            <path
+              key={y}
+              d={`M14 ${y}H50`}
+              stroke="#D9D3C2"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          ))}
+        </>,
+      );
+    case "browser":
+      return tile(
+        "#F4F7FB",
+        <>
+          <circle cx="32" cy="32" r="19" fill="#3E8EF7" />
+          <g stroke="#fff" strokeWidth="2" fill="none" opacity=".9">
+            <ellipse cx="32" cy="32" rx="8" ry="19" />
+            <path d="M13 32H51M16 22H48M16 42H48" />
+          </g>
+        </>,
+      );
+    case "terminal":
+      return tile(
+        "#1B1C20",
+        <>
+          <rect x="4.5" y="4.5" width="55" height="55" rx="12.5" fill="none" stroke="#3A3B42" />
+          <path
+            d="M15 22L23 28L15 34"
+            stroke="#EDEDED"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <path d="M27 35H38" stroke="#EDEDED" strokeWidth="3.2" strokeLinecap="round" />
+        </>,
+      );
+    case "mail":
+      return tile(
+        "#3D8DF5",
+        <>
+          <rect x="14" y="20" width="36" height="25" rx="3.5" fill="#fff" />
+          <path
+            d="M15 22L32 35L49 22"
+            stroke="#3D8DF5"
+            strokeWidth="2.6"
+            fill="none"
+            strokeLinejoin="round"
+          />
+        </>,
+      );
+    case "trash":
+      return (
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path
+            d="M17 18H47L44 55Q43.6 58 40.5 58H23.5Q20.4 58 20 55Z"
+            fill="#E9EDF2"
+            fillOpacity=".75"
+            stroke="#B9C1CC"
+            strokeWidth="1.5"
+          />
+          {[25, 32, 39].map((x) => (
+            <path
+              key={x}
+              d={`M${x} 24L${x + (x - 32) * 0.08} 52`}
+              stroke="#AEB6C2"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          ))}
+          <rect
+            x="14"
+            y="13"
+            width="36"
+            height="6"
+            rx="3"
+            fill="#D7DDE5"
+            stroke="#B9C1CC"
+            strokeWidth="1.2"
+          />
+        </svg>
+      );
+  }
+}
+
+/** The DBLABS flask, for the menu bar. */
+function FlaskMark() {
+  return (
+    <svg width="11" height="13" viewBox="0 0 100 120" aria-hidden="true" focusable="false">
+      <path
+        d="M40 9 H60 M44 13 V39 L73.5 90.5 Q78.5 100.5 67.5 105 H32.5 Q21.5 100.5 26.5 90.5 L56 39 V13"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M37 74.5 L63 74.5 L71.5 90.5 Q75 98 67 101 H33 Q25 98 28.5 90.5 Z" fill="#BFD62F" />
+    </svg>
+  );
+}
+
+function Pointer() {
+  return (
+    <svg width="22" height="30" viewBox="0 0 22 30" aria-hidden="true" focusable="false">
+      <path
+        d="M2 2V24L7.6 18.6L11.4 27.4L15.2 25.8L11.5 17.2H19.2Z"
+        fill="#000"
+        stroke="#fff"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const londonClock = () =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+    .format(new Date())
+    .replace(",", "");
 
 const ABORT = Symbol("intro-skipped");
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
@@ -148,6 +325,19 @@ function IntroStage({ onDone }: { onDone: () => void }) {
   );
   const ringRefs = useRef<Partial<Record<Who, HTMLSpanElement | null>>>({});
   const flashRef = useRef<HTMLDivElement>(null);
+  const macRef = useRef<HTMLDivElement>(null);
+  const wallRef = useRef<HTMLImageElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const appNameRef = useRef<HTMLSpanElement>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
+  const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const tipRef = useRef<HTMLSpanElement>(null);
+  const runDotRef = useRef<HTMLSpanElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const winRef = useRef<HTMLDivElement>(null);
+  const winBarRef = useRef<HTMLDivElement>(null);
+  const winBodyRef = useRef<HTMLDivElement>(null);
+  const [clock] = useState(londonClock);
   const skipRef = useRef<() => void>(() => {});
 
   // The stage now covers the page, so the pre-paint cover can go.
@@ -254,6 +444,8 @@ function IntroStage({ onDone }: { onDone: () => void }) {
     const logRow = () => {
       const row = document.createElement("div");
       logRef.current?.appendChild(row);
+      const body = winBodyRef.current;
+      if (body) body.scrollTop = body.scrollHeight;
       return row;
     };
     const piece = (row: HTMLElement, cls?: string) => {
@@ -286,8 +478,23 @@ function IntroStage({ onDone }: { onDone: () => void }) {
 
     const bootLog = async () => {
       if (!logRef.current) return;
-      // 1. Boot banner.
+      // 0. The command, typed at a prompt.
       let row = logRow();
+      piece(row, "p-user").textContent = "danny@dblabs";
+      piece(row, "p-path").textContent = " ~ ";
+      piece(row, "dim").textContent = "% ";
+      const cmd = piece(row, "hi");
+      const caret = piece(row, "boot-caret");
+      await sleep(380);
+      for (const ch of "boot --portfolio") {
+        cmd.textContent += ch;
+        await sleep(rand(45, 85));
+      }
+      await sleep(320);
+      caret.remove();
+
+      // 1. Boot banner.
+      row = logRow();
       await type(row, "dblabs os 26.10", "hi", 30);
       await type(row, "  ·  cold boot", "dim", 22);
       await sleep(300);
@@ -297,39 +504,6 @@ function IntroStage({ onDone }: { onDone: () => void }) {
       await sleep(150);
       await task("› loading modules: ambition · curiosity · coffee", "ok", 500);
       await sleep(250);
-
-      // 3. Project files tick in one by one.
-      row = logRow();
-      await type(row, "› mounting project files");
-      const list = document.createElement("div");
-      list.className = "boot-list";
-      logRef.current.appendChild(list);
-      for (const name of BOOT_PROJECTS) {
-        const item = piece(list, "boot-item");
-        item.textContent = name + " ";
-        piece(item, "ok").textContent = "✓";
-        await sleep(64);
-      }
-      await sleep(180);
-
-      // 4. Index progress bar.
-      row = logRow();
-      await type(row, "› indexing ");
-      // Filled cells in white, the rest as dim dots (in the terminal font).
-      piece(row, "dim").textContent = "[";
-      const filled = piece(row, "hi");
-      const empty = piece(row, "dim");
-      piece(row, "dim").textContent = "]";
-      const count = piece(row, "dim");
-      const cells = 20;
-      for (let k = 0; k <= cells; k++) {
-        filled.textContent = "█".repeat(k);
-        empty.textContent = "·".repeat(cells - k);
-        count.textContent = " " + Math.round((k / cells) * 100) + "%";
-        await sleep(38);
-      }
-      count.textContent = " " + BOOT_PROJECTS.length + " projects";
-      await sleep(300);
 
       // 5. The agents wake up, each in their own colour.
       row = logRow();
@@ -362,10 +536,222 @@ function IntroStage({ onDone }: { onDone: () => void }) {
       await sleep(480);
     };
 
-    const run = async () => {
-      // ---------- 1. Boot log ----------
+    // ---------- The desktop opening ----------
+    const opening = async () => {
+      const W = layout.w;
+      const H = layout.h;
+      track(macRef.current, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: "forwards" });
+      track(wallRef.current, [{ transform: "scale(1.02)" }, { transform: "scale(1)" }], {
+        duration: 6000,
+        easing: "cubic-bezier(.2,.6,.3,1)",
+        fill: "forwards",
+      });
+      await sleep(250);
+      track(
+        menuRef.current,
+        [
+          { opacity: 0, transform: "translateY(-100%)" },
+          { opacity: 1, transform: "none" },
+        ],
+        {
+          duration: 420,
+          easing: "cubic-bezier(.2,.8,.3,1)",
+          fill: "forwards",
+        },
+      );
+      track(
+        dockRef.current,
+        [
+          { opacity: 0, transform: "translate(-50%, 140%)" },
+          { opacity: 1, transform: "translate(-50%, 0)" },
+        ],
+        {
+          duration: 560,
+          delay: 120,
+          easing: "cubic-bezier(.2,.9,.3,1.05)",
+          fill: "forwards",
+        },
+      );
+      await sleep(760);
+
+      // The cursor glides to Terminal.
+      const icon = iconRefs.current[TERMINAL_INDEX];
+      const cursor = cursorRef.current;
+      if (!icon || !cursor) return;
+      const ir = icon.getBoundingClientRect();
+      const sx = W * 0.62;
+      const sy = H * 0.4;
+      const ex = ir.left + ir.width * 0.55;
+      const ey = ir.top + ir.height * 0.42;
+      track(cursor, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: "forwards" });
+      cursor.style.transform = `translate(${sx}px, ${sy}px)`;
+      const glide = 1100;
+      track(
+        cursor,
+        [
+          { transform: `translate(${sx}px, ${sy}px)` },
+          {
+            transform: `translate(${(sx + ex) / 2 + W * 0.04}px, ${(sy + ey) / 2 - H * 0.02}px)`,
+            offset: 0.55,
+          },
+          { transform: `translate(${ex}px, ${ey}px)` },
+        ],
+        { duration: glide, delay: 150, easing: "cubic-bezier(.45,0,.2,1)", fill: "forwards" },
+      );
+      // Dock magnification as the pointer arrives.
+      await sleep(150 + glide * 0.62);
+      // Icons grow in size, as on a Mac, so the dock widens and the
+      // neighbours slide apart rather than overlapping.
+      const base = icon.offsetWidth;
+      const mag = [1.5, 1.22, 1.06];
+      const size = (px: number) => ({ width: `${px}px`, height: `${px}px` });
+      iconRefs.current.forEach((el, i) => {
+        const k = mag[Math.abs(i - TERMINAL_INDEX)] ?? 1;
+        if (k > 1)
+          track(el, [size(base), size(base * k)], {
+            duration: 260,
+            easing: "cubic-bezier(.2,.8,.3,1)",
+            fill: "forwards",
+          });
+      });
+      track(
+        tipRef.current,
+        [
+          { opacity: 0, transform: "translate(-50%, 4px)" },
+          { opacity: 1, transform: "translate(-50%, 0)" },
+        ],
+        {
+          duration: 200,
+          delay: 120,
+          fill: "forwards",
+        },
+      );
+      await sleep(glide * 0.38 + 140);
+      const settled = icon.getBoundingClientRect();
+      track(
+        cursor,
+        [
+          { transform: `translate(${ex}px, ${ey}px)` },
+          {
+            transform: `translate(${settled.left + settled.width * 0.55}px, ${settled.top + settled.height * 0.42}px)`,
+          },
+        ],
+        {
+          duration: 140,
+          easing: "ease-out",
+          fill: "forwards",
+        },
+      );
       await sleep(150);
+
+      // Click.
+      track(cursor, [{ scale: "1" }, { scale: ".82" }, { scale: "1" }], { duration: 160 });
+      track(
+        icon.firstElementChild ?? null,
+        [{ filter: "brightness(1)" }, { filter: "brightness(.62)" }, { filter: "brightness(1)" }],
+        { duration: 220 },
+      );
+      track(tipRef.current, [{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: "forwards" });
+      if (appNameRef.current) appNameRef.current.textContent = "Terminal";
+      await sleep(180);
+
+      // Launch bounce, and the window zooms out of the icon.
+      track(
+        icon.firstElementChild ?? null,
+        [
+          { transform: "translateY(0)" },
+          { transform: "translateY(-38%)", offset: 0.25 },
+          { transform: "translateY(0)", offset: 0.5 },
+          { transform: "translateY(-22%)", offset: 0.72 },
+          { transform: "translateY(0)" },
+        ],
+        { duration: 760, easing: "ease-in-out" },
+      );
+      track(runDotRef.current, [{ opacity: 0 }, { opacity: 1 }], {
+        duration: 300,
+        delay: 300,
+        fill: "forwards",
+      });
+      await sleep(260);
+      const win = winRef.current;
+      if (win) {
+        const from = icon.getBoundingClientRect();
+        const wr = win.getBoundingClientRect();
+        const dx = from.left + from.width / 2 - (wr.left + wr.width / 2);
+        const dy = from.top + from.height / 2 - (wr.top + wr.height / 2);
+        track(
+          win,
+          [
+            { opacity: 0.2, transform: `translate(${dx}px, ${dy}px) scale(.06)` },
+            { opacity: 1, transform: "none" },
+          ],
+          { duration: 480, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" },
+        );
+      }
+      // The dock settles; the pointer hides, as it does when you type.
+      iconRefs.current.forEach((el) =>
+        track(el, [size(base)], {
+          duration: 320,
+          delay: 200,
+          easing: "ease-in-out",
+          fill: "forwards",
+        }),
+      );
+      track(cursor, [{ opacity: 1 }, { opacity: 0 }], {
+        duration: 300,
+        delay: 260,
+        fill: "forwards",
+      });
+      await sleep(520);
+    };
+
+    /** Terminal goes full screen, then hands over to the dark stage. */
+    const maximise = async () => {
+      const win = winRef.current;
+      if (!win) return;
+      const r = win.getBoundingClientRect();
+      track(winBarRef.current, [{ opacity: 1 }, { opacity: 0 }], {
+        duration: 260,
+        fill: "forwards",
+      });
+      track(
+        win,
+        [
+          {
+            left: `${r.left}px`,
+            top: `${r.top}px`,
+            width: `${r.width}px`,
+            height: `${r.height}px`,
+            borderRadius: "12px",
+          },
+          {
+            left: "0px",
+            top: "0px",
+            width: `${layout.w}px`,
+            height: `${layout.h}px`,
+            borderRadius: "0px",
+          },
+        ],
+        { duration: 680, easing: "cubic-bezier(.7,0,.2,1)", fill: "forwards" },
+      );
+      await sleep(700);
+      if (bgRef.current) bgRef.current.style.opacity = "1";
+      // The stage now carries the background, so the iris can open onto the site.
+      if (rootRef.current) rootRef.current.style.background = "transparent";
+      if (macRef.current) macRef.current.style.visibility = "hidden";
+      track(win, [{ opacity: 1 }, { opacity: 0 }], {
+        duration: 380,
+        easing: "ease-out",
+        fill: "forwards",
+      });
+      await sleep(240);
+    };
+
+    const run = async () => {
+      // ---------- 1. Desktop, Terminal and the boot log ----------
+      await opening();
       await bootLog();
+      await maximise();
 
       // ---------- 2. The build ----------
       track(
@@ -693,7 +1079,86 @@ function IntroStage({ onDone }: { onDone: () => void }) {
       <p className="boot-sr" role="status">
         Loading Daniel Barr's portfolio.
       </p>
-      <div ref={logRef} className="boot-log" aria-hidden="true" />
+      {/* The desktop: wallpaper, menu bar, dock and pointer. */}
+      <div ref={macRef} className="boot-mac" aria-hidden="true">
+        <img
+          ref={wallRef}
+          className="boot-wall"
+          src={WALLPAPER}
+          alt=""
+          decoding="async"
+          onLoad={(e) => e.currentTarget.classList.add("is-loaded")}
+        />
+        <div ref={menuRef} className="boot-menubar">
+          <span className="boot-menubar-left">
+            <FlaskMark />
+            <span ref={appNameRef} className="boot-app-name">
+              Desktop
+            </span>
+            {["File", "Edit", "View", "Window", "Help"].map((m) => (
+              <span key={m} className="boot-menu-item">
+                {m}
+              </span>
+            ))}
+          </span>
+          <span className="boot-clock">{clock}</span>
+        </div>
+        <div ref={dockRef} className="boot-dock">
+          {DOCK.map((d, i) => (
+            <div
+              key={d.app}
+              className={d.app === "trash" ? "boot-dock-slot is-trash" : "boot-dock-slot"}
+            >
+              <div
+                ref={(el) => {
+                  iconRefs.current[i] = el;
+                }}
+                className="boot-dock-icon"
+              >
+                <div className="boot-dock-art">
+                  <DockIcon app={d.app} />
+                </div>
+              </div>
+              {i === TERMINAL_INDEX && (
+                <>
+                  <span ref={tipRef} className="boot-dock-tip">
+                    {d.label}
+                  </span>
+                  <span ref={runDotRef} className="boot-dock-dot" />
+                </>
+              )}
+              {d.app === "folder" && <span className="boot-dock-dot is-on" />}
+            </div>
+          ))}
+          <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+            <defs>
+              <linearGradient id="dock-sheen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#fff" stopOpacity=".22" />
+                <stop offset=".5" stopColor="#fff" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      {/* The Terminal window; the boot log types inside it. */}
+      <div ref={winRef} className="boot-term" aria-hidden="true">
+        <div ref={winBarRef} className="boot-term-bar">
+          <span className="boot-lights">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="boot-term-title">danny — -zsh — 80×24</span>
+        </div>
+        <div ref={winBodyRef} className="boot-term-body">
+          <div ref={logRef} className="boot-log" />
+        </div>
+      </div>
+
+      <div ref={cursorRef} className="boot-cursor" aria-hidden="true">
+        <Pointer />
+      </div>
 
       <div ref={blocksRef} className="absolute inset-0" aria-hidden="true">
         {WHO.map((who) => (

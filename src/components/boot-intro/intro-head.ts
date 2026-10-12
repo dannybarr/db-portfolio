@@ -5,8 +5,9 @@ export const INTRO_CLASS = "dblabs-intro";
 
 /** Runs in <head> before paint and flags <html> when the intro should play:
  *  every visit to the home page, except for visitors who prefer reduced
- *  motion. ?intro forces it regardless. */
-export const INTRO_HEAD_SCRIPT = `(function(){try{var f=/[?&]intro\\b/.test(location.search);var r=matchMedia("(prefers-reduced-motion: reduce)").matches;if(location.pathname==="/"&&(f||!r))document.documentElement.classList.add("${INTRO_CLASS}")}catch(e){}})();`;
+ *  motion. ?intro forces it regardless. When it will play, the desktop
+ *  wallpaper starts downloading straight away. */
+export const INTRO_HEAD_SCRIPT = `(function(){try{var f=/[?&]intro\\b/.test(location.search);var r=matchMedia("(prefers-reduced-motion: reduce)").matches;if(location.pathname==="/"&&(f||!r)){document.documentElement.classList.add("${INTRO_CLASS}");var l=document.createElement("link");l.rel="preload";l.as="image";l.href="/images/intro/wallpaper-london.webp";document.head.appendChild(l)}}catch(e){}})();`;
 
 /** Covers the page from first paint until the intro mounts. Fades on its own
  *  after a few seconds so a script failure can never leave the site hidden. */
