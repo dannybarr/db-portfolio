@@ -14,6 +14,41 @@ export default function ProjectPdfViewer({ url }: { url: string }) {
   const [current, setCurrent] = useState(1);
   const [zoom, setZoom] = useState(1);
   const [failed, setFailed] = useState(false);
+  const [downloadFile, setDownloadFile] = useState<Blob | null>(null);
+  const [downloadError, setDownloadError] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setDownloadFile(null);
+    setDownloadError(false);
+    fetch(url, { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error('PDF download unavailable');
+        const blob = await response.blob();
+        if (!blob.size || !blob.type.includes('pdf')) throw new Error('Invalid PDF');
+        setDownloadFile(blob);
+      })
+      .catch(() => { if (!controller.signal.aborted) setDownloadError(true); });
+    return () => controller.abort();
+  }, [url]);
+
+  const download = async () => {
+    if (!downloadFile) return;
+    const filename = 'dannys-guide-to-aeo-dblabs.pdf';
+    const file = new File([downloadFile], filename, { type: 'application/pdf' });
+    if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: filename }); return; }
+      catch (error) { if (error instanceof DOMException && error.name === 'AbortError') return; }
+    }
+    const objectUrl = URL.createObjectURL(downloadFile);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 30_000);
+  };
 
   useEffect(() => {
     const element = viewport.current;
@@ -43,7 +78,7 @@ export default function ProjectPdfViewer({ url }: { url: string }) {
           <span className="w-10 text-center font-mono text-xs">{Math.round(zoom * 100)}%</span>
           <Button variant="ghost" size="icon" className="h-8 w-8" title="Zoom in" aria-label="Zoom in" disabled={zoom >= 2} onClick={() => setZoom(value => Math.min(2, value + 0.25))}><Plus /></Button>
           <Button asChild variant="ghost" size="icon" className="h-8 w-8"><a href={url} target="_blank" rel="noopener noreferrer" title="Open PDF" aria-label="Open PDF"><ExternalLink /></a></Button>
-          <Button asChild variant="ghost" size="icon" className="h-8 w-8"><a href={url} download="dannys-guide-to-aeo-dblabs.pdf" title="Download PDF" aria-label="Download PDF"><Download /></a></Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8" disabled={!downloadFile} onClick={download} title="Download PDF" aria-label="Download PDF"><Download /></Button>
         </div>
       </div>
       <div ref={viewport} tabIndex={0} aria-label="PDF pages" className="relative h-[min(440px,calc(92dvh-190px))] min-h-40 overflow-auto overscroll-contain bg-window-chrome p-3" onScroll={() => {
@@ -62,6 +97,10 @@ export default function ProjectPdfViewer({ url }: { url: string }) {
         </Document>
         {failed && <span className="sr-only" role="alert">PDF unavailable</span>}
       </div>
+      <footer className="border-t border-window-divider p-2">
+        <Button className="project-window-link w-full" disabled={!downloadFile} onClick={download}><Download />Download PDF</Button>
+        {downloadError && <p role="alert" className="mt-2 text-xs">Download unavailable. <a href={url} target="_blank" rel="noopener noreferrer" className="underline">Open PDF</a></p>}
+      </footer>
     </section>
   );
 }

@@ -120,6 +120,11 @@
   --train-sky: oklch(0.9818 0.0054 95.1);
   --sunset-glow: oklch(0.79 0.13 55);
   --sunset-dusk: oklch(0.62 0.15 38);
+  --sunset-haze-strong: rgb(246 161 99 / 60%);
+  --sunset-haze-soft: rgb(246 161 99 / 30%);
+  --sunset-haze-clear: rgb(246 161 99 / 0%);
+  --sunset-dusk-soft: rgb(211 94 58 / 14%);
+  --sunset-dusk-clear: rgb(211 94 58 / 0%);
   --desktop-ink: oklch(0.19 0.03 255);
   --desktop-selection: oklch(0.82 0.16 92);
   --window-surface: oklch(1 0 0);
@@ -200,10 +205,10 @@
 .desktop-atmosphere {
   background:
     radial-gradient(120% 95% at 100% 0%,
-      color-mix(in oklch, var(--sunset-glow) 60%, transparent) 0%,
-      color-mix(in oklch, var(--sunset-glow) 30%, transparent) 28%,
-      transparent 62%),
-    linear-gradient(to bottom, transparent 62%, color-mix(in oklch, var(--sunset-dusk) 14%, transparent));
+      var(--sunset-haze-strong) 0%,
+      var(--sunset-haze-soft) 28%,
+      var(--sunset-haze-clear) 62%),
+    linear-gradient(to bottom, var(--sunset-dusk-clear) 62%, var(--sunset-dusk-soft));
 }
 
 .file-tile {

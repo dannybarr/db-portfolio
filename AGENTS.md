@@ -15,3 +15,4 @@
 - Resolve project image references through `projectImageUrl` so CDN asset pointers and legacy public filenames render consistently in folder artwork and previews.
 - Keep each project-window link in its screenshot column at full width; size media and copy against the available window height so standard viewports need no scrolling while overflow remains accessible on exceptionally small screens.
 - Project documents use an optional documentUrl and a client-only lazy PDF reader in the shared window; this preserves clickable text and page scrolling across browsers without importing PDF rendering into SSR.
+- Use shared sunset tokens with same-colour transparent sRGB gradient stops for page and window backgrounds to avoid cross-browser colour interpolation shifts.
