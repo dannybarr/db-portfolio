@@ -1,9 +1,9 @@
 /** Design tokens from the DBLABS research briefing, shared by every desktop
- *  window: warm paper with a pink-lavender glow, Inter Black navy titles,
+ *  window: warm paper with a sunset glow, Inter Black navy titles,
  *  IBM Plex Mono body and blue labels. */
 export const BRIEF = {
-  paper: "#FAF9F5",
-  glow: "#EDD8E9",
+  paper: "var(--train-sky)",
+  glow: "var(--sunset-haze-strong)",
   navy: "#1A1F71",
   blue: "#1434CB",
   body: "#4A4E63",
@@ -18,4 +18,4 @@ export const BRIEF = {
 export const BRIEF_LABEL = "text-[10.5px] font-semibold uppercase leading-none tracking-[0.12em]";
 
 /** The paper background with its glow, as used behind window content. */
-export const BRIEF_PAPER = `radial-gradient(120% 90% at 100% 0%, ${BRIEF.glow} 0%, rgba(237,216,233,.55) 22%, rgba(250,249,245,0) 58%), ${BRIEF.paper}`;
+export const BRIEF_PAPER = `radial-gradient(120% 90% at 100% 0%, ${BRIEF.glow} 0%, var(--sunset-haze-soft) 22%, var(--sunset-haze-clear) 58%), ${BRIEF.paper}`;
