@@ -117,7 +117,7 @@ export const PROJECTS: ProjectContent[] = [
       "Build leadership communication one principle at a time",
       "Callable by an AI agent via MCP enablement",
     ],
-    url: "https://cognitve.replit.app/",
+    url: "https://cognism.lovable.app",
     previewImage: "cognitive-preview.webp",
     videoUrl: null,
     iconImage: "cognitive-art.png",
