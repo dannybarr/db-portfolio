@@ -16,5 +16,5 @@
 - [x] Remove the LinkedIn, Gmail and WhatsApp icon buttons from both headers
 - [x] Move pop-up links under screenshots and compact use cases; verify fixed-window fit
 - [x] Add AEO folder artwork and verify its scrollable, clickable PDF pop-up
-- [ ] Add a bottom PDF download button and correct the pink backdrop across browsers
+- [x] Assess and correct the pink backdrop; preserve PDF controls. Chrome preview verified; native Mac Safari remains unverified because the available WebKit browser crashes.
 
