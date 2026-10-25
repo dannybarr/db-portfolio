@@ -4,6 +4,7 @@ import grilledLogo from "@/assets/grilled-folder-art.png.asset.json";
 import grilledPreview from "@/assets/grilled-preview.png.asset.json";
 import aeoArt from "@/assets/aeo-folder-art.png.asset.json";
 import aeoGuide from "@/assets/aeo-guide.pdf.asset.json";
+import aeoVideo from "@/assets/aeo-video.mp4.asset.json";
 
 /**
  * Everything a desktop folder says and shows lives here, in the repo. The
@@ -37,6 +38,8 @@ export type ProjectContent = {
   iconImage: string | null;
   /** An interactive document replaces the screenshot when present. */
   documentUrl?: string;
+  /** A short film shown in the copy column in place of use cases. */
+  briefVideoUrl?: string;
   /** Shrinks the folder art from its full-face size, e.g. 0.85. Defaults to 1. */
   artScale?: number;
 };
@@ -478,7 +481,9 @@ export const PROJECTS: ProjectContent[] = [
     sortOrder: 18,
     code: "AEO",
     title: "AEO",
-    description: "Danny's Guide to AEO — answer engine optimisation, discovery and commerce.",
+    description:
+      "Deep research into how AI agents cite sources, what they look for, and a strategy for becoming an agent's favourite — combining on-site structure with off-site presence. This became the basis of my AEO consultancy with local businesses.",
+    briefVideoUrl: aeoVideo.url,
     category: "Research",
     status: "Live",
     year: 2026,

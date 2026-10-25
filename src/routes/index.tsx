@@ -777,16 +777,7 @@ function LaunchStage({
             </span>
           </header>
 
-          {project.documentUrl ? (
-            <>
-              <h2 id={titleId} className="mt-3 text-[26px] font-black leading-tight" style={{ fontFamily: BRIEF.display, color: BRIEF.navy }} data-testid="text-detail-title">{project.title}</h2>
-              <ClientOnly fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
-                <Suspense fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
-                  <ProjectPdfViewer url={project.documentUrl} />
-                </Suspense>
-              </ClientOnly>
-            </>
-          ) : <div
+          <div
             className={
               mobile
                  ? 'mt-[10px] flex flex-col gap-[8px]'
@@ -813,6 +804,18 @@ function LaunchStage({
                  <p className="mt-[10px] text-[12px] leading-[1.5]" data-testid="text-detail-description">
                   {project.description}
                 </p>
+              )}
+
+              {project.briefVideoUrl && (
+                <video
+                  className="mt-[14px] block aspect-video w-full rounded-[6px] border bg-window-surface"
+                  style={{ borderColor: BRIEF.border }}
+                  src={project.briefVideoUrl}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  data-testid="video-detail-brief"
+                />
               )}
 
               {project.useCases.length > 0 && (
@@ -848,10 +851,19 @@ function LaunchStage({
 
             {/* Scene and screenshot column */}
              <div className="flex min-w-0 flex-col gap-[10px]">
-               {!mobile && !portraitLayout && <WindowScene className="mx-auto max-w-[280px]" />}
+               {!mobile && !portraitLayout && !project.documentUrl && <WindowScene className="mx-auto max-w-[280px]" />}
 
-              {/* A film keeps a fixed 16:9 slot and must not be clipped here, as
-                  it expands out of it. Screenshots stay fully visible. */}
+              {project.documentUrl ? (
+                <div className={`min-w-0 ${mobile ? 'h-[min(360px,42dvh)]' : 'h-[min(500px,calc(92dvh-150px))]'} flex flex-col overflow-hidden`}>
+                  <ClientOnly fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
+                    <Suspense fallback={<p className="py-4 text-sm">Loading PDF…</p>}>
+                      <ProjectPdfViewer url={project.documentUrl} />
+                    </Suspense>
+                  </ClientOnly>
+                </div>
+              ) : (
+              /* A film keeps a fixed 16:9 slot and must not be clipped here, as
+                  it expands out of it. Screenshots stay fully visible. */
               <div
                  className={`relative flex w-full items-center justify-center rounded-[6px] border bg-window-surface ${
                   isVideo ? 'aspect-video' : 'overflow-hidden p-[6px] shadow-[0_10px_30px_-18px_rgba(26,31,113,.35)]'
@@ -873,10 +885,11 @@ function LaunchStage({
                   <MockDashboard project={project} index={index} />
                 )}
               </div>
+              )}
 
                <ProjectLink project={project} />
             </div>
-          </div>}
+          </div>
         </div>
     </WindowShell>
   );
