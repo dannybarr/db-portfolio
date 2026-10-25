@@ -891,7 +891,6 @@ function LaunchStage({
             </div>
           </div>
         </div>
-        </div>
     </WindowShell>
   );
 }
