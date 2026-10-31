@@ -519,7 +519,7 @@ function ProjectLink({ project }: { project: ApiProject }) {
       style={{ fontFamily: BRIEF.display }}
       data-testid="link-project-cta"
     >
-      Open {project.title}
+      {project.ctaLabel ?? `Open ${project.title}`}
       <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="transition-transform duration-200 group-hover/cta:translate-x-[2px]">
         <path d="M1 7h11M7.5 2.5 12 7l-4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

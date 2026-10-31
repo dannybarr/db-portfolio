@@ -394,7 +394,7 @@
 }
 
 .section-dock--mobile {
-  --card-h: 132px;
+  --card-h: min(132px, calc((100vw - 56px) / 4 / 0.81));
   position: static;
   justify-content: flex-start;
   margin-top: 28px;
@@ -413,6 +413,12 @@
 .section-dock--mobile .section-card {
   flex: 0 0 auto;
   scroll-snap-align: start;
+}
+
+/* Narrow cards: tighter tracking so the longest title, Education, fits. */
+.section-dock--mobile .section-card-title {
+  padding-inline: 6px;
+  letter-spacing: 0.06em;
 }
 
 /* Section windows: folds. */

@@ -40,6 +40,8 @@ export type ProjectContent = {
   documentUrl?: string;
   /** A short film shown in the copy column in place of use cases. */
   briefVideoUrl?: string;
+  /** Replaces the window link's default "Open {title}" wording. */
+  ctaLabel?: string;
   /** Shrinks the folder art from its full-face size, e.g. 0.85. Defaults to 1. */
   artScale?: number;
 };
@@ -495,6 +497,25 @@ export const PROJECTS: ProjectContent[] = [
     iconImage: aeoArt.url,
     documentUrl: aeoGuide.url,
   },
-  { id: 19, sortOrder: 19, ...COMING_SOON, useCases: [] },
+  {
+    id: 19,
+    sortOrder: 19,
+    code: "SD",
+    title: "SkillDock",
+    description:
+      "I kept building agent skills, then forgetting to use them. They ended up buried in backend folders, out of sight and never opened again. SkillDock fixes that. It is a small Windows dock on the right edge of your screen that holds every skill in one clean, visual library. Import skills into folders, pin the ones you use most, search by name, and drag a skill straight into your agent or copy its instructions.",
+    briefVideoUrl: "/videos/skilldock-demo.mp4",
+    category: "Agentic AI",
+    status: "Live",
+    year: 2026,
+    color: "graphite",
+    useCases: [],
+    // Download button appears once the installer has a hosted link.
+    url: null,
+    ctaLabel: "Download SkillDock for Windows",
+    previewImage: "skilldock-preview.webp",
+    videoUrl: "videos/skilldock-launch.mp4",
+    iconImage: "skilldock-art.png",
+  },
   { id: 20, sortOrder: 20, ...COMING_SOON, useCases: [] },
 ];
