@@ -510,8 +510,7 @@ export const PROJECTS: ProjectContent[] = [
     year: 2026,
     color: "graphite",
     useCases: [],
-    // Download button appears once the installer has a hosted link.
-    url: null,
+    url: "https://github.com/dannybarr/skilldock/releases/download/v0.3.2/Skilldock-0.3.2-Windows.exe",
     ctaLabel: "Download SkillDock for Windows",
     previewImage: "skilldock-preview.webp",
     videoUrl: "videos/skilldock-launch.mp4",
